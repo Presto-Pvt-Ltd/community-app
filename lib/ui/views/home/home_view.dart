@@ -1,0 +1,113 @@
+import 'package:animations/animations.dart';
+import 'package:flutter/material.dart';
+import 'package:presto/ui/views/borrow/borrow_view.dart';
+import 'package:presto/ui/views/notifications/notifications_view.dart';
+import 'package:presto/ui/views/profile/profile_view.dart';
+import 'package:presto/ui/views/transactions/transactions_view.dart';
+import 'package:stacked/stacked.dart';
+import 'home_viewModel.dart';
+
+// ignore: must_be_immutable
+class HomeView extends StatelessWidget {
+  int index;
+  HomeView({Key? key, this.index = 1}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<HomeViewModel>.reactive(
+      viewModelBuilder: () => HomeViewModel(),
+      // onModelReady: (model) => model.onModelReady(index),
+      builder: (context, model, child) {
+        Widget getViewForIndex(int index) {
+          switch (index) {
+            case 0:
+              return ProfileView(
+                slideChangeView: model.slideChangeViews,
+              );
+            case 1:
+              return BorrowView(
+                slideChangeView: model.slideChangeViews,
+              );
+            case 2:
+              return TransactionsView(
+                slideChangeView: model.slideChangeViews,
+              );
+            case 3:
+              return NotificationsView(
+                slideChangeView: model.slideChangeViews,
+              );
+            default:
+              return BorrowView(
+                slideChangeView: model.slideChangeViews,
+              );
+          }
+        }
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                model.goToLoginScreen();
+              },
+            ),
+          ),
+          body: PageTransitionSwitcher(
+            duration: const Duration(milliseconds: 1000),
+            reverse: model.reverse,
+            transitionBuilder: (
+              Widget child,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+            ) {
+              return SharedAxisTransition(
+                child: child,
+                animation: animation,
+                secondaryAnimation: secondaryAnimation,
+                transitionType: SharedAxisTransitionType.horizontal,
+              );
+            },
+            child: getViewForIndex(model.currentIndex),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: model.currentIndex,
+            onTap: model.setIndex,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                label: 'Profile',
+                activeIcon: Icon(
+                  Icons.person_outline,
+                  size: 40.0,
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Borrow',
+                activeIcon: Icon(
+                  Icons.home,
+                  size: 40.0,
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.monetization_on),
+                label: 'Transactions',
+                activeIcon: Icon(
+                  Icons.monetization_on,
+                  size: 40.0,
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.notifications),
+                label: 'Notifications',
+                activeIcon: Icon(
+                  Icons.notifications,
+                  size: 40.0,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

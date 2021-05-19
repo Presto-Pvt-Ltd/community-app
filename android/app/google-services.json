@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "802587643947",
+    "firebase_url": "https://presto-fae6e-default-rtdb.firebaseio.com",
+    "project_id": "presto-fae6e",
+    "storage_bucket": "presto-fae6e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802587643947:android:4cef73da272f892b539a6e",
+        "android_client_info": {
+          "package_name": "com.presto.org"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802587643947-6ag786561g5vjk6ecocb6qqor1lt9f2n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.presto.org",
+            "certificate_hash": "375fddca9cdf779971aff839a620e2a9e78d39db"
+          }
+        },
+        {
+          "client_id": "802587643947-j16jlrc8glgbnu82jjjfan3llcjf50hn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.presto.org",
+            "certificate_hash": "1fd4ca7db255f8011903a39db794945e355a58af"
+          }
+        },
+        {
+          "client_id": "802587643947-vn0at9g9am2p2h8ssa01gbglp71h7oo9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.presto.org",
+            "certificate_hash": "d5bcd9c71237e29183f6fda5448d9451fa01a4c4"
+          }
+        },
+        {
+          "client_id": "802587643947-78dp0ffc5mdbjrstd748tcabmk83hfab.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9A5YSY6u9DmlCS4DvySEAqiPeMDfBdVg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802587643947-78dp0ffc5mdbjrstd748tcabmk83hfab.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
