@@ -12,6 +12,8 @@ class ErrorHandlingService {
     late String message;
     if (error is TypeError) {
       message = error.toString();
+    } else if (error is FlutterError) {
+      message = error.message.toString();
     } else if (error is FirebaseAuthException) {
       if (authErrors.containsKey(error.code))
         message = authErrors[error.code]!;
