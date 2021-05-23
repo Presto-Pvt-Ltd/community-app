@@ -9,7 +9,6 @@ enum LimitDocument {
 }
 
 class LimitDataHandling extends FirestoreService {
-  LimitDataHandling() : super();
   final CollectionReference _transactionLimits =
       FirebaseFirestore.instance.collection("transactionLimits");
   final CollectionReference _referralLimits =
