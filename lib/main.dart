@@ -44,9 +44,7 @@ Future<void> main() async {
     android: initializationSettingsAndroid,
     iOS: initializationSettingsIos,
   );
-
   flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
