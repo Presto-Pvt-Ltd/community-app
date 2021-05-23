@@ -9,18 +9,7 @@ enum LimitDocument {
 }
 
 class LimitDataHandling extends FirestoreService {
-  final CollectionReference _transactionLimits =
-      FirebaseFirestore.instance.collection("transactionLimits");
-  final CollectionReference _referralLimits =
-      FirebaseFirestore.instance.collection("referralLimits");
-  final CollectionReference _rewardData =
-      FirebaseFirestore.instance.collection("rewardData");
-  final CollectionReference _shareText =
-      FirebaseFirestore.instance.collection("shareText");
-
-  /// Get's appropriate collection reference.
-  /// [transactionId] denotes the document Id in [transaction] collection.
-  /// [typeOfDocument] denotes the name of Sub-Collection you want to access.
+  /// Get's appropriate collection reference for [typeOfLimit].
   CollectionReference _getLimitReference(
     LimitDocument typeOfLimit,
   ) {
