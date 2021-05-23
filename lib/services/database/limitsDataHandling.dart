@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:presto/services/database/firestore.dart';
+import 'package:presto/services/database/firestoreBase.dart';
 
 enum LimitDocument {
   transactionLimits,
