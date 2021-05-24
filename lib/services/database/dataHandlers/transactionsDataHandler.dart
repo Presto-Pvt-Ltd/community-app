@@ -8,18 +8,25 @@ enum TransactionDocument {
   transactionStatus,
 }
 
-class TransactionsDataHandling extends FirestoreService {
+class TransactionsDataHandler {
+  final FirestoreService _firestoreService = FirestoreService();
+
   /// Fetches TransactionData for transaction with [transactionId] and [typeOfDocument]
   Future<Map<String, dynamic>> getTransactionData({
     required TransactionDocument typeOfDocument,
     required String transactionId,
+    required bool fromLocalStorage,
   }) async {
-    final String docId = _getDocId(typeOfDocument);
-    final CollectionReference collectionReference =
-        _getTransactionReference(transactionId, typeOfDocument);
-    return await getData(
-      document: collectionReference.doc(docId),
-    );
+    if (fromLocalStorage) {
+      return throw Exception("Not Implemented");
+    } else {
+      final String docId = _getDocId(typeOfDocument);
+      final CollectionReference collectionReference =
+          _getTransactionReference(transactionId, typeOfDocument);
+      return await _firestoreService.getData(
+        document: collectionReference.doc(docId),
+      );
+    }
   }
 
   /// Updates [data] for transaction with [transactionId] and [typeOfDocument]
@@ -27,14 +34,19 @@ class TransactionsDataHandling extends FirestoreService {
     required Map<String, dynamic> data,
     required TransactionDocument typeOfDocument,
     required String transactionId,
+    required bool toLocalStorage,
   }) async {
-    final String docId = _getDocId(typeOfDocument);
-    final CollectionReference collectionReference =
-        _getTransactionReference(transactionId, typeOfDocument);
-    return await updateData(
-      data: data,
-      document: collectionReference.doc(docId),
-    );
+    if (toLocalStorage) {
+      return throw Exception("Not Implemented");
+    } else {
+      final String docId = _getDocId(typeOfDocument);
+      final CollectionReference collectionReference =
+          _getTransactionReference(transactionId, typeOfDocument);
+      return await _firestoreService.updateData(
+        data: data,
+        document: collectionReference.doc(docId),
+      );
+    }
   }
 
   /// Get's appropriate collection reference.

@@ -8,7 +8,9 @@ enum LimitDocument {
   shareText,
 }
 
-class LimitDataHandling extends FirestoreService {
+class LimitsDataHandler {
+  final FirestoreService _firestoreService = FirestoreService();
+
   /// Get's appropriate collection reference for [typeOfLimit].
   CollectionReference _getLimitReference(
     LimitDocument typeOfLimit,
@@ -27,8 +29,13 @@ class LimitDataHandling extends FirestoreService {
 
   Future<Map<String, dynamic>> getTransactionsData({
     required LimitDocument typeOfLimit,
+    required bool fromLocalDatabase,
   }) async {
-    return await getData(
-        document: _getLimitReference(typeOfLimit).doc("transactionLimits"));
+    if (fromLocalDatabase) {
+      return throw Exception("Not Implemented");
+    } else {
+      return await _firestoreService.getData(
+          document: _getLimitReference(typeOfLimit).doc("transactionLimits"));
+    }
   }
 }

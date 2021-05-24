@@ -9,18 +9,25 @@ enum ProfileDocument {
   userPlatformRatings,
 }
 
-class ProfileDataHandling extends FirestoreService {
+class ProfileDataHandler {
+  final FirestoreService _firestoreService = FirestoreService();
+
   /// Fetches Profile data for [userId] and [typeOfData]
   Future<Map<String, dynamic>> getTransactionData({
     required ProfileDocument typeOfData,
     required String userId,
+    required bool fromLocalDatabase,
   }) async {
-    final String docId = _getDocId(typeOfData);
-    final CollectionReference collectionReference =
-        _getTransactionReference(userId, typeOfData);
-    return await getData(
-      document: collectionReference.doc(docId),
-    );
+    if (fromLocalDatabase) {
+      return throw Exception("Not Implemmented");
+    } else {
+      final String docId = _getDocId(typeOfData);
+      final CollectionReference collectionReference =
+          _getTransactionReference(userId, typeOfData);
+      return await _firestoreService.getData(
+        document: collectionReference.doc(docId),
+      );
+    }
   }
 
   /// Updates [data] for [userId]  and [typeOfDocument]
@@ -28,14 +35,19 @@ class ProfileDataHandling extends FirestoreService {
     required Map<String, dynamic> data,
     required ProfileDocument typeOfDocument,
     required String userId,
+    required bool toLocalDatabase,
   }) async {
-    final String docId = _getDocId(typeOfDocument);
-    final CollectionReference collectionReference =
-        _getTransactionReference(userId, typeOfDocument);
-    return await updateData(
-      data: data,
-      document: collectionReference.doc(docId),
-    );
+    if (toLocalDatabase) {
+      return throw Exception("Not Implemented");
+    } else {
+      final String docId = _getDocId(typeOfDocument);
+      final CollectionReference collectionReference =
+          _getTransactionReference(userId, typeOfDocument);
+      return await _firestoreService.updateData(
+        data: data,
+        document: collectionReference.doc(docId),
+      );
+    }
   }
 
   /// Get's appropriate collection reference.
