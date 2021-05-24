@@ -46,6 +46,7 @@ dependencies:
 
   # Logger
   logger: ^1.0.0
+  flutter_ringtone_player: ^3.0.0
 
   #UPI Payment
 #  upi_pay: ^0.2.0
