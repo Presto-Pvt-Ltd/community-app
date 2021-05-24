@@ -18,11 +18,12 @@ class TransactionsDataHandler {
     required bool fromLocalStorage,
   }) async {
     if (fromLocalStorage) {
+      // TODO: Implement Local Storage
       return throw Exception("Not Implemented");
     } else {
       final String docId = _getDocId(typeOfDocument);
       final CollectionReference collectionReference =
-          _getTransactionReference(transactionId, typeOfDocument);
+          _getTransactionReference(transactionId, docId);
       return await _firestoreService.getData(
         document: collectionReference.doc(docId),
       );
@@ -37,11 +38,12 @@ class TransactionsDataHandler {
     required bool toLocalStorage,
   }) async {
     if (toLocalStorage) {
+      // TODO: Implement Local Storage
       return throw Exception("Not Implemented");
     } else {
       final String docId = _getDocId(typeOfDocument);
       final CollectionReference collectionReference =
-          _getTransactionReference(transactionId, typeOfDocument);
+          _getTransactionReference(transactionId, docId);
       return await _firestoreService.updateData(
         data: data,
         document: collectionReference.doc(docId),
@@ -54,32 +56,12 @@ class TransactionsDataHandler {
   /// [typeOfDocument] denotes the name of Sub-Collection you want to access.
   CollectionReference _getTransactionReference(
     String transactionId,
-    TransactionDocument typeOfDocument,
+    String docId,
   ) {
-    switch (typeOfDocument) {
-      case TransactionDocument.borrowerInformation:
-        return FirebaseFirestore.instance
-            .collection("transactions")
-            .doc(transactionId)
-            .collection("borrowerInformation");
-      case TransactionDocument.genericInformation:
-        return FirebaseFirestore.instance
-            .collection("transactions")
-            .doc(transactionId)
-            .collection("genericInformation");
-      case TransactionDocument.lenderInformation:
-        return FirebaseFirestore.instance
-            .collection("transactions")
-            .doc(transactionId)
-            .collection("lenderInformation");
-      case TransactionDocument.transactionStatus:
-        return FirebaseFirestore.instance
-            .collection("transactions")
-            .doc(transactionId)
-            .collection("transactionStatus");
-      default:
-        throw Exception("Accessed some unknown reference");
-    }
+    return FirebaseFirestore.instance
+        .collection("transactions")
+        .doc(transactionId)
+        .collection(docId);
   }
 
   /// Get's document Id for given [typeOfDocument]

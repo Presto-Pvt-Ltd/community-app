@@ -19,11 +19,12 @@ class ProfileDataHandler {
     required bool fromLocalDatabase,
   }) async {
     if (fromLocalDatabase) {
-      return throw Exception("Not Implemmented");
+      // TODO: Implement Local Storage
+      return throw Exception("Not Implemented");
     } else {
       final String docId = _getDocId(typeOfData);
       final CollectionReference collectionReference =
-          _getTransactionReference(userId, typeOfData);
+          _getTransactionReference(userId, docId);
       return await _firestoreService.getData(
         document: collectionReference.doc(docId),
       );
@@ -38,11 +39,12 @@ class ProfileDataHandler {
     required bool toLocalDatabase,
   }) async {
     if (toLocalDatabase) {
+      // TODO: Implement Local Storage
       return throw Exception("Not Implemented");
     } else {
       final String docId = _getDocId(typeOfDocument);
       final CollectionReference collectionReference =
-          _getTransactionReference(userId, typeOfDocument);
+          _getTransactionReference(userId, docId);
       return await _firestoreService.updateData(
         data: data,
         document: collectionReference.doc(docId),
@@ -55,35 +57,12 @@ class ProfileDataHandler {
   /// [typeOfDocument] denotes the name of Sub-Collection you want to access.
   CollectionReference _getTransactionReference(
     String userId,
-    ProfileDocument typeOfDocument,
+    String docId,
   ) {
-    switch (typeOfDocument) {
-      case ProfileDocument.userPersonalData:
-        return FirebaseFirestore.instance
-            .collection("users")
-            .doc(userId)
-            .collection("userPersonalData");
-      case ProfileDocument.userTransactionsData:
-        return FirebaseFirestore.instance
-            .collection("users")
-            .doc(userId)
-            .collection("userTransactionsData");
-      case ProfileDocument.userNotificationToken:
-        return FirebaseFirestore.instance
-            .collection("users")
-            .doc(userId)
-            .collection("userNotificationToken");
-      case ProfileDocument.userPlatformRewardsData:
-        return FirebaseFirestore.instance
-            .collection("users")
-            .doc(userId)
-            .collection("userPlatformRewardsData");
-      case ProfileDocument.userPlatformRatings:
-        return FirebaseFirestore.instance
-            .collection("users")
-            .doc(userId)
-            .collection("userPlatformRatings");
-    }
+    return FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .collection(docId);
   }
 
   /// Get's document Id for given [typeOfDocument]

@@ -4,7 +4,6 @@ import 'package:presto/services/database/firestoreBase.dart';
 enum LimitDocument {
   transactionLimits,
   referralLimits,
-  rewardData,
   shareText,
 }
 
@@ -14,17 +13,9 @@ class LimitsDataHandler {
   /// Get's appropriate collection reference for [typeOfLimit].
   CollectionReference _getLimitReference(
     LimitDocument typeOfLimit,
+    String docId,
   ) {
-    switch (typeOfLimit) {
-      case LimitDocument.transactionLimits:
-        return FirebaseFirestore.instance.collection("transactionLimits");
-      case LimitDocument.referralLimits:
-        return FirebaseFirestore.instance.collection("referralLimits");
-      case LimitDocument.rewardData:
-        return FirebaseFirestore.instance.collection("rewardData");
-      case LimitDocument.shareText:
-        return FirebaseFirestore.instance.collection("shareText");
-    }
+    return FirebaseFirestore.instance.collection(docId);
   }
 
   Future<Map<String, dynamic>> getTransactionsData({
@@ -32,10 +23,25 @@ class LimitsDataHandler {
     required bool fromLocalDatabase,
   }) async {
     if (fromLocalDatabase) {
+      // TODO: Implement Local Storage
       return throw Exception("Not Implemented");
     } else {
+      final String docId = _getDocId(typeOfLimit);
       return await _firestoreService.getData(
-          document: _getLimitReference(typeOfLimit).doc("transactionLimits"));
+          document:
+              _getLimitReference(typeOfLimit, docId).doc("transactionLimits"));
+    }
+  }
+
+  /// Get's document Id for given [typeOfDocument]
+  String _getDocId(LimitDocument typeOfDocument) {
+    switch (typeOfDocument) {
+      case LimitDocument.transactionLimits:
+        return "transactionLimits";
+      case LimitDocument.referralLimits:
+        return "referralLimits";
+      case LimitDocument.shareText:
+        return "shareText";
     }
   }
 }
