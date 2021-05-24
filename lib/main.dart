@@ -1,30 +1,31 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/app.locator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-/// Define a top-level named handler which background/terminated messages will
-/// call.
-///
-/// To verify things are working, check out the native platform logs.
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
+  MethodChannel _channelBackground = MethodChannel("com.presto.org");
+  _channelBackground.invokeMethod("notifyTheUser");
 }
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
-  'This channel is used for important notifications.', // description
+  'presto_borrowing_channel_test_1', // id
+  'Presto Requests', // title
+  'This channel is used for notifications', // description
   importance: Importance.high,
+  enableLights: true,
+  enableVibration: true,
+  playSound: true,
 );
+MethodChannel _channel = MethodChannel("com.presto.org");
 
 /// Initialize the [FlutterLocalNotificationsPlugin] package.
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -33,13 +34,17 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // Set the background messaging handler early on, as a named top-level function
+  setupLocator();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  /// Create an Android Notification Channel.
-  ///
-  /// We use this channel in the `AndroidManifest.xml` file to override the
-  /// default FCM channel to enable heads up notifications.
+  print("channel created");
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initializationSettingsIos = IOSInitializationSettings();
+  var initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIos,
+  );
+  flutterLocalNotificationsPlugin.initialize(initializationSettings);
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
@@ -52,9 +57,12 @@ Future<void> main() async {
     badge: true,
     sound: true,
   );
-
-  setupLocator();
   runApp(MyApp());
+
+  /// Create an Android Notification Channel.
+  ///
+  /// We use this channel in the `AndroidManifest.xml` file to override the
+  /// default FCM channel to enable heads up notifications.
 }
 
 class MyApp extends StatelessWidget {
@@ -63,7 +71,27 @@ class MyApp extends StatelessWidget {
     FirebaseMessaging.instance.getToken().then((value) {
       print("-----------------\n\n\n$value\n\n\n------------------");
     });
-
+    FirebaseMessaging.onMessage.listen((event) {
+      _channel.invokeMethod("notifyTheUser");
+      print("Hello");
+      flutterLocalNotificationsPlugin.show(
+        12,
+        event.notification?.title,
+        event.notification?.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            "presto_borrowing_channel_test_1",
+            "Presto Custom Notification Test 2",
+            "Desiogniealnvelkvs",
+            importance: Importance.high,
+            priority: Priority.high,
+            enableLights: true,
+            playSound: true,
+            enableVibration: true,
+          ),
+        ),
+      );
+    });
     return MaterialApp(
       title: 'Presto',
       debugShowCheckedModeBanner: false,
