@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -10,9 +10,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+  FlutterRingtonePlayer.playNotification();
   print('Handling a background message ${message.messageId}');
-  MethodChannel _channelBackground = MethodChannel("com.presto.org");
-  _channelBackground.invokeMethod("notifyTheUser");
 }
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -25,7 +24,6 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   enableVibration: true,
   playSound: true,
 );
-MethodChannel _channel = MethodChannel("com.presto.org");
 
 /// Initialize the [FlutterLocalNotificationsPlugin] package.
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -74,7 +72,7 @@ class MyApp extends StatelessWidget {
       print("-----------------\n\n\n$value\n\n\n------------------");
     });
     FirebaseMessaging.onMessage.listen((event) {
-      _channel.invokeMethod("notifyTheUser");
+      FlutterRingtonePlayer.playNotification();
       print("Hello");
       flutterLocalNotificationsPlugin.show(
         12,

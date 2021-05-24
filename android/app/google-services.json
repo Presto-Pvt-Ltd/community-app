@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "802587643947-kvsi4hc6l43idabt0179s324pe85ant5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.presto.org",
+            "certificate_hash": "97c76bc3e8870faf4f915d2f2cd52fdf5ad43a02"
+          }
+        },
+        {
           "client_id": "802587643947-vn0at9g9am2p2h8ssa01gbglp71h7oo9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
