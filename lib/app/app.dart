@@ -1,4 +1,6 @@
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/firestoreBase.dart';
+import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
 import 'package:presto/ui/views/dummyView/dummy_view.dart';
 import 'package:presto/ui/views/home/home_view.dart';
@@ -26,6 +28,8 @@ import 'package:stacked_services/stacked_services.dart';
     /// Custom Micro-Services
     LazySingleton(classType: AuthenticationService),
     LazySingleton(classType: ErrorHandlingService),
+    LazySingleton(classType: HiveDatabaseService),
+    LazySingleton(classType: FirestoreService),
   ],
   logger: StackedLogger(),
 )
