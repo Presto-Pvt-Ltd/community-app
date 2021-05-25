@@ -13,6 +13,14 @@ class HiveDatabaseService {
     return box.get(key);
   }
 
+  List<Map<String, dynamic>> getListFromHive({required String key}){
+    return box.get(key);
+  }
+
+  Map<String,dynamic> getMapDataFromHive({required String key}) {
+    return box.get(key, defaultValue: <String,dynamic>{});
+  }
+
   Future<bool> setDataInHive(
       {required dynamic data, required String key}) async {
     try {

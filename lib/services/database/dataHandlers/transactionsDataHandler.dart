@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/database/firestoreBase.dart';
+import 'package:presto/services/error/error.dart';
+
+import '../hiveDatabase.dart';
 
 enum TransactionDocument {
   genericInformation,
@@ -10,7 +14,9 @@ enum TransactionDocument {
 }
 
 class TransactionsDataHandler {
-  final FirestoreService _firestoreService = FirestoreService();
+  final FirestoreService _firestoreService = locator<FirestoreService>();
+  final HiveDatabaseService hiveDatabaseService = locator<HiveDatabaseService>();
+  final ErrorHandlingService _errorHandlingService = locator<ErrorHandlingService>();
   final log = getLogger("TransactionsDataHandler");
 
   /// Fetches TransactionData for transaction with [transactionId] and [typeOfDocument]
@@ -19,18 +25,23 @@ class TransactionsDataHandler {
     required String transactionId,
     required bool fromLocalStorage,
   }) async {
-    if (fromLocalStorage) {
-      log.v("Getting data from local database");
-      // TODO: Implement Local Storage
-      return throw Exception("Not Implemented");
-    } else {
-      log.v("Getting data from cloud database");
-      final String docId = _getDocId(typeOfDocument);
-      final CollectionReference collectionReference =
-          _getTransactionReference(transactionId, docId);
-      return await _firestoreService.getData(
-        document: collectionReference.doc(docId),
-      );
+    try
+    {
+      if (fromLocalStorage) {
+        log.v("Getting data from local database");
+        return throw Exception("NOt Applicable");
+      } else {
+        log.v("Getting data from cloud database");
+        final String docId = _getDocId(typeOfDocument);
+        final CollectionReference collectionReference =
+            _getTransactionReference(transactionId, docId);
+        return await _firestoreService.getData(
+          document: collectionReference.doc(docId),
+        );
+      }
+    }catch(e){
+      _errorHandlingService.handleError(error: e);
+      return <String,dynamic>{};
     }
   }
 
@@ -41,20 +52,35 @@ class TransactionsDataHandler {
     required String transactionId,
     required bool toLocalStorage,
   }) async {
-    if (toLocalStorage) {
-      log.v("Updating data in local database");
-      // TODO: Implement Local Storage
-      return throw Exception("Not Implemented");
-    } else {
-      log.v("Updating data in cloud database");
-      final String docId = _getDocId(typeOfDocument);
-      final CollectionReference collectionReference =
-          _getTransactionReference(transactionId, docId);
-      return await _firestoreService.updateData(
-        data: data,
-        document: collectionReference.doc(docId),
-      );
+    try
+    {
+      if (toLocalStorage) {
+        log.v("Updating data in local database");
+        return throw Exception("NOt Applicable");
+      } else {
+        log.v("Updating data in cloud database");
+        final String docId = _getDocId(typeOfDocument);
+        final CollectionReference collectionReference =
+            _getTransactionReference(transactionId, docId);
+        return await _firestoreService.updateData(
+          data: data,
+          document: collectionReference.doc(docId),
+        );
+      }
+    }catch(e){
+      _errorHandlingService.handleError(error: e);
+      return false;
     }
+  }
+
+  Future<bool> updateTransactionListInHive({
+    required List<Map<String, dynamic>> list,
+  }) {
+    return hiveDatabaseService.setDataInHive(data: list, key: 'transactionList');
+  }
+
+  List<Map<String, dynamic>> getTransactionListFromHive(){
+    return hiveDatabaseService.getListFromHive(key: 'transactionList');
   }
 
   /// Get's appropriate collection reference.

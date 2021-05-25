@@ -6,4 +6,5 @@ class CommunityTreeDataHandler {
   final log = getLogger("CommunityTreeDataHandler");
 
   final FirestoreService _firestoreService = FirestoreService();
+
 }
