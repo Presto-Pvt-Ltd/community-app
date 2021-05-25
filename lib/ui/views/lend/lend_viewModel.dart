@@ -1,9 +1,9 @@
 import 'package:presto/app/app.logger.dart';
 import 'package:stacked/stacked.dart';
 
-class NotificationsViewModel extends BaseViewModel {
-  final log = getLogger("NotificationsViewModel");
-  String title = "I am Notifications";
+class LendViewModel extends BaseViewModel {
+  final log = getLogger("LendViewModel");
+  String title = "I am Lend Screen";
   late void Function(bool) callback;
 
   void onModelReady(void Function(bool) callback) {

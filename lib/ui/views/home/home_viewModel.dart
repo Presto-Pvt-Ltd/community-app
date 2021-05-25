@@ -17,12 +17,12 @@ class HomeViewModel extends IndexTrackingViewModel {
     });
   }
 
-  void slideChangeViews(bool isReverse){
-    if(isReverse == false){
+  void slideChangeViews(bool isReverse) {
+    if (isReverse == false) {
       // ignore: unnecessary_statements
       currentIndex != 0 ? setIndex(currentIndex - 1) : null;
       notifyListeners();
-    }else {
+    } else {
       // ignore: unnecessary_statements
       currentIndex != 3 ? setIndex(currentIndex + 1) : null;
       notifyListeners();

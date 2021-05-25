@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
-import 'notifications_viewModel.dart';
+import 'lend_viewModel.dart';
 
-class NotificationsView extends StatelessWidget {
+class LendView extends StatelessWidget {
   final void Function(bool) slideChangeView;
-  const NotificationsView({Key? key, required this.slideChangeView})
-      : super(key: key);
+  const LendView({Key? key, required this.slideChangeView}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return ViewModelBuilder<NotificationsViewModel>.reactive(
+    return ViewModelBuilder<LendViewModel>.reactive(
       onModelReady: (model) => model.onModelReady(slideChangeView),
-      viewModelBuilder: () => NotificationsViewModel(),
+      viewModelBuilder: () => LendViewModel(),
       disposeViewModel: false,
       // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,

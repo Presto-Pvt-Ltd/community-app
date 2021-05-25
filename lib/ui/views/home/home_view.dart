@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:presto/ui/views/borrow/borrow_view.dart';
-import 'package:presto/ui/views/notifications/notifications_view.dart';
+import 'package:presto/ui/views/lend/lend_view.dart';
 import 'package:presto/ui/views/profile/profile_view.dart';
 import 'package:presto/ui/views/transactions/transactions_view.dart';
 import 'package:stacked/stacked.dart';
@@ -32,7 +32,7 @@ class HomeView extends StatelessWidget {
                 slideChangeView: model.slideChangeViews,
               );
             case 3:
-              return NotificationsView(
+              return LendView(
                 slideChangeView: model.slideChangeViews,
               );
             default:
@@ -41,14 +41,17 @@ class HomeView extends StatelessWidget {
               );
           }
         }
+
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                model.goToLoginScreen();
-              },
-            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.logout),
+                onPressed: () {
+                  model.goToLoginScreen();
+                },
+              ),
+            ],
           ),
           body: PageTransitionSwitcher(
             duration: const Duration(milliseconds: 1000),
