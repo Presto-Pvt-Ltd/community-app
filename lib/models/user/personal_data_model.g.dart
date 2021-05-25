@@ -13,6 +13,8 @@ PersonalData _$PersonalDataFromJson(Map<String, dynamic> json) {
     contact: json['contact'] as String,
     password: json['password'] as String,
     deviceId: json['deviceId'] as String,
+    referralId: json['referralId'] as String,
+    community: json['community'] as String,
   );
 }
 
@@ -23,4 +25,6 @@ Map<String, dynamic> _$PersonalDataToJson(PersonalData instance) =>
       'contact': instance.contact,
       'password': instance.password,
       'deviceId': instance.deviceId,
+      'referralId': instance.referralId,
+      'community': instance.community,
     };
