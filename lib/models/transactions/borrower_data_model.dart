@@ -4,15 +4,11 @@ part 'borrower_data_model.g.dart';
 @JsonSerializable()
 class BorrowerInformation {
   final int borrowerSentMoneyHour;
-  final int borrowerSentMoneyDay;
-  final int borrowerSentMoneyMonth;
-  final int borrowerSentMoneyYear;
+  final DateTime? borrowerSentMoneyAt;
   final String borrowerReferralCode;
   BorrowerInformation({
-    required this.borrowerSentMoneyDay,
     required this.borrowerSentMoneyHour,
-    required this.borrowerSentMoneyMonth,
-    required this.borrowerSentMoneyYear,
+    this.borrowerSentMoneyAt,
     required this.borrowerReferralCode,
   });
   factory BorrowerInformation.fromJson(Map<String, dynamic> json) =>

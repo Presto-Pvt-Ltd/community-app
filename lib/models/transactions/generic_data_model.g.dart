@@ -9,34 +9,24 @@ part of 'generic_data_model.dart';
 GenericInformation _$GenericInformationFromJson(Map<String, dynamic> json) {
   return GenericInformation(
     transactionId: json['transactionId'] as String,
-    initiationHour: json['initiationHour'] as int,
-    initiationDay: json['initiationDay'] as int,
-    initiationMonth: json['initiationMonth'] as int,
-    initiationYear: json['initiationYear'] as int,
-    completionDay: json['completionDay'] as int,
-    completionHour: json['completionHour'] as int,
-    completionMonth: json['completionMonth'] as int,
-    completionYear: json['completionYear'] as int,
     amount: json['amount'] as int,
     transactionMethods: (json['transactionMethods'] as List<dynamic>)
         .map((e) => _$enumDecode(_$PaymentMethodsEnumMap, e))
         .toList(),
     interestRate: (json['interestRate'] as num).toDouble(),
+    initiationAt: DateTime.parse(json['initiationAt'] as String),
+    completionAt: json['completionAt'] == null
+        ? null
+        : DateTime.parse(json['completionAt'] as String),
   );
 }
 
 Map<String, dynamic> _$GenericInformationToJson(GenericInformation instance) =>
     <String, dynamic>{
       'transactionId': instance.transactionId,
-      'initiationHour': instance.initiationHour,
-      'initiationDay': instance.initiationDay,
-      'initiationMonth': instance.initiationMonth,
-      'initiationYear': instance.initiationYear,
-      'completionHour': instance.completionHour,
-      'completionDay': instance.completionDay,
-      'completionMonth': instance.completionMonth,
-      'completionYear': instance.completionYear,
       'amount': instance.amount,
+      'initiationAt': instance.initiationAt.toIso8601String(),
+      'completionAt': instance.completionAt?.toIso8601String(),
       'transactionMethods': instance.transactionMethods
           .map((e) => _$PaymentMethodsEnumMap[e])
           .toList(),

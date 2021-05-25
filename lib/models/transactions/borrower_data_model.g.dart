@@ -8,10 +8,10 @@ part of 'borrower_data_model.dart';
 
 BorrowerInformation _$BorrowerInformationFromJson(Map<String, dynamic> json) {
   return BorrowerInformation(
-    borrowerSentMoneyDay: json['borrowerSentMoneyDay'] as int,
     borrowerSentMoneyHour: json['borrowerSentMoneyHour'] as int,
-    borrowerSentMoneyMonth: json['borrowerSentMoneyMonth'] as int,
-    borrowerSentMoneyYear: json['borrowerSentMoneyYear'] as int,
+    borrowerSentMoneyAt: json['borrowerSentMoneyAt'] == null
+        ? null
+        : DateTime.parse(json['borrowerSentMoneyAt'] as String),
     borrowerReferralCode: json['borrowerReferralCode'] as String,
   );
 }
@@ -20,8 +20,6 @@ Map<String, dynamic> _$BorrowerInformationToJson(
         BorrowerInformation instance) =>
     <String, dynamic>{
       'borrowerSentMoneyHour': instance.borrowerSentMoneyHour,
-      'borrowerSentMoneyDay': instance.borrowerSentMoneyDay,
-      'borrowerSentMoneyMonth': instance.borrowerSentMoneyMonth,
-      'borrowerSentMoneyYear': instance.borrowerSentMoneyYear,
+      'borrowerSentMoneyAt': instance.borrowerSentMoneyAt?.toIso8601String(),
       'borrowerReferralCode': instance.borrowerReferralCode,
     };

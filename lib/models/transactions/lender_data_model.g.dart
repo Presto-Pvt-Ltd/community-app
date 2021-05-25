@@ -8,19 +8,15 @@ part of 'lender_data_model.dart';
 
 LenderInformation _$LenderInformationFromJson(Map<String, dynamic> json) {
   return LenderInformation(
-    lenderSentMoneyDay: json['lenderSentMoneyDay'] as int,
-    lenderSentMoneyHour: json['lenderSentMoneyHour'] as int,
-    lenderSentMoneyMonth: json['lenderSentMoneyMonth'] as int,
-    lenderSentMoneyYear: json['lenderSentMoneyYear'] as int,
+    lenderSentMoneyAt: json['lenderSentMoneyAt'] == null
+        ? null
+        : DateTime.parse(json['lenderSentMoneyAt'] as String),
     lenderReferralCode: json['lenderReferralCode'] as String,
   );
 }
 
 Map<String, dynamic> _$LenderInformationToJson(LenderInformation instance) =>
     <String, dynamic>{
-      'lenderSentMoneyHour': instance.lenderSentMoneyHour,
-      'lenderSentMoneyDay': instance.lenderSentMoneyDay,
-      'lenderSentMoneyMonth': instance.lenderSentMoneyMonth,
-      'lenderSentMoneyYear': instance.lenderSentMoneyYear,
+      'lenderSentMoneyAt': instance.lenderSentMoneyAt?.toIso8601String(),
       'lenderReferralCode': instance.lenderReferralCode,
     };
