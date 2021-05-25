@@ -3,7 +3,6 @@ import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:stacked/stacked.dart';
 
 import '../../shared/colors.dart';
-import '../../shared/colors.dart';
 import '../../widgets/busyButton.dart';
 import '../../widgets/inputTextField.dart';
 import 'borrow_viewModel.dart';
@@ -20,16 +19,16 @@ class BorrowView extends StatelessWidget {
       disposeViewModel: false,
       // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,
-        onModelReady: (model) => model.onModelReady(slideChangeView),
+      onModelReady: (model) => model.onModelReady(slideChangeView),
       builder: (context, model, child) {
         return KeyboardDismisser(
           child: GestureDetector(
-            onHorizontalDragEnd: (dragEndDetails){
+            onHorizontalDragEnd: (dragEndDetails) {
               print(dragEndDetails.velocity);
               print(dragEndDetails.primaryVelocity);
-              if(!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative){
+              if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
                 model.callback(false);
-              }else{
+              } else {
                 model.callback(true);
               }
               print('end');

@@ -3,7 +3,6 @@ part 'platform_data_model.g.dart';
 
 @JsonSerializable()
 class PlatformData {
-  // TODO: Change PlatformRewardsData -> PlatformData in Enum
   final String referralCode;
   final String referredBy;
   final List<dynamic> referredTo;

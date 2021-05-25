@@ -8,9 +8,6 @@ import 'package:stacked_services/stacked_services.dart';
 import 'app/app.locator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'services/database/dataHandlers/profileDataHandler.dart';
-import 'services/database/dataHandlers/profileDataHandler.dart';
-
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   FlutterRingtonePlayer.playNotification();

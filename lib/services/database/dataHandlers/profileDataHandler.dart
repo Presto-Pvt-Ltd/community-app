@@ -5,7 +5,7 @@ enum ProfileDocument {
   userPersonalData,
   userTransactionsData,
   userNotificationToken,
-  userPlatformRewardsData,
+  userPlatformData,
   userPlatformRatings,
 }
 
@@ -74,8 +74,8 @@ class ProfileDataHandler {
         return "userTransactionsData";
       case ProfileDocument.userNotificationToken:
         return "userNotificationToken";
-      case ProfileDocument.userPlatformRewardsData:
-        return "userPlatformRewardsData";
+      case ProfileDocument.userPlatformData:
+        return "userPlatformData";
       case ProfileDocument.userPlatformRatings:
         return "userPlatformRatings";
     }

@@ -1,7 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
@@ -9,8 +5,6 @@ import 'package:presto/services/authentication.dart';
 import 'package:presto/services/error/error.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-
-import '../../../main.dart';
 
 class StartUpViewModel extends BaseViewModel {
   final log = getLogger("StartUpViewModel");
