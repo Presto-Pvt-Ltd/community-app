@@ -12,6 +12,11 @@ class AuthenticationService {
   /// getter for user [uid]
   String? get uid => _auth.currentUser?.uid;
   FirebaseAuth get auth => _auth;
+  String? get referralCode => _auth.currentUser?.displayName;
+
+  Future<void> setDisplayName(String referralCode) async{
+    await _auth.currentUser?.updateProfile(displayName: referralCode);
+  }
 
   /// Signing the user using email and password
 
