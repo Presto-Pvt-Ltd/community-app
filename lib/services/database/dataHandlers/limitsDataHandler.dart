@@ -5,6 +5,7 @@ enum LimitDocument {
   transactionLimits,
   referralLimits,
   shareText,
+  rewardsLimits,
 }
 
 class LimitsDataHandler {
@@ -42,6 +43,8 @@ class LimitsDataHandler {
         return "referralLimits";
       case LimitDocument.shareText:
         return "shareText";
+      case LimitDocument.rewardsLimits:
+        return "rewardsLimits";
     }
   }
 }
