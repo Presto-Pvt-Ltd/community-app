@@ -50,4 +50,14 @@ class FirestoreService {
       return {};
     }
   }
+
+  /// Deletes document reference provided
+  Future<bool> deleteData({ required DocumentReference document}) async {
+    try{
+      return await document.delete().then((value) => true);
+    } catch (e){
+      _errorHandlingService.handleError(error: e);
+      return false;
+    }
+  }
 }

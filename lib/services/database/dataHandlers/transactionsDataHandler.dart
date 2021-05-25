@@ -19,6 +19,7 @@ class TransactionsDataHandler {
   }) async {
     if (fromLocalStorage) {
       // TODO: Implement Local Storage
+      
       return throw Exception("Not Implemented");
     } else {
       final String docId = _getDocId(typeOfDocument);
