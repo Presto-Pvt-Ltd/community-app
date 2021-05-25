@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
+import '../ui/no-internet/no-internet_view.dart';
 import '../ui/views/dummyView/dummy_view.dart';
 import '../ui/views/home/home_view.dart';
 import '../ui/views/login/login_view.dart';
@@ -23,6 +24,7 @@ class Routes {
   static const String homeView = '/home-view';
   static const String registerView = '/register-view';
   static const String phoneVerificationView = '/phone-verification-view';
+  static const String noInternetView = '/no-internet-view';
   static const all = <String>{
     startUpView,
     dummyView,
@@ -30,6 +32,7 @@ class Routes {
     homeView,
     registerView,
     phoneVerificationView,
+    noInternetView,
   };
 }
 
@@ -43,6 +46,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.homeView, page: HomeView),
     RouteDef(Routes.registerView, page: RegisterView),
     RouteDef(Routes.phoneVerificationView, page: PhoneVerificationView),
+    RouteDef(Routes.noInternetView, page: NoInternetView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -97,6 +101,12 @@ class StackedRouter extends RouterBase {
           key: args.key,
           phoneNumber: args.phoneNumber,
         ),
+        settings: data,
+      );
+    },
+    NoInternetView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const NoInternetView(),
         settings: data,
       );
     },

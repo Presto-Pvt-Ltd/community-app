@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
@@ -13,56 +14,33 @@ class StartUpViewModel extends BaseViewModel {
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
   final NavigationService _navigationService = locator<NavigationService>();
-
+  final Connectivity _connectivity = Connectivity();
   void onModelReady() {
     try {
       log.d("Checking for active user");
-      // MethodChannel _channel = MethodChannel("com.presto.org");
-      // var result = _channel
-      //     .invokeMethod<String>('checkNotificationPermissions')
-      //     .whenComplete(() {
-      //   log.wtf("Helo");
-      // });
-      // log.wtf(result.toString());
-      // print("\n\n\n\n");
-      // result.then((value) {
-      //   log.wtf("Value: $value");
-      //   if (value != "ALL_CLEAR") {
-      //     locator<DialogService>()
-      //         .showDialog(
-      //       title: "Please enable Notification",
-      //       description:
-      //           "Please Enable Notification sound and floating Notifications for great experience",
-      //       buttonTitle: "Proceed",
-      //       buttonTitleColor: Colors.black,
-      //     )
-      //         .then((value) {
-      //       _channel.invokeMapMethod('checkAndGetNotificationPermissions');
-      //     });
-      //   }
-      //
-      // });
       Future.delayed(Duration(seconds: 0), () {
-        // flutterLocalNotificationsPlugin.show(
-        //   12,
-        //   "vweaefwa",
-        //   "fwefawef ",
-        //   NotificationDetails(
-        //     android: AndroidNotificationDetails(
-        //       "presto_borrowing_channel_test_1",
-        //       "Presto Custom Notification Test 2",
-        //       "Desiogniealnvelkvs",
-        //       importance: Importance.high,
-        //       priority: Priority.high,
-        //       enableLights: true,
-        //       playSound: true,
-        //       enableVibration: true,
-        //     ),
-        //   ),
-        // );
-        _authenticationService.uid == null
-            ? _navigationService.replaceWith(Routes.loginView)
-            : _navigationService.replaceWith(Routes.homeView);
+        _connectivity.onConnectivityChanged.listen((event) {
+          switch (event) {
+            case ConnectivityResult.wifi:
+              if (_navigationService.currentRoute == Routes.startUpView)
+                _authenticationService.uid == null
+                    ? _navigationService.replaceWith(Routes.loginView)
+                    : _navigationService.replaceWith(Routes.homeView);
+              break;
+            case ConnectivityResult.mobile:
+              if (_navigationService.currentRoute == Routes.startUpView)
+                _authenticationService.uid == null
+                    ? _navigationService.replaceWith(Routes.loginView)
+                    : _navigationService.replaceWith(Routes.homeView);
+              break;
+            case ConnectivityResult.none:
+              if (_navigationService.currentRoute == Routes.startUpView)
+                _navigationService.replaceWith(Routes.noInternetView);
+              else
+                _navigationService.clearStackAndShow(Routes.noInternetView);
+              break;
+          }
+        });
       });
     } catch (error) {
       log.e("Some error while checking active user");

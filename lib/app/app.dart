@@ -2,6 +2,7 @@ import 'package:presto/services/authentication.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
+import 'package:presto/ui/no-internet/no-internet_view.dart';
 import 'package:presto/ui/views/dummyView/dummy_view.dart';
 import 'package:presto/ui/views/home/home_view.dart';
 import 'package:presto/ui/views/login/login_view.dart';
@@ -19,6 +20,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: HomeView),
     MaterialRoute(page: RegisterView),
     MaterialRoute(page: PhoneVerificationView),
+    MaterialRoute(page: NoInternetView),
   ],
   dependencies: [
     /// Stacked Services

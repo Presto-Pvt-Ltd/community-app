@@ -51,6 +51,12 @@ dependencies:
   # Hive local storage
   hive: ^2.0.4
 
+  # Permissions
+  connectivity: ^3.0.4
+  permission_handler: ^8.0.0+2
+  google_maps_flutter: ^2.0.5
+  geolocator: ^7.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
