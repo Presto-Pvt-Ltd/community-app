@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/database/firestoreBase.dart';
+
+import '../hiveDatabase.dart';
 
 enum TransactionDocument {
   genericInformation,
@@ -10,7 +13,8 @@ enum TransactionDocument {
 }
 
 class TransactionsDataHandler {
-  final FirestoreService _firestoreService = FirestoreService();
+  final FirestoreService _firestoreService = locator<FirestoreService>();
+  final HiveDatabaseService hiveDatabaseService = locator<HiveDatabaseService>();
   final log = getLogger("TransactionsDataHandler");
 
   /// Fetches TransactionData for transaction with [transactionId] and [typeOfDocument]

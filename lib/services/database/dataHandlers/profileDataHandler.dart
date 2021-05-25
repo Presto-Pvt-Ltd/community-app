@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/database/firestoreBase.dart';
+import 'package:presto/services/database/hiveDatabase.dart';
 
 enum ProfileDocument {
   userPersonalData,
@@ -11,7 +13,8 @@ enum ProfileDocument {
 }
 
 class ProfileDataHandler {
-  final FirestoreService _firestoreService = FirestoreService();
+  final FirestoreService _firestoreService = locator<FirestoreService>();
+  final HiveDatabaseService hiveDatabaseService = locator<HiveDatabaseService>();
   final log = getLogger("ProfileDataHandler");
 
   /// Fetches Profile data for [userId] and [typeOfData]
@@ -23,7 +26,7 @@ class ProfileDataHandler {
     if (fromLocalDatabase) {
       log.v("Getting data from local database");
 
-      // TODO: Implement Local Storage
+
       return throw Exception("Not Implemented");
     } else {
       log.v("Getting data from cloud database");
