@@ -7,9 +7,9 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
+import 'package:presto/ui/views/no-internet/no-internet_view.dart';
 import 'package:stacked/stacked.dart';
 
-import '../ui/no-internet/no-internet_view.dart';
 import '../ui/views/dummyView/dummy_view.dart';
 import '../ui/views/home/home_view.dart';
 import '../ui/views/login/login_view.dart';

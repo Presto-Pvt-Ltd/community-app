@@ -1,11 +1,11 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:presto/ui/views/borrow/borrow_view.dart';
-import 'package:presto/ui/views/lend/lend_view.dart';
-import 'package:presto/ui/views/profile/profile_view.dart';
-import 'package:presto/ui/views/transactions/transactions_view.dart';
+import 'package:presto/ui/views/home/profile/profile_view.dart';
+import 'package:presto/ui/views/home/transactions/transactions_view.dart';
 import 'package:stacked/stacked.dart';
+import 'borrow/borrow_view.dart';
 import 'home_viewModel.dart';
+import 'lend/lend_view.dart';
 
 // ignore: must_be_immutable
 class HomeView extends StatelessWidget {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:presto/ui/shared/colors.dart';
+import 'package:presto/ui/widgets/busyButton.dart';
+import 'package:presto/ui/widgets/inputTextField.dart';
 import 'package:stacked/stacked.dart';
 
-import '../../shared/colors.dart';
-import '../../widgets/busyButton.dart';
-import '../../widgets/inputTextField.dart';
 import 'borrow_viewModel.dart';
 
 class BorrowView extends StatelessWidget {
