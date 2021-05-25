@@ -1,4 +1,7 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 
 enum TransactionDocument {
@@ -10,6 +13,7 @@ enum TransactionDocument {
 
 class TransactionsDataHandler {
   final FirestoreService _firestoreService = FirestoreService();
+  final log = getLogger("TransactionsDataHandler");
 
   /// Fetches TransactionData for transaction with [transactionId] and [typeOfDocument]
   Future<Map<String, dynamic>> getTransactionData({
@@ -18,10 +22,11 @@ class TransactionsDataHandler {
     required bool fromLocalStorage,
   }) async {
     if (fromLocalStorage) {
+      log.v("Getting data from local database");
       // TODO: Implement Local Storage
-      
       return throw Exception("Not Implemented");
     } else {
+      log.v("Getting data from cloud database");
       final String docId = _getDocId(typeOfDocument);
       final CollectionReference collectionReference =
           _getTransactionReference(transactionId, docId);
@@ -39,9 +44,11 @@ class TransactionsDataHandler {
     required bool toLocalStorage,
   }) async {
     if (toLocalStorage) {
+      log.v("Updating data in local database");
       // TODO: Implement Local Storage
       return throw Exception("Not Implemented");
     } else {
+      log.v("Updating data in cloud database");
       final String docId = _getDocId(typeOfDocument);
       final CollectionReference collectionReference =
           _getTransactionReference(transactionId, docId);
@@ -59,6 +66,8 @@ class TransactionsDataHandler {
     String transactionId,
     String docId,
   ) {
+    log.v(
+        "Getting appropriate collection reference for $transactionId and $docId");
     return FirebaseFirestore.instance
         .collection("transactions")
         .doc(transactionId)

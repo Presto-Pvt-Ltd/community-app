@@ -6,7 +6,7 @@ class ProfileViewModel extends BaseViewModel {
   String title = "I am Profile";
   late void Function(bool) callback;
 
-  void onModelReady(void Function(bool) callback){
+  void onModelReady(void Function(bool) callback) {
     this.callback = callback;
   }
 }

@@ -5,7 +5,7 @@ part 'platform_data_model.g.dart';
 class PlatformData {
   final String referralCode;
   final String referredBy;
-  final List<dynamic> referredTo;
+  final List<String> referredTo;
 
   PlatformData({
     required this.referralCode,

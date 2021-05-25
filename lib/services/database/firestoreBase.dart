@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
+import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/error/error.dart';
 
 class FirestoreService {
@@ -8,6 +9,7 @@ class FirestoreService {
   /// Tt must never perform data manipulation tasks
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
+  final log = getLogger("FirestoreService");
 
   /// Updates [data] to document provided
   Future<bool> updateData({
@@ -52,10 +54,10 @@ class FirestoreService {
   }
 
   /// Deletes document reference provided
-  Future<bool> deleteData({ required DocumentReference document}) async {
-    try{
+  Future<bool> deleteData({required DocumentReference document}) async {
+    try {
       return await document.delete().then((value) => true);
-    } catch (e){
+    } catch (e) {
       _errorHandlingService.handleError(error: e);
       return false;
     }

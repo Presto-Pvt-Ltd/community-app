@@ -1,18 +1,23 @@
 import 'package:hive/hive.dart';
 import 'package:presto/app/app.locator.dart';
+import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/error/error.dart';
 
-class HiveDatabaseService{
+class HiveDatabaseService {
+  final log = getLogger("HiveDatabaseService");
+
   var box = Hive.box('Local_Database');
   ErrorHandlingService _errorHandlingService = locator<ErrorHandlingService>();
 
-  dynamic getDataFromHive({required String key}){
+  dynamic getDataFromHive({required String key}) {
     return box.get(key);
   }
-  Future<bool> setDataInHive({required dynamic data, required String key }) async{
+
+  Future<bool> setDataInHive(
+      {required dynamic data, required String key}) async {
     try {
       return await box.put(key, data).then((value) => true);
-    }catch(e){
+    } catch (e) {
       _errorHandlingService.handleError(error: e);
       return false;
     }

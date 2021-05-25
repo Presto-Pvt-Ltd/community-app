@@ -10,7 +10,8 @@ PlatformData _$PlatformDataFromJson(Map<String, dynamic> json) {
   return PlatformData(
     referralCode: json['referralCode'] as String,
     referredBy: json['referredBy'] as String,
-    referredTo: json['referredTo'] as List<dynamic>,
+    referredTo:
+        (json['referredTo'] as List<dynamic>).map((e) => e as String).toList(),
   );
 }
 

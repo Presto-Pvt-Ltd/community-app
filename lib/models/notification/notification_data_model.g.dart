@@ -1,34 +1,34 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction_data_model.dart';
+part of 'notification_data_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) {
-  return TransactionData(
-    paymentMethodsUsed: (json['paymentMethodsUsed'] as List<dynamic>)
+Notification _$NotificationFromJson(Map<String, dynamic> json) {
+  return Notification(
+    borrowerRating: (json['borrowerRating'] as num).toDouble(),
+    lenderReferralCode: json['lenderReferralCode'] as String,
+    amount: json['amount'] as int,
+    transactionId: json['transactionId'] as String,
+    paymentMethods: (json['paymentMethods'] as List<dynamic>)
         .map((e) => _$enumDecode(_$PaymentMethodsEnumMap, e))
         .toList(),
-    transactionIds: (json['transactionIds'] as List<dynamic>)
-        .map((e) => e as String)
-        .toList(),
-    totalBorrowed: json['totalBorrowed'] as int,
-    totalLent: json['totalLent'] as int,
-    hasActiveTransaction: json['hasActiveTransaction'] as int,
+    borrowerReferralCode: json['borrowerReferralCode'] as String,
   );
 }
 
-Map<String, dynamic> _$TransactionDataToJson(TransactionData instance) =>
+Map<String, dynamic> _$NotificationToJson(Notification instance) =>
     <String, dynamic>{
-      'paymentMethodsUsed': instance.paymentMethodsUsed
+      'borrowerReferralCode': instance.borrowerReferralCode,
+      'lenderReferralCode': instance.lenderReferralCode,
+      'transactionId': instance.transactionId,
+      'amount': instance.amount,
+      'borrowerRating': instance.borrowerRating,
+      'paymentMethods': instance.paymentMethods
           .map((e) => _$PaymentMethodsEnumMap[e])
           .toList(),
-      'transactionIds': instance.transactionIds,
-      'totalBorrowed': instance.totalBorrowed,
-      'totalLent': instance.totalLent,
-      'hasActiveTransaction': instance.hasActiveTransaction,
     };
 
 K _$enumDecode<K, V>(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 
 enum ProfileDocument {
@@ -11,6 +12,7 @@ enum ProfileDocument {
 
 class ProfileDataHandler {
   final FirestoreService _firestoreService = FirestoreService();
+  final log = getLogger("ProfileDataHandler");
 
   /// Fetches Profile data for [userId] and [typeOfData]
   Future<Map<String, dynamic>> getTransactionData({
@@ -19,9 +21,13 @@ class ProfileDataHandler {
     required bool fromLocalDatabase,
   }) async {
     if (fromLocalDatabase) {
+      log.v("Getting data from local database");
+
       // TODO: Implement Local Storage
       return throw Exception("Not Implemented");
     } else {
+      log.v("Getting data from cloud database");
+
       final String docId = _getDocId(typeOfData);
       final CollectionReference collectionReference =
           _getTransactionReference(userId, docId);
@@ -39,9 +45,11 @@ class ProfileDataHandler {
     required bool toLocalDatabase,
   }) async {
     if (toLocalDatabase) {
+      log.v("Updating data in local database");
       // TODO: Implement Local Storage
       return throw Exception("Not Implemented");
     } else {
+      log.v("Updating data in cloud database");
       final String docId = _getDocId(typeOfDocument);
       final CollectionReference collectionReference =
           _getTransactionReference(userId, docId);
@@ -59,6 +67,7 @@ class ProfileDataHandler {
     String userId,
     String docId,
   ) {
+    log.v("Getting appropriate collection reference for $userId and $docId");
     return FirebaseFirestore.instance
         .collection("users")
         .doc(userId)

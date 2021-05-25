@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:presto/models/enums.dart';
 part 'generic_data_model.g.dart';
 
 @JsonSerializable()
@@ -12,8 +13,8 @@ class GenericInformation {
   final int completionDay;
   final int completionMonth;
   final int completionYear;
-  final String amount;
-  final List<dynamic> transactionMethods;
+  final int amount;
+  final List<PaymentMethods> transactionMethods;
   final double interestRate;
 
   GenericInformation({

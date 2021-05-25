@@ -1,10 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:presto/models/enums.dart';
 part 'transaction_data_model.g.dart';
 
 @JsonSerializable()
 class TransactionData {
-  final List<dynamic> paymentMethodsUsed;
-  final List<dynamic> transactionIds;
+  final List<PaymentMethods> paymentMethodsUsed;
+  final List<String> transactionIds;
   final int totalBorrowed;
   final int totalLent;
   final int hasActiveTransaction;

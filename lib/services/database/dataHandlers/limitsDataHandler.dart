@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 
 enum LimitDocument {
@@ -10,12 +11,14 @@ enum LimitDocument {
 
 class LimitsDataHandler {
   final FirestoreService _firestoreService = FirestoreService();
+  final log = getLogger("LimitsDataHandler");
 
   /// Get's appropriate collection reference for [typeOfLimit].
   CollectionReference _getLimitReference(
     LimitDocument typeOfLimit,
     String docId,
   ) {
+    log.v("Getting appropriate collection reference");
     return FirebaseFirestore.instance.collection(docId);
   }
 
