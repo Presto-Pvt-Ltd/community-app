@@ -8,6 +8,6 @@ class NotificationToken {
 
   NotificationToken({required this.notificationToken});
   factory NotificationToken.fromJson(Map<String, dynamic> json) =>
-      _$NotificationTokenDataFromJson(json);
-  Map<String, dynamic> toJson() => _$NotificationTokenDataToJson(this);
+      _$NotificationTokenFromJson(json);
+  Map<String, dynamic> toJson() => _$NotificationTokenToJson(this);
 }
