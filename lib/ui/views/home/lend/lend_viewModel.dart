@@ -7,7 +7,7 @@ import 'package:stacked/stacked.dart';
 class LendViewModel extends StreamViewModel {
   final log = getLogger("LendViewModel");
   final NotificationDataHandler _notificationDataHandler =
-      NotificationDataHandler();
+      locator<NotificationDataHandler>();
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
   String title = "I am Lend Screen";

@@ -10,6 +10,11 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../services/authentication.dart';
+import '../services/database/dataHandlers/communityTreeDataHandler.dart';
+import '../services/database/dataHandlers/limitsDataHandler.dart';
+import '../services/database/dataHandlers/notificationDataHandler.dart';
+import '../services/database/dataHandlers/profileDataHandler.dart';
+import '../services/database/dataHandlers/transactionsDataHandler.dart';
 import '../services/database/firestoreBase.dart';
 import '../services/database/hiveDatabase.dart';
 import '../services/error/error.dart';
@@ -23,4 +28,9 @@ void setupLocator() {
   locator.registerLazySingleton(() => ErrorHandlingService());
   locator.registerLazySingleton(() => HiveDatabaseService());
   locator.registerLazySingleton(() => FirestoreService());
+  locator.registerLazySingleton(() => CommunityTreeDataHandler());
+  locator.registerLazySingleton(() => LimitsDataHandler());
+  locator.registerLazySingleton(() => NotificationDataHandler());
+  locator.registerLazySingleton(() => ProfileDataHandler());
+  locator.registerLazySingleton(() => TransactionsDataHandler());
 }

@@ -1,4 +1,9 @@
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
+import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
+import 'package:presto/services/database/dataHandlers/notificationDataHandler.dart';
+import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
+import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
@@ -32,6 +37,11 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: ErrorHandlingService),
     LazySingleton(classType: HiveDatabaseService),
     LazySingleton(classType: FirestoreService),
+    LazySingleton(classType: CommunityTreeDataHandler),
+    LazySingleton(classType: LimitsDataHandler),
+    LazySingleton(classType: NotificationDataHandler),
+    LazySingleton(classType: ProfileDataHandler),
+    LazySingleton(classType: TransactionsDataHandler),
   ],
   logger: StackedLogger(),
 )
