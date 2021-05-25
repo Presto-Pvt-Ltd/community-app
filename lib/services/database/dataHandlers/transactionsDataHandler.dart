@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/database/firestoreBase.dart';

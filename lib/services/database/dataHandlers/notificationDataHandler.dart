@@ -22,4 +22,10 @@ class NotificationDataHandler {
     log.v("Deleting notification document : $docId");
     _firestoreService.deleteData(document: collectionReference.doc(docId));
   }
+
+  Future<void> setNotificationDocument({required String docId, required Map<String, dynamic> data,})
+  async {
+    log.v('Storing notification in Firestore : $docId');
+    _firestoreService.setData(data: data,document: collectionReference.doc(docId));
+  }
 }

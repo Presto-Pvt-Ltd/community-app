@@ -5,18 +5,18 @@ part 'transaction_status_data_model.g.dart';
 class TransactionStatus {
   final bool approvedStatus;
   final bool lenderSentMoney;
-  final bool lenderRecievedMoney;
+  final bool lenderReceivedMoney;
   final bool borrowerSentMoney;
-  final bool borrowerRecievedMoney;
+  final bool borrowerReceivedMoney;
   final bool isBorrowerPenalised;
   final bool isLenderPenalised;
 
   TransactionStatus({
     required this.approvedStatus,
     required this.lenderSentMoney,
-    required this.lenderRecievedMoney,
+    required this.lenderReceivedMoney,
     required this.borrowerSentMoney,
-    required this.borrowerRecievedMoney,
+    required this.borrowerReceivedMoney,
     required this.isBorrowerPenalised,
     required this.isLenderPenalised,
   });
