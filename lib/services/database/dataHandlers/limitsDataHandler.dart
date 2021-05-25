@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/services/database/firestoreBase.dart';
+import 'package:presto/services/error/error.dart';
+
+import '../hiveDatabase.dart';
 
 enum LimitDocument {
   transactionLimits,
@@ -11,6 +15,8 @@ enum LimitDocument {
 
 class LimitsDataHandler {
   final FirestoreService _firestoreService = FirestoreService();
+  final HiveDatabaseService hiveDatabaseService = locator<HiveDatabaseService>();
+  final ErrorHandlingService _errorHandlingService = locator<ErrorHandlingService>();
   final log = getLogger("LimitsDataHandler");
 
   /// Get's appropriate collection reference for [typeOfLimit].
@@ -22,18 +28,18 @@ class LimitsDataHandler {
     return FirebaseFirestore.instance.collection(docId);
   }
 
-  Future<Map<String, dynamic>> getTransactionsData({
+  Future<Map<String, dynamic>> getLimitsData({
     required LimitDocument typeOfLimit,
     required bool fromLocalDatabase,
   }) async {
     if (fromLocalDatabase) {
-      // TODO: Implement Local Storage
-      return throw Exception("Not Implemented");
+      final String docId = _getDocId(typeOfLimit);
+      return hiveDatabaseService.getMapDataFromHive(key: docId);
     } else {
       final String docId = _getDocId(typeOfLimit);
       return await _firestoreService.getData(
           document:
-              _getLimitReference(typeOfLimit, docId).doc("transactionLimits"));
+              _getLimitReference(typeOfLimit, docId).doc(docId));
     }
   }
 
