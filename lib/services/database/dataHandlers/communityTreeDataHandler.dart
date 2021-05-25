@@ -30,8 +30,8 @@ class CommunityTreeDataHandler {
   }
 
   Future<void> createNewUser(
-      {required String UserReferralID,
-      required String ParentReferralID}) async {
+      {required String userReferralID,
+      required String parentReferralID}) async {
     String communityName = '';
     String level = '';
     List<String> list = [];
@@ -39,13 +39,13 @@ class CommunityTreeDataHandler {
       await _profileDataHandler
           .getProfileData(
               typeOfData: ProfileDocument.userPersonalData,
-              userId: ParentReferralID,
+              userId: parentReferralID,
               fromLocalDatabase: false)
           .then((value) => () async {
                 communityName = value['community'].toString();
                 await FirebaseFirestore.instance
                     .collection(communityName)
-                    .where('Members', arrayContains: ParentReferralID)
+                    .where('Members', arrayContains: parentReferralID)
                     .get()
                     .then((value) => () async {
                           level = value.docs.first.id;
@@ -53,7 +53,7 @@ class CommunityTreeDataHandler {
                               .data()['Members']
                               .map<String>((s) => s as String)
                               .toList();
-                          list.add(UserReferralID);
+                          list.add(userReferralID);
                           await FirebaseFirestore.instance
                               .collection(communityName)
                               .doc(level)
