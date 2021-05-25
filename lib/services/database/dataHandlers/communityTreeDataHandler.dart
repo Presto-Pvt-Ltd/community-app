@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/error/error.dart';
 
@@ -10,6 +11,8 @@ class CommunityTreeDataHandler {
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
   final ProfileDataHandler _profileDataHandler = locator<ProfileDataHandler>();
+  final LimitsDataHandler _limitsDataHandler = locator<LimitsDataHandler>();
+  List<String>? finalTokenListForLenders = [];
 
   Future<bool> createNewCommunity(
       {required String managerReferralID,
@@ -33,7 +36,7 @@ class CommunityTreeDataHandler {
       {required String userReferralID,
       required String parentReferralID}) async {
     String communityName = '';
-    String level = '';
+    int level = 0;
     List<String> list = [];
     try {
       await _profileDataHandler
@@ -48,17 +51,108 @@ class CommunityTreeDataHandler {
                     .where('Members', arrayContains: parentReferralID)
                     .get()
                     .then((value) => () async {
-                          level = value.docs.first.id;
-                          list = value.docs.first
-                              .data()['Members']
-                              .map<String>((s) => s as String)
-                              .toList();
-                          list.add(userReferralID);
+                          level = int.parse(value.docs.first.id);
+                          value.docs
+                              .getRange(level + 1, level + 1)
+                              .forEach((element) async {
+                            if (element.exists) {
+                              list = element
+                                  .data()['Members']
+                                  .map<String>((s) => s as String)
+                                  .toList();
+                              list.add(userReferralID);
+                              await FirebaseFirestore.instance
+                                  .collection(communityName)
+                                  .doc((level + 1).toString())
+                                  .set({"Members": list});
+                            }
+                          });
+                        });
+              });
+    } catch (e) {
+      _errorHandlingService.handleError(error: e);
+    }
+  }
+
+  /// [tokens] is the final result stored in [finalTokenListForLenders].
+  Future<void> getLenderNotificationTokens({required currentReferralId}) async {
+    String communityName = '';
+    int level = 0;
+    List<String>? list = [];
+    List<String>? tokens = [];
+    int levelCounter = 0;
+    try {
+      await _limitsDataHandler
+          .getLimitsData(
+              typeOfLimit: LimitDocument.transactionLimits,
+              fromLocalDatabase: false)
+          .then((value) => () async {
+                levelCounter = int.parse(value['levelCounter'].toString());
+                await _profileDataHandler
+                    .getProfileData(
+                        typeOfData: ProfileDocument.userPersonalData,
+                        userId: currentReferralId,
+                        fromLocalDatabase: false)
+                    .then((value) => () async {
+                          communityName = value['community'].toString();
                           await FirebaseFirestore.instance
                               .collection(communityName)
-                              .doc(level)
-                              .set({"Members": list});
+                              .where('Members',
+                                  arrayContains: currentReferralId)
+                              .get()
+                              .then((value) => () {
+                                    level = int.parse(value.docs.first.id);
+                                    value.docs
+                                        .getRange(level, level - levelCounter)
+                                        .forEach((element) {
+                                      if (element.exists) {
+                                        list = element
+                                            .data()['Members']
+                                            .map<String>((s) => s as String)
+                                            .toList();
+                                        list!.forEach((refId) {
+                                          _profileDataHandler
+                                              .getProfileData(
+                                                  typeOfData: ProfileDocument
+                                                      .userNotificationToken,
+                                                  userId: refId,
+                                                  fromLocalDatabase: false)
+                                              .then((tokenMap) => () {
+                                                    tokens.add(tokenMap[
+                                                        'notificationToken']);
+                                                  });
+                                        });
+                                      }
+                                    });
+                                    FirebaseFirestore.instance.collection(communityName)
+                                    .doc('Trusted')
+                                    .get()
+                                    .then((snapshot) => (){
+                                      if(snapshot.exists){
+                                        list = snapshot
+                                            .data()!['Members']
+                                            .map<String>((s) => s as String)
+                                            .toList();
+                                        list!.forEach((refId) {
+                                          _profileDataHandler
+                                              .getProfileData(
+                                              typeOfData: ProfileDocument
+                                                  .userNotificationToken,
+                                              userId: refId,
+                                              fromLocalDatabase: false)
+                                              .then((tokenMap) => () {
+                                            tokens.add(tokenMap[
+                                            'notificationToken']);
+                                          });
+                                        });
+                                      }
+                                    });
+                                  });
                         });
+              })
+          .whenComplete(() => () {
+                log.v('Notification token list created');
+                finalTokenListForLenders = tokens;
               });
     } catch (e) {
       _errorHandlingService.handleError(error: e);
