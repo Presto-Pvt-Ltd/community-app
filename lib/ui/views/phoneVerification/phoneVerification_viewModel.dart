@@ -3,6 +3,7 @@ import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/error/error.dart';
@@ -165,6 +166,16 @@ class PhoneVerificationViewModel extends BaseViewModel {
           userId: user.uid,
           toLocalDatabase: false,
         );
+
+        _userDataProvider.platformData!.isCommunityManager
+            ? locator<CommunityTreeDataHandler>().createNewCommunity(
+                managerReferralID: _userDataProvider.platformData!.referralCode,
+                communityName: _userDataProvider.personalData!.community,
+              )
+            : locator<CommunityTreeDataHandler>().createNewUser(
+                userReferralID: _userDataProvider.platformData!.referralCode,
+                parentReferralID: _userDataProvider.platformData!.referredBy,
+              );
         setBusy(false);
         _navigationService.clearStackAndShow(Routes.homeView);
       }
