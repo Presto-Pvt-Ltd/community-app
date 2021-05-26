@@ -1,15 +1,21 @@
 import 'dart:async';
 
 import 'package:presto/app/app.locator.dart';
+import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/user/notification_data_model.dart';
 import 'package:presto/models/user/personal_data_model.dart';
 import 'package:presto/models/user/platform_data_model.dart';
 import 'package:presto/models/user/platform_ratings_data.dart';
 import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
+import 'package:presto/services/error/error.dart';
 
 class UserDataProvider {
+  final log = getLogger("UserDataProvider");
+
   final ProfileDataHandler _profileDataHandler = locator<ProfileDataHandler>();
+  final ErrorHandlingService _errorHandlingService =
+      locator<ErrorHandlingService>();
 
   /// Profile data
   NotificationToken? _token;
@@ -31,12 +37,17 @@ class UserDataProvider {
       _transactionIdAsStream.stream;
   Stream<bool> get gotData => _gotData.stream;
 
+  void disposeStreams() {
+    _gotData.close();
+  }
+
   void loadData({
     required String uid,
     required ProfileDocument typeOfDocument,
   }) async {
     try {
       _gotData.add(false);
+      log.v("Trying to get data from local storage");
 
       /// Fetch data from local storage
       await _profileDataHandler
@@ -47,6 +58,8 @@ class UserDataProvider {
       )
           .then((dataMap) {
         if (dataMap == <String, dynamic>{}) {
+          log.v("Local Storage is empty");
+
           ///  if [dataMap] is empty i.e. local storage dont have data
           /// fetch from online storage
           _profileDataHandler
@@ -56,6 +69,8 @@ class UserDataProvider {
             fromLocalDatabase: false,
           )
               .then((onlineDataMap) {
+            log.v("Retrieved from online storage: $onlineDataMap");
+
             /// after fetching from online storage update local storage
             _profileDataHandler.updateProfileData(
               data: onlineDataMap,
@@ -90,6 +105,8 @@ class UserDataProvider {
           });
         } else {
           /// if [dataMap] is not empty fill the data
+          log.v("Local Storage is not empty : $dataMap");
+
           switch (typeOfDocument) {
             case ProfileDocument.userPersonalData:
               _personalData = PersonalData.fromJson(dataMap);
@@ -116,6 +133,7 @@ class UserDataProvider {
         }
       });
     } catch (e) {
+      _errorHandlingService.handleError(error: e);
       Future.delayed(
         Duration(seconds: 2),
         () {

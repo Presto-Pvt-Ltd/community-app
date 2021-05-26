@@ -27,6 +27,7 @@ class ProfileViewModel extends BaseViewModel {
         platformRatings = _userDataProvider.platformRatingsData;
         transactionData = _userDataProvider.transactionData;
         notifyListeners();
+        _userDataProvider.disposeStreams();
         setBusy(false);
       }
     });
