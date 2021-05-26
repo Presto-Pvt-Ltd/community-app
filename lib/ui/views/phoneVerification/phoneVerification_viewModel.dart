@@ -165,6 +165,7 @@ class PhoneVerificationViewModel extends BaseViewModel {
           userId: user.uid,
           toLocalDatabase: false,
         );
+        setBusy(false);
         _navigationService.clearStackAndShow(Routes.homeView);
       }
     });
