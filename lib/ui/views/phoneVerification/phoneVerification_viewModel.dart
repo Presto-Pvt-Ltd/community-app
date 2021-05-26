@@ -3,6 +3,8 @@ import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/error/error.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -22,8 +24,30 @@ class PhoneVerificationViewModel extends BaseViewModel {
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
   final NavigationService _navigationService = locator<NavigationService>();
+  final UserDataProvider _userDataProvider = locator<UserDataProvider>();
 
   void onModelReady(String phoneNumber) {
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userPersonalData,
+    );
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userNotificationToken,
+    );
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userPlatformData,
+    );
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userPlatformRatings,
+    );
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userTransactionsData,
+    );
+
     log.d("Setting Phone Number : $phoneNumber");
     this.phoneNumber = phoneNumber;
     Future.delayed(Duration(microseconds: 0), () {
@@ -93,8 +117,6 @@ class PhoneVerificationViewModel extends BaseViewModel {
         verificationId: verificationId,
         smsCode: otp!,
       );
-      // await _authenticationService.auth
-      //     .signInWithCredential(phoneAuthCredential);
       linkPhone();
     } catch (e) {
       setBusy(false);
@@ -112,8 +134,39 @@ class PhoneVerificationViewModel extends BaseViewModel {
       if (user == null) {
         setBusy(false);
         log.d("Invalid Otp was Entered");
-      } else
+      } else {
+        locator<ProfileDataHandler>().updateProfileData(
+          data: _userDataProvider.personalData!.toJson(),
+          typeOfDocument: ProfileDocument.userPersonalData,
+          userId: user.uid,
+          toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().updateProfileData(
+          data: _userDataProvider.platformData!.toJson(),
+          typeOfDocument: ProfileDocument.userPlatformData,
+          userId: user.uid,
+          toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().updateProfileData(
+          data: _userDataProvider.platformRatingsData!.toJson(),
+          typeOfDocument: ProfileDocument.userPlatformRatings,
+          userId: user.uid,
+          toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().updateProfileData(
+          data: _userDataProvider.transactionData!.toJson(),
+          typeOfDocument: ProfileDocument.userTransactionsData,
+          userId: user.uid,
+          toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().updateProfileData(
+          data: _userDataProvider.token!.toJson(),
+          typeOfDocument: ProfileDocument.userNotificationToken,
+          userId: user.uid,
+          toLocalDatabase: false,
+        );
         _navigationService.clearStackAndShow(Routes.homeView);
+      }
     });
   }
 

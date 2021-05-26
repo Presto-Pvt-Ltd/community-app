@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -61,5 +63,18 @@ class FirestoreService {
       _errorHandlingService.handleError(error: e);
       return false;
     }
+  }
+
+  Future<DocumentSnapshot> checkForUserDocumentExistence(
+      {required String docId}) async {
+    return await FirebaseFirestore.instance
+        .collection('users')
+        .doc(docId)
+        .get();
+  }
+
+  Future<QuerySnapshot> checkForCollectionExistence(
+      {required String community}) async {
+    return await FirebaseFirestore.instance.collection(community).get();
   }
 }

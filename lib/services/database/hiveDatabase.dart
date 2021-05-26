@@ -10,8 +10,8 @@ class HiveDatabaseService {
   late Box box;
   ErrorHandlingService _errorHandlingService = locator<ErrorHandlingService>();
 
-  void openBox({required String uid}) {
-    Hive.openBox(uid).then((value) {
+  Future<void> openBox({required String uid}) async {
+    await Hive.openBox(uid).then((value) {
       box = value;
       isBoxOpened = true;
     });

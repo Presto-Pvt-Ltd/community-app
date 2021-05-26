@@ -4,18 +4,18 @@ part 'transaction_data_model.g.dart';
 
 @JsonSerializable()
 class TransactionData {
-  final List<PaymentMethods> paymentMethodsUsed;
+  final Map<String, dynamic> paymentMethodsUsed;
   final List<String> transactionIds;
   final int totalBorrowed;
   final int totalLent;
-  final int hasActiveTransaction;
+  final List<String> activeTransactions;
 
   TransactionData({
     required this.paymentMethodsUsed,
     required this.transactionIds,
     required this.totalBorrowed,
     required this.totalLent,
-    required this.hasActiveTransaction,
+    required this.activeTransactions,
   });
   factory TransactionData.fromJson(Map<String, dynamic> json) =>
       _$TransactionDataFromJson(json);

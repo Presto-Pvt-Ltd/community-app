@@ -124,12 +124,16 @@ class UserDataProvider {
               _platformData = PlatformData.fromJson(dataMap);
               break;
             case ProfileDocument.userPlatformRatings:
-              {
-                _platformRatingsData = PlatformRatings.fromJson(dataMap);
-                _gotData.add(true);
-                break;
-              }
+              _platformRatingsData = PlatformRatings.fromJson(dataMap);
+              break;
           }
+        }
+        if (_personalData != null &&
+            _platformData != null &&
+            _token != null &&
+            _platformRatingsData != null &&
+            _transactionData != null) {
+          _gotData.add(true);
         }
       });
     } catch (e) {
