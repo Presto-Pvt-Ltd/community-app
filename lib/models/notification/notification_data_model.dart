@@ -20,6 +20,6 @@ class CustomNotification {
     required this.borrowerReferralCode,
   });
   factory CustomNotification.fromJson(Map<String, dynamic> json) =>
-      _$NotificationFromJson(json);
-  Map<String, dynamic> toJson() => _$NotificationToJson(this);
+      _$CustomNotificationFromJson(json);
+  Map<String, dynamic> toJson() => _$CustomNotificationToJson(this);
 }
