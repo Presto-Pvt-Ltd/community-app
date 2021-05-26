@@ -1,9 +1,4 @@
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/models/user/notification_data_model.dart';
-import 'package:presto/models/user/personal_data_model.dart';
-import 'package:presto/models/user/platform_data_model.dart';
-import 'package:presto/models/user/platform_ratings_data.dart';
-import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';

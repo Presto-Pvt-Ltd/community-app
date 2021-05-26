@@ -17,6 +17,7 @@ class TransactionsViewModel extends BaseViewModel {
     _transactionsDataProvider.gotData.listen((event) {
       if (event) {
         transactions = _transactionsDataProvider.userTransactions;
+        notifyListeners();
         setBusy(false);
       }
     });

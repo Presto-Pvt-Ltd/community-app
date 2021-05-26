@@ -37,6 +37,8 @@ class UserDataProvider {
   }) async {
     try {
       _gotData.add(false);
+
+      /// Fetch data from local storage
       await _profileDataHandler
           .getProfileData(
         typeOfData: typeOfDocument,
@@ -45,6 +47,8 @@ class UserDataProvider {
       )
           .then((dataMap) {
         if (dataMap == <String, dynamic>{}) {
+          ///  if [dataMap] is empty i.e. local storage dont have data
+          /// fetch from online storage
           _profileDataHandler
               .getProfileData(
             typeOfData: typeOfDocument,
@@ -52,6 +56,7 @@ class UserDataProvider {
             fromLocalDatabase: false,
           )
               .then((onlineDataMap) {
+            /// after fetching from online storage update local storage
             _profileDataHandler.updateProfileData(
               data: onlineDataMap,
               typeOfDocument: typeOfDocument,
@@ -83,6 +88,31 @@ class UserDataProvider {
                 }
             }
           });
+        } else {
+          /// if [dataMap] is not empty fill the data
+          switch (typeOfDocument) {
+            case ProfileDocument.userPersonalData:
+              _personalData = PersonalData.fromJson(dataMap);
+              break;
+            case ProfileDocument.userTransactionsData:
+              {
+                _transactionData = TransactionData.fromJson(dataMap);
+                _transactionIdAsStream.add(_transactionData!.transactionIds);
+                break;
+              }
+            case ProfileDocument.userNotificationToken:
+              _token = NotificationToken.fromJson(dataMap);
+              break;
+            case ProfileDocument.userPlatformData:
+              _platformData = PlatformData.fromJson(dataMap);
+              break;
+            case ProfileDocument.userPlatformRatings:
+              {
+                _platformRatingsData = PlatformRatings.fromJson(dataMap);
+                _gotData.add(true);
+                break;
+              }
+          }
         }
       });
     } catch (e) {

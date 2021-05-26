@@ -6,8 +6,8 @@ part of 'notification_data_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Notification _$NotificationFromJson(Map<String, dynamic> json) {
-  return Notification(
+CustomNotification _$NotificationFromJson(Map<String, dynamic> json) {
+  return CustomNotification(
     borrowerRating: (json['borrowerRating'] as num).toDouble(),
     lenderReferralCode: json['lenderReferralCode'] as String,
     amount: json['amount'] as int,
@@ -19,7 +19,7 @@ Notification _$NotificationFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$NotificationToJson(Notification instance) =>
+Map<String, dynamic> _$NotificationToJson(CustomNotification instance) =>
     <String, dynamic>{
       'borrowerReferralCode': instance.borrowerReferralCode,
       'lenderReferralCode': instance.lenderReferralCode,
