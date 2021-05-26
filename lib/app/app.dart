@@ -4,6 +4,8 @@ import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/notificationDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';
+import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
@@ -42,6 +44,8 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: NotificationDataHandler),
     LazySingleton(classType: ProfileDataHandler),
     LazySingleton(classType: TransactionsDataHandler),
+    LazySingleton(classType: UserDataProvider),
+    LazySingleton(classType: TransactionsDataProvider),
   ],
   logger: StackedLogger(),
 )
