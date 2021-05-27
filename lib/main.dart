@@ -7,10 +7,16 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:presto/app/app.router.dart';
+import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/app.locator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'models/limits/referral_limit_model.dart';
+import 'models/limits/reward_limit_model.dart';
+import 'models/limits/share_text.dart';
+import 'models/limits/transaction_limit_model.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -101,6 +107,7 @@ class MyApp extends StatelessWidget {
         ),
       );
     });
+
     return MaterialApp(
       title: 'Presto',
       debugShowCheckedModeBanner: false,

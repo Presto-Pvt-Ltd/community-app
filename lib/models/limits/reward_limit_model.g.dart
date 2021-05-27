@@ -8,9 +8,9 @@ part of 'reward_limit_model.dart';
 
 RewardsLimit _$RewardsLimitFromJson(Map<String, dynamic> json) {
   return RewardsLimit(
-    penaliseCreditScore: json['penaliseCreditScore'] as int,
-    rewardCreditScore: json['rewardCreditScore'] as int,
-    rewardPrestoCoins: json['rewardPrestoCoins'] as int,
+    penaliseCreditScore: (json['penaliseCreditScore'] as num).toDouble(),
+    rewardCreditScore: (json['rewardCreditScore'] as num).toDouble(),
+    rewardPrestoCoins: (json['rewardPrestoCoins'] as num).toDouble(),
   );
 }
 

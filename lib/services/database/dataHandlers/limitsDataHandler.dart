@@ -27,7 +27,10 @@ class LimitsDataHandler {
     String docId,
   ) {
     log.v("Getting appropriate collection reference");
-    return FirebaseFirestore.instance.collection(docId);
+    return FirebaseFirestore.instance
+        .collection("limits")
+        .doc("limits")
+        .collection(docId);
   }
 
   Future<Map<String, dynamic>> getLimitsData({

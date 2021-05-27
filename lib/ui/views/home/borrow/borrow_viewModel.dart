@@ -4,8 +4,6 @@ import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:stacked/stacked.dart';
-// ignore: import_of_legacy_library_into_null_safe
-// import 'package:upi_pay/upi_pay.dart';
 
 class BorrowViewModel extends BaseViewModel {
   final log = getLogger("BorrowViewModel");
