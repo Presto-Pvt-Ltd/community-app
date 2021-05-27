@@ -62,4 +62,21 @@ class FirestoreService {
       return false;
     }
   }
+
+  Future<DocumentSnapshot> checkForUserDocumentExistence(
+      {required String docId}) async {
+    return await FirebaseFirestore.instance
+        .collection('users')
+        .doc(docId)
+        .get();
+  }
+
+  Future<QuerySnapshot> checkForCollectionExistence(
+      {required String community}) async {
+    log.d(community);
+    final QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection(community).get();
+    log.d(querySnapshot.docs);
+    return querySnapshot;
+  }
 }

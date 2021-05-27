@@ -15,8 +15,10 @@ enum ProfileDocument {
 
 class ProfileDataHandler {
   final FirestoreService _firestoreService = locator<FirestoreService>();
-  final HiveDatabaseService hiveDatabaseService = locator<HiveDatabaseService>();
-  final ErrorHandlingService _errorHandlingService = locator<ErrorHandlingService>();
+  final HiveDatabaseService hiveDatabaseService =
+      locator<HiveDatabaseService>();
+  final ErrorHandlingService _errorHandlingService =
+      locator<ErrorHandlingService>();
   final log = getLogger("ProfileDataHandler");
 
   /// Fetches Profile data for [userId] and [typeOfData]
@@ -25,8 +27,7 @@ class ProfileDataHandler {
     required String userId,
     required bool fromLocalDatabase,
   }) async {
-    try
-    {
+    try {
       if (fromLocalDatabase) {
         log.v("Getting data from local database");
 
@@ -42,9 +43,9 @@ class ProfileDataHandler {
           document: collectionReference.doc(docId),
         );
       }
-    }catch(e){
+    } catch (e) {
       _errorHandlingService.handleError(error: e);
-      return <String,dynamic>{};
+      return <String, dynamic>{};
     }
   }
 
@@ -55,8 +56,7 @@ class ProfileDataHandler {
     required String userId,
     required bool toLocalDatabase,
   }) async {
-    try
-    {
+    try {
       if (toLocalDatabase) {
         log.v("Updating data in local database");
 
@@ -72,7 +72,36 @@ class ProfileDataHandler {
           document: collectionReference.doc(docId),
         );
       }
-    }catch(e){
+    } catch (e) {
+      _errorHandlingService.handleError(error: e);
+      return false;
+    }
+  }
+
+  /// Updates [data] for [userId]  and [typeOfDocument]
+  Future<bool> setProfileData({
+    required Map<String, dynamic> data,
+    required ProfileDocument typeOfDocument,
+    required String userId,
+    required bool toLocalDatabase,
+  }) async {
+    try {
+      if (toLocalDatabase) {
+        log.v("Updating data in local database");
+
+        final String docId = _getDocId(typeOfDocument);
+        return hiveDatabaseService.setDataInHive(data: data, key: docId);
+      } else {
+        log.v("Updating data in cloud database");
+        final String docId = _getDocId(typeOfDocument);
+        final CollectionReference collectionReference =
+            _getProfileReference(userId, docId);
+        return await _firestoreService.setData(
+          data: data,
+          document: collectionReference.doc(docId),
+        );
+      }
+    } catch (e) {
       _errorHandlingService.handleError(error: e);
       return false;
     }

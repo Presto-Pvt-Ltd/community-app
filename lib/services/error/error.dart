@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.logger.dart';
@@ -21,6 +23,8 @@ class ErrorHandlingService {
         message = "Code: " + error.code + " Message: " + "${error.message}";
     } else if (error is UnimplementedError) {
       message = "${error.message}";
+    } else if (error is Exception) {
+      message = e.toString();
     } else
       message = error;
     log.e(message);

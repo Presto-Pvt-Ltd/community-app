@@ -12,6 +12,7 @@ PlatformData _$PlatformDataFromJson(Map<String, dynamic> json) {
     referredBy: json['referredBy'] as String,
     referredTo:
         (json['referredTo'] as List<dynamic>).map((e) => e as String).toList(),
+    isCommunityManager: json['isCommunityManager'] as bool,
   );
 }
 
@@ -20,4 +21,5 @@ Map<String, dynamic> _$PlatformDataToJson(PlatformData instance) =>
       'referralCode': instance.referralCode,
       'referredBy': instance.referredBy,
       'referredTo': instance.referredTo,
+      'isCommunityManager': instance.isCommunityManager,
     };

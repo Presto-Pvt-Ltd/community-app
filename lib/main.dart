@@ -1,12 +1,22 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:presto/app/app.router.dart';
+import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/app.locator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'models/limits/referral_limit_model.dart';
+import 'models/limits/reward_limit_model.dart';
+import 'models/limits/share_text.dart';
+import 'models/limits/transaction_limit_model.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -33,6 +43,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   setupLocator();
+  _initHive();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   print("channel created");
   var initializationSettingsAndroid =
@@ -63,6 +74,11 @@ Future<void> main() async {
   /// default FCM channel to enable heads up notifications.
 }
 
+Future _initHive() async {
+  var dir = await getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -91,6 +107,7 @@ class MyApp extends StatelessWidget {
         ),
       );
     });
+
     return MaterialApp(
       title: 'Presto',
       debugShowCheckedModeBanner: false,

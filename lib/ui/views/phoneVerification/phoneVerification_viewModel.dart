@@ -2,7 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
+import 'package:presto/models/user/platform_data_model.dart';
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
+import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/error/error.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -22,8 +26,30 @@ class PhoneVerificationViewModel extends BaseViewModel {
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
   final NavigationService _navigationService = locator<NavigationService>();
+  final UserDataProvider _userDataProvider = locator<UserDataProvider>();
 
   void onModelReady(String phoneNumber) {
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userPersonalData,
+    );
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userNotificationToken,
+    );
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userPlatformData,
+    );
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userPlatformRatings,
+    );
+    _userDataProvider.loadData(
+      uid: _authenticationService.uid!,
+      typeOfDocument: ProfileDocument.userTransactionsData,
+    );
+
     log.d("Setting Phone Number : $phoneNumber");
     this.phoneNumber = phoneNumber;
     Future.delayed(Duration(microseconds: 0), () {
@@ -66,8 +92,14 @@ class PhoneVerificationViewModel extends BaseViewModel {
   }
 
   void verificationFailed(FirebaseAuthException exception) {
+    _authenticationService.auth.currentUser!.delete();
+    _navigationService.back();
     log.e("Verification failed !!");
     _errorHandlingService.handleError(error: exception.message);
+  }
+
+  void deleteUser() {
+    _authenticationService.auth.currentUser!.delete();
   }
 
   void codeSent(String code, int? forceResendToken) {
@@ -93,8 +125,6 @@ class PhoneVerificationViewModel extends BaseViewModel {
         verificationId: verificationId,
         smsCode: otp!,
       );
-      // await _authenticationService.auth
-      //     .signInWithCredential(phoneAuthCredential);
       linkPhone();
     } catch (e) {
       setBusy(false);
@@ -112,8 +142,67 @@ class PhoneVerificationViewModel extends BaseViewModel {
       if (user == null) {
         setBusy(false);
         log.d("Invalid Otp was Entered");
-      } else
+      } else {
+        locator<ProfileDataHandler>()
+            .getProfileData(
+          typeOfData: ProfileDocument.userPlatformData,
+          fromLocalDatabase: false,
+          userId: _userDataProvider.platformData!.referredBy,
+        )
+            .then((value) {
+          PlatformData parentData = PlatformData.fromJson(value);
+          parentData.referredTo
+              .add(_userDataProvider.platformData!.referralCode);
+          locator<ProfileDataHandler>().updateProfileData(
+            data: parentData.toJson(),
+            typeOfDocument: ProfileDocument.userPlatformData,
+            userId: _userDataProvider.platformData!.referredBy,
+            toLocalDatabase: false,
+          );
+        });
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.personalData!.toJson(),
+          typeOfDocument: ProfileDocument.userPersonalData,
+          userId: user.displayName!,
+          toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.platformData!.toJson(),
+          typeOfDocument: ProfileDocument.userPlatformData,
+          userId: user.displayName!,
+          toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.platformRatingsData!.toJson(),
+          typeOfDocument: ProfileDocument.userPlatformRatings,
+          userId: user.displayName!,
+          toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.transactionData!.toJson(),
+          typeOfDocument: ProfileDocument.userTransactionsData,
+          userId: user.displayName!,
+          toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.token!.toJson(),
+          typeOfDocument: ProfileDocument.userNotificationToken,
+          userId: user.displayName!,
+          toLocalDatabase: false,
+        );
+
+        _userDataProvider.platformData!.isCommunityManager
+            ? locator<CommunityTreeDataHandler>().createNewCommunity(
+                managerReferralID: _userDataProvider.platformData!.referralCode,
+                communityName: _userDataProvider.personalData!.community,
+              )
+            : locator<CommunityTreeDataHandler>().createNewUser(
+                userReferralID: _userDataProvider.platformData!.referralCode,
+                parentReferralID: _userDataProvider.platformData!.referredBy,
+              );
+        setBusy(false);
         _navigationService.clearStackAndShow(Routes.homeView);
+      }
     });
   }
 

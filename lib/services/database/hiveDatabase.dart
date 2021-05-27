@@ -1,30 +1,52 @@
 import 'package:hive/hive.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/error/error.dart';
 
 class HiveDatabaseService {
   final log = getLogger("HiveDatabaseService");
-
-  var box = Hive.box('Local_Database');
+  bool isBoxOpened = false;
+  late Box box;
   ErrorHandlingService _errorHandlingService = locator<ErrorHandlingService>();
 
+  Future<void> openBox({required String uid}) async {
+    await Hive.openBox(uid).then((value) {
+      box = value;
+      isBoxOpened = true;
+    });
+  }
+
   dynamic getDataFromHive({required String key}) {
-    return box.get(key);
+    if (isBoxOpened)
+      return box.get(key);
+    else
+      return throw Exception("Reading from your storage");
   }
 
-  List<Map<String, dynamic>> getListFromHive({required String key}){
-    return box.get(key);
+  List<CustomTransaction> getListFromHive({required String key}) {
+    if (isBoxOpened)
+      return box.get(key).cast<List<CustomTransaction>>();
+    else
+      return throw Exception("Reading from your storage");
   }
 
-  Map<String,dynamic> getMapDataFromHive({required String key}) {
-    return box.get(key, defaultValue: <String,dynamic>{});
+  Map<String, dynamic> getMapDataFromHive({required String key}) {
+    if (isBoxOpened)
+      return box.get(key, defaultValue: <String, dynamic>{});
+    else
+      return throw Exception("Reading from your storage");
   }
 
-  Future<bool> setDataInHive(
-      {required dynamic data, required String key}) async {
+  Future<bool> setDataInHive({
+    required dynamic data,
+    required String key,
+  }) async {
     try {
-      return await box.put(key, data).then((value) => true);
+      if (isBoxOpened)
+        return await box.put(key, data).then((value) => true);
+      else
+        return throw Exception("Reading from your storage");
     } catch (e) {
       _errorHandlingService.handleError(error: e);
       return false;

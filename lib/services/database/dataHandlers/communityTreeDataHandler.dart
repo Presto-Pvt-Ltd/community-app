@@ -14,12 +14,14 @@ class CommunityTreeDataHandler {
   final LimitsDataHandler _limitsDataHandler = locator<LimitsDataHandler>();
   List<String>? finalTokenListForLenders = [];
 
-  Future<bool> createNewCommunity(
-      {required String managerReferralID,
-      required String communityName}) async {
+  Future<bool> createNewCommunity({
+    required String managerReferralID,
+    required String communityName,
+  }) async {
     try {
+      log.v("Creating community");
       Map<String, List<String>> tempMap = {
-        "Members": [managerReferralID]
+        "Members": [managerReferralID].toList(),
       };
       return await FirebaseFirestore.instance
           .collection(communityName.trim())
@@ -32,13 +34,15 @@ class CommunityTreeDataHandler {
     }
   }
 
-  Future<void> createNewUser(
-      {required String userReferralID,
-      required String parentReferralID}) async {
+  Future<void> createNewUser({
+    required String userReferralID,
+    required String parentReferralID,
+  }) async {
     String communityName = '';
     int level = 0;
     List<String> list = [];
     try {
+      log.v("Updating community. Adding new User.");
       await _profileDataHandler
           .getProfileData(
               typeOfData: ProfileDocument.userPersonalData,
@@ -82,6 +86,7 @@ class CommunityTreeDataHandler {
     List<String>? tokens = [];
     int levelCounter = 0;
     try {
+      log.v("Getting Lender Notifications");
       await _limitsDataHandler
           .getLimitsData(
               typeOfLimit: LimitDocument.transactionLimits,
@@ -124,29 +129,33 @@ class CommunityTreeDataHandler {
                                         });
                                       }
                                     });
-                                    FirebaseFirestore.instance.collection(communityName)
-                                    .doc('Trusted')
-                                    .get()
-                                    .then((snapshot) => (){
-                                      if(snapshot.exists){
-                                        list = snapshot
-                                            .data()!['Members']
-                                            .map<String>((s) => s as String)
-                                            .toList();
-                                        list!.forEach((refId) {
-                                          _profileDataHandler
-                                              .getProfileData(
-                                              typeOfData: ProfileDocument
-                                                  .userNotificationToken,
-                                              userId: refId,
-                                              fromLocalDatabase: false)
-                                              .then((tokenMap) => () {
-                                            tokens.add(tokenMap[
-                                            'notificationToken']);
-                                          });
-                                        });
-                                      }
-                                    });
+                                    FirebaseFirestore.instance
+                                        .collection(communityName)
+                                        .doc('Trusted')
+                                        .get()
+                                        .then((snapshot) => () {
+                                              if (snapshot.exists) {
+                                                list = snapshot
+                                                    .data()!['Members']
+                                                    .map<String>(
+                                                        (s) => s as String)
+                                                    .toList();
+                                                list!.forEach((refId) {
+                                                  _profileDataHandler
+                                                      .getProfileData(
+                                                          typeOfData:
+                                                              ProfileDocument
+                                                                  .userNotificationToken,
+                                                          userId: refId,
+                                                          fromLocalDatabase:
+                                                              false)
+                                                      .then((tokenMap) => () {
+                                                            tokens.add(tokenMap[
+                                                                'notificationToken']);
+                                                          });
+                                                });
+                                              }
+                                            });
                                   });
                         });
               })

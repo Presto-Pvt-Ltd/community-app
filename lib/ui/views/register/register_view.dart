@@ -147,11 +147,11 @@ class RegisterView extends StatelessWidget {
                     Container(
                       width: width * 0.9,
                       child: InputField(
+                        controller: model.referralCodeController,
                         prefixWidget: Icon(
                           Icons.info,
                           color: primaryColor,
                         ),
-                        validator: model.referralCodeOrCommunityNameValidator,
                         fieldKey: model.referralCodeOrCommunityNameFieldKey,
                         hintText: model.isRegistrationAsCommunityManager
                             ? "New Community"
@@ -159,10 +159,6 @@ class RegisterView extends StatelessWidget {
                         helperText: model.isRegistrationAsCommunityManager
                             ? "Enter your community name"
                             : "Enter your Referral Code",
-                        validationSuccessCallBack: model
-                            .onReferralCodeOrCommunityNameValidationSuccess,
-                        validationFailureCallBack: model
-                            .onReferralCodeOrCommunityNameValidationFailure,
                       ),
                     ),
                     SizedBox(

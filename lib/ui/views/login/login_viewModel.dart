@@ -2,6 +2,7 @@ import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -95,6 +96,7 @@ class LoginViewModel extends FormViewModel {
           return;
         } else {
           log.v("Going for");
+          locator<HiveDatabaseService>().openBox(uid: user.uid);
           _navigationService.clearStackAndShow(
             Routes.homeView,
             arguments: HomeViewArguments(index: 2),
@@ -109,6 +111,10 @@ class LoginViewModel extends FormViewModel {
         error: "Please fill details appropriately.",
       );
     }
+  }
+
+  void onModelReady() {
+    log.v("Current Route: ${_navigationService.currentRoute}");
   }
 
   @override

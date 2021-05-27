@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/error/error.dart';
 
@@ -15,8 +16,10 @@ enum TransactionDocument {
 
 class TransactionsDataHandler {
   final FirestoreService _firestoreService = locator<FirestoreService>();
-  final HiveDatabaseService hiveDatabaseService = locator<HiveDatabaseService>();
-  final ErrorHandlingService _errorHandlingService = locator<ErrorHandlingService>();
+  final HiveDatabaseService hiveDatabaseService =
+      locator<HiveDatabaseService>();
+  final ErrorHandlingService _errorHandlingService =
+      locator<ErrorHandlingService>();
   final log = getLogger("TransactionsDataHandler");
 
   /// Fetches TransactionData for transaction with [transactionId] and [typeOfDocument]
@@ -25,8 +28,7 @@ class TransactionsDataHandler {
     required String transactionId,
     required bool fromLocalStorage,
   }) async {
-    try
-    {
+    try {
       if (fromLocalStorage) {
         log.v("Getting data from local database");
         return throw Exception("NOt Applicable");
@@ -39,9 +41,9 @@ class TransactionsDataHandler {
           document: collectionReference.doc(docId),
         );
       }
-    }catch(e){
+    } catch (e) {
       _errorHandlingService.handleError(error: e);
-      return <String,dynamic>{};
+      return <String, dynamic>{};
     }
   }
 
@@ -52,8 +54,7 @@ class TransactionsDataHandler {
     required String transactionId,
     required bool toLocalStorage,
   }) async {
-    try
-    {
+    try {
       if (toLocalStorage) {
         log.v("Updating data in local database");
         return throw Exception("NOt Applicable");
@@ -67,19 +68,21 @@ class TransactionsDataHandler {
           document: collectionReference.doc(docId),
         );
       }
-    }catch(e){
+    } catch (e) {
       _errorHandlingService.handleError(error: e);
       return false;
     }
   }
 
   Future<bool> updateTransactionListInHive({
-    required List<Map<String, dynamic>> list,
+    required List<CustomTransaction>? list,
   }) {
-    return hiveDatabaseService.setDataInHive(data: list, key: 'transactionList');
+    return hiveDatabaseService.setDataInHive(
+        data: list == null ? <CustomTransaction>[] : list,
+        key: 'transactionList');
   }
 
-  List<Map<String, dynamic>> getTransactionListFromHive(){
+  List<CustomTransaction> getTransactionListFromHive() {
     return hiveDatabaseService.getListFromHive(key: 'transactionList');
   }
 

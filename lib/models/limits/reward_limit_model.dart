@@ -3,9 +3,9 @@ part 'reward_limit_model.g.dart';
 
 @JsonSerializable()
 class RewardsLimit {
-  final int penaliseCreditScore;
-  final int rewardCreditScore;
-  final int rewardPrestoCoins;
+  final double penaliseCreditScore;
+  final double rewardCreditScore;
+  final double rewardPrestoCoins;
 
   RewardsLimit({
     required this.penaliseCreditScore,

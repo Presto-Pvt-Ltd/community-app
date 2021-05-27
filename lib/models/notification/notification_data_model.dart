@@ -3,7 +3,7 @@ import 'package:presto/models/enums.dart';
 part 'notification_data_model.g.dart';
 
 @JsonSerializable()
-class Notification {
+class CustomNotification {
   final String borrowerReferralCode;
   final String lenderReferralCode;
   final String transactionId;
@@ -11,7 +11,7 @@ class Notification {
   final double borrowerRating;
   final List<PaymentMethods> paymentMethods;
 
-  Notification({
+  CustomNotification({
     required this.borrowerRating,
     required this.lenderReferralCode,
     required this.amount,
@@ -19,7 +19,7 @@ class Notification {
     required this.paymentMethods,
     required this.borrowerReferralCode,
   });
-  factory Notification.fromJson(Map<String, dynamic> json) =>
-      _$NotificationFromJson(json);
-  Map<String, dynamic> toJson() => _$NotificationToJson(this);
+  factory CustomNotification.fromJson(Map<String, dynamic> json) =>
+      _$CustomNotificationFromJson(json);
+  Map<String, dynamic> toJson() => _$CustomNotificationToJson(this);
 }

@@ -15,6 +15,8 @@ import '../services/database/dataHandlers/limitsDataHandler.dart';
 import '../services/database/dataHandlers/notificationDataHandler.dart';
 import '../services/database/dataHandlers/profileDataHandler.dart';
 import '../services/database/dataHandlers/transactionsDataHandler.dart';
+import '../services/database/dataProviders/transactions_data_provider.dart';
+import '../services/database/dataProviders/user_data_provider.dart';
 import '../services/database/firestoreBase.dart';
 import '../services/database/hiveDatabase.dart';
 import '../services/error/error.dart';
@@ -33,4 +35,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => NotificationDataHandler());
   locator.registerLazySingleton(() => ProfileDataHandler());
   locator.registerLazySingleton(() => TransactionsDataHandler());
+  locator.registerLazySingleton(() => UserDataProvider());
+  locator.registerLazySingleton(() => TransactionsDataProvider());
 }

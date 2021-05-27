@@ -15,8 +15,10 @@ enum LimitDocument {
 
 class LimitsDataHandler {
   final FirestoreService _firestoreService = FirestoreService();
-  final HiveDatabaseService hiveDatabaseService = locator<HiveDatabaseService>();
-  final ErrorHandlingService _errorHandlingService = locator<ErrorHandlingService>();
+  final HiveDatabaseService hiveDatabaseService =
+      locator<HiveDatabaseService>();
+  final ErrorHandlingService _errorHandlingService =
+      locator<ErrorHandlingService>();
   final log = getLogger("LimitsDataHandler");
 
   /// Get's appropriate collection reference for [typeOfLimit].
@@ -25,7 +27,10 @@ class LimitsDataHandler {
     String docId,
   ) {
     log.v("Getting appropriate collection reference");
-    return FirebaseFirestore.instance.collection(docId);
+    return FirebaseFirestore.instance
+        .collection("limits")
+        .doc("limits")
+        .collection(docId);
   }
 
   Future<Map<String, dynamic>> getLimitsData({
@@ -38,8 +43,7 @@ class LimitsDataHandler {
     } else {
       final String docId = _getDocId(typeOfLimit);
       return await _firestoreService.getData(
-          document:
-              _getLimitReference(typeOfLimit, docId).doc(docId));
+          document: _getLimitReference(typeOfLimit, docId).doc(docId));
     }
   }
 

@@ -35,51 +35,25 @@ class BorrowView extends StatelessWidget {
             },
             child: Scaffold(
               body: SingleChildScrollView(
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: height / 8,
-                      ),
-                      Container(
-                        width: width / 1.5,
-                        child: InputField(
-                          controller: model.upi_id,
-                          hintText: 'Enter UPI ID',
-                          keyboardType: TextInputType.text,
+                child: model.isBusy
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              model.transactionLimits!.borrowLowerLimit
+                                  .toString(),
+                            ),
+                            Text(
+                              model.transactionLimits!.borrowUpperLimit
+                                  .toString(),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        height: height / 10,
-                      ),
-                      Container(
-                        width: width / 1.5,
-                        child: InputField(
-                          controller: model.amount,
-                          hintText: 'Enter Amount',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      SizedBox(
-                        height: height / 10,
-                      ),
-                      BusyButton(
-                        height: width / 5.5,
-                        width: width / 5.5,
-                        title: 'PAY',
-                        color: Colors.white,
-                        decoration: BoxDecoration(
-                          color: primarySwatch[800],
-                          shape: BoxShape.circle,
-                        ),
-                        onPressed: () {
-                          model.initiatePayment();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
           ),
