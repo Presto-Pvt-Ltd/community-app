@@ -22,7 +22,7 @@ class TransactionsDataProvider {
 
   /// Getters for profile data
   List<CustomTransaction>? get userTransactions => _userTransactions;
-  StreamController<bool> _gotData = StreamController<bool>();
+  StreamController<bool> _gotData = StreamController<bool>.broadcast();
   Stream<bool> get gotData => _gotData.stream;
 
   void disposeStreams() {

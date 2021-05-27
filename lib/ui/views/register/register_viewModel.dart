@@ -1,8 +1,6 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/services.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
@@ -151,54 +149,63 @@ class RegisterViewModel extends FormViewModel {
   /// Password text field arguments
   String? referralCodeOrCommunityName;
   String? parentCommunity;
+  final TextEditingController referralCodeController = TextEditingController();
   final Key referralCodeOrCommunityNameFieldKey =
       Key("referralCodeOrCommunityName");
   bool referralCodeOrCommunityNameValidated = false;
   Future<String?> referralCodeOrCommunityNameValidator(
       String? referralCodeOrCommunityName) async {
-    this.referralCodeOrCommunityName = referralCodeOrCommunityName;
+    try {
+      this.referralCodeOrCommunityName = referralCodeOrCommunityName;
 
-    /// check database here for existing referral codes
-    if (referralCodeOrCommunityName == null ||
-        referralCodeOrCommunityName.trim().length < 6) {
-      if (isRegistrationAsCommunityManager) {
-        final QuerySnapshot querySnapshot = await locator<FirestoreService>()
-            .checkForCollectionExistence(
-                community: referralCodeOrCommunityName!.trim());
-        if (querySnapshot.docs.isEmpty) {
-          return null;
-        } else {
-          return "Entered Community Name is either taken or not valid";
-        }
-      } else {
-        final DocumentSnapshot documentSnapshot =
-            await locator<FirestoreService>().checkForUserDocumentExistence(
-                docId: referralCodeOrCommunityName!.trim());
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> parent =
-              await locator<ProfileDataHandler>().getProfileData(
-            typeOfData: ProfileDocument.userPersonalData,
-            userId: referralCodeOrCommunityName.trim(),
-            fromLocalDatabase: false,
+      /// check database here for existing referral codes
+      if (referralCodeOrCommunityName != null ||
+          referralCodeOrCommunityName!.trim().length < 6) {
+        if (isRegistrationAsCommunityManager) {
+          log.d("Going for validation");
+
+          final QuerySnapshot querySnapshot =
+              await locator<FirestoreService>().checkForCollectionExistence(
+            community: referralCodeOrCommunityName.trim(),
           );
-          parentCommunity = PersonalData.fromJson(parent).community;
-        } else
-          return "Please enter valid Referral Code";
+          if (querySnapshot.docs.isEmpty) {
+            return null;
+          } else {
+            return "Entered Community Name is either taken or not valid";
+          }
+        } else {
+          final DocumentSnapshot documentSnapshot =
+              await locator<FirestoreService>().checkForUserDocumentExistence(
+                  docId: referralCodeOrCommunityName.trim());
+          if (documentSnapshot.exists) {
+            Map<String, dynamic> parent =
+                await locator<ProfileDataHandler>().getProfileData(
+              typeOfData: ProfileDocument.userPersonalData,
+              userId: referralCodeOrCommunityName.trim(),
+              fromLocalDatabase: false,
+            );
+            parentCommunity = PersonalData.fromJson(parent).community;
+          } else
+            return "Please enter valid Referral Code";
+        }
       }
+    } catch (e) {
+      setBusy(false);
+      _errorHandlingService.handleError(error: e);
     }
   }
 
-  void onReferralCodeOrCommunityNameValidationSuccess() {
-    this.referralCodeOrCommunityNameValidated = true;
-    log.v("Ready to go with referralCodeOrCommunityName");
-    notifyListeners();
-  }
-
-  void onReferralCodeOrCommunityNameValidationFailure() {
-    this.referralCodeOrCommunityNameValidated = false;
-    log.v("Not ready to go with referralCodeOrCommunityName");
-    notifyListeners();
-  }
+  // void onReferralCodeOrCommunityNameValidationSuccess() {
+  //   this.referralCodeOrCommunityNameValidated = true;
+  //   log.v("Ready to go with referralCodeOrCommunityName");
+  //   notifyListeners();
+  // }
+  //
+  // void onReferralCodeOrCommunityNameValidationFailure() {
+  //   this.referralCodeOrCommunityNameValidated = false;
+  //   log.v("Not ready to go with referralCodeOrCommunityName");
+  //   notifyListeners();
+  // }
 
   String? deviceId;
   bool gotDeviceId = false;
@@ -208,7 +215,6 @@ class RegisterViewModel extends FormViewModel {
       print("Getting Device Id");
       deviceId = await PlatformDeviceId.getDeviceId;
       gotDeviceId = true;
-      //var notificationToken = await _fcm.getToken();
       print("Got Device Id");
     } catch (e) {
       _errorHandlingService.handleError(error: e);
@@ -216,128 +222,286 @@ class RegisterViewModel extends FormViewModel {
   }
 
   Future<void> proceedRegistration() async {
-    setBusy(true);
-    if (nameValidated &&
-        emailValidated &&
-        contactValidated &&
-        passwordValidated &&
-        referralCodeOrCommunityNameValidated &&
-        userAcceptedTermsAndConditions &&
-        gotDeviceId) {
-      log.v("Proceeding for registration");
-      log.v("Attempting Registration for :");
-      log.v(name);
-      log.v(email);
-      log.v(contact);
-      log.v(password);
-      log.v(referralCodeOrCommunityName);
-      log.v(deviceId);
-      await _authenticationService
-          .registerNewUser(
-        email!.trim(),
-        password!.trim(),
-      )
-          .then((user) {
-        log.v("Registration attempted");
-        if (user == null) {
-          log.e("Error in registration");
-          return;
-        } else {
-          log.v("Going for");
-          locator<HiveDatabaseService>().openBox(uid: user.uid).then((value) {
-            /// Add the dummy data here in local storage here
-            /// depending on new user sign up register as community manager
-            /// Or regular user
-            PersonalData personalData = PersonalData(
-              name: name!,
-              email: email!,
-              contact: contact!,
-              password: password!,
-              deviceId: deviceId!,
-              referralId: referralCodeOrCommunityName!,
-              community: isRegistrationAsCommunityManager
-                  ? referralCodeOrCommunityName!
-                  : parentCommunity!,
-            );
-            locator<ProfileDataHandler>().updateProfileData(
-              data: personalData.toJson(),
-              typeOfDocument: ProfileDocument.userPersonalData,
-              userId: user.uid,
-              toLocalDatabase: true,
-            );
-            PlatformData platformData = PlatformData(
-              referralCode:
-                  name!.substring(0, 3) + Random().nextInt(999999).toString(),
-              referredBy: isRegistrationAsCommunityManager
-                  ? "CM"
-                  : referralCodeOrCommunityName!,
-              referredTo: <String>[],
-              isCommunityManager: isRegistrationAsCommunityManager,
-            );
-            locator<ProfileDataHandler>().updateProfileData(
-              data: platformData.toJson(),
-              typeOfDocument: ProfileDocument.userPlatformData,
-              userId: user.uid,
-              toLocalDatabase: true,
-            );
-            PlatformRatings platformRatings = PlatformRatings(
-              communityScore: 0.0,
-              personalScore: 5,
-              prestoCoins: 0,
-            );
-            locator<ProfileDataHandler>().updateProfileData(
-              data: platformRatings.toJson(),
-              typeOfDocument: ProfileDocument.userPlatformRatings,
-              userId: user.uid,
-              toLocalDatabase: true,
-            );
-            TransactionData transactionData = TransactionData(
-              paymentMethodsUsed: <String, dynamic>{
-                paymentMethodsToString(PaymentMethods.creditCard): 0,
-                paymentMethodsToString(PaymentMethods.debitCard): 0,
-                paymentMethodsToString(PaymentMethods.googlePay): 0,
-                paymentMethodsToString(PaymentMethods.payTm): 0,
-                paymentMethodsToString(PaymentMethods.upi): 0,
-              },
-              transactionIds: <String>[],
-              totalBorrowed: 0,
-              totalLent: 0,
-              activeTransactions: <String>[],
-            );
-            locator<ProfileDataHandler>().updateProfileData(
-              data: transactionData.toJson(),
-              typeOfDocument: ProfileDocument.userTransactionsData,
-              userId: user.uid,
-              toLocalDatabase: true,
-            );
-            FirebaseMessaging.instance.getToken().then((newToken) {
-              NotificationToken token =
-                  NotificationToken(notificationToken: newToken!);
-              setBusy(false);
-              locator<ProfileDataHandler>().updateProfileData(
-                data: token.toJson(),
-                typeOfDocument: ProfileDocument.userNotificationToken,
-                userId: user.uid,
-                toLocalDatabase: true,
-              );
-              _navigationService.navigateTo(
-                Routes.phoneVerificationView,
-                arguments: PhoneVerificationViewArguments(
-                  phoneNumber: '+91' + contact!.trim(),
-                ),
-              );
+    try {
+      setBusy(true);
+      referralCodeOrCommunityName = referralCodeController.text.trim();
+      log.wtf(referralCodeController.text);
+      if (referralCodeOrCommunityName == null) {
+        setBusy(false);
+        _errorHandlingService.handleError(
+            error: "Please Enter valid values in input fields");
+        return;
+      }
+      referralCodeOrCommunityNameValidator(referralCodeOrCommunityName)
+          .then((value) async {
+        if (value == null) {
+          if (nameValidated &&
+              emailValidated &&
+              contactValidated &&
+              passwordValidated &&
+              userAcceptedTermsAndConditions &&
+              gotDeviceId) {
+            log.v("Proceeding for registration");
+            log.v("Attempting Registration for :");
+            log.v(name);
+            log.v(email);
+            log.v(contact);
+            log.v(password);
+            log.v(referralCodeOrCommunityName);
+            log.v(deviceId);
+            await _authenticationService
+                .registerNewUser(
+              email!.trim(),
+              password!.trim(),
+            )
+                .then((user) {
+              log.v("Registration attempted");
+              if (user == null) {
+                setBusy(false);
+                log.e("Error in registration");
+                throw Exception("Error");
+              } else {
+                log.v("Going for");
+                assert(isRegistrationAsCommunityManager
+                    ? (referralCodeOrCommunityName != null)
+                    : (parentCommunity != null));
+                String referralCode =
+                    name!.substring(0, 3) + Random().nextInt(999999).toString();
+                user.updateProfile(displayName: referralCode);
+                locator<HiveDatabaseService>()
+                    .openBox(uid: user.uid)
+                    .then((value) {
+                  /// Add the dummy data here in local storage here
+                  /// depending on new user sign up register as community manager
+                  /// Or regular user
+                  PersonalData personalData = PersonalData(
+                    name: name!,
+                    email: email!,
+                    contact: contact!,
+                    password: password!,
+                    deviceId: deviceId!,
+                    referralId: referralCodeOrCommunityName!,
+                    community: isRegistrationAsCommunityManager
+                        ? referralCodeOrCommunityName!
+                        : parentCommunity!,
+                  );
+                  locator<ProfileDataHandler>().updateProfileData(
+                    data: personalData.toJson(),
+                    typeOfDocument: ProfileDocument.userPersonalData,
+                    userId: user.uid,
+                    toLocalDatabase: true,
+                  );
+                  PlatformData platformData = PlatformData(
+                    referralCode: referralCode,
+                    referredBy: isRegistrationAsCommunityManager
+                        ? "CM"
+                        : referralCodeOrCommunityName!,
+                    referredTo: <String>[],
+                    isCommunityManager: isRegistrationAsCommunityManager,
+                  );
+                  locator<ProfileDataHandler>().updateProfileData(
+                    data: platformData.toJson(),
+                    typeOfDocument: ProfileDocument.userPlatformData,
+                    userId: user.uid,
+                    toLocalDatabase: true,
+                  );
+                  PlatformRatings platformRatings = PlatformRatings(
+                    communityScore: 0.0,
+                    personalScore: 5,
+                    prestoCoins: 0,
+                  );
+                  locator<ProfileDataHandler>().updateProfileData(
+                    data: platformRatings.toJson(),
+                    typeOfDocument: ProfileDocument.userPlatformRatings,
+                    userId: user.uid,
+                    toLocalDatabase: true,
+                  );
+                  TransactionData transactionData = TransactionData(
+                    paymentMethodsUsed: <String, dynamic>{
+                      paymentMethodsToString(PaymentMethods.creditCard): 0,
+                      paymentMethodsToString(PaymentMethods.debitCard): 0,
+                      paymentMethodsToString(PaymentMethods.googlePay): 0,
+                      paymentMethodsToString(PaymentMethods.payTm): 0,
+                      paymentMethodsToString(PaymentMethods.upi): 0,
+                    },
+                    transactionIds: <String>[],
+                    totalBorrowed: 0,
+                    totalLent: 0,
+                    activeTransactions: <String>[],
+                  );
+                  locator<ProfileDataHandler>().updateProfileData(
+                    data: transactionData.toJson(),
+                    typeOfDocument: ProfileDocument.userTransactionsData,
+                    userId: user.uid,
+                    toLocalDatabase: true,
+                  );
+                  FirebaseMessaging.instance.getToken().then((newToken) {
+                    NotificationToken token =
+                        NotificationToken(notificationToken: newToken!);
+                    setBusy(false);
+                    locator<ProfileDataHandler>().updateProfileData(
+                      data: token.toJson(),
+                      typeOfDocument: ProfileDocument.userNotificationToken,
+                      userId: user.uid,
+                      toLocalDatabase: true,
+                    );
+                    _navigationService.navigateTo(
+                      Routes.phoneVerificationView,
+                      arguments: PhoneVerificationViewArguments(
+                        phoneNumber: '+91' + contact!.trim(),
+                      ),
+                    );
+                  });
+                });
+              }
             });
-          });
+          } else {
+            setBusy(false);
+            print(
+              "$nameValidated $emailValidated $contactValidated $passwordValidated $referralCodeOrCommunityNameValidated $userAcceptedTermsAndConditions",
+            );
+            _errorHandlingService.handleError(
+              error: "Please fill details appropriately.",
+            );
+          }
         }
+        setBusy(false);
+        _errorHandlingService.handleError(
+          error: isRegistrationAsCommunityManager
+              ? "Entered Community Name is either taken or invalid"
+              : "Please enter valid Referral Code",
+        );
       });
-    } else {
+    } catch (e) {
       setBusy(false);
-      print(
-        "$nameValidated $emailValidated $contactValidated $passwordValidated $referralCodeOrCommunityNameValidated $userAcceptedTermsAndConditions",
-      );
-      _errorHandlingService.handleError(
-        error: "Please fill details appropriately.",
-      );
+      _errorHandlingService.handleError(error: e);
     }
+    // if (nameValidated &&
+    //     emailValidated &&
+    //     contactValidated &&
+    //     passwordValidated &&
+    //     userAcceptedTermsAndConditions &&
+    //     gotDeviceId) {
+    //   log.v("Proceeding for registration");
+    //   log.v("Attempting Registration for :");
+    //   log.v(name);
+    //   log.v(email);
+    //   log.v(contact);
+    //   log.v(password);
+    //   log.v(referralCodeOrCommunityName);
+    //   log.v(deviceId);
+    //   await _authenticationService
+    //       .registerNewUser(
+    //     email!.trim(),
+    //     password!.trim(),
+    //   )
+    //       .then((user) {
+    //     log.v("Registration attempted");
+    //     if (user == null) {
+    //       setBusy(false);
+    //       log.e("Error in registration");
+    //       throw Exception("Error");
+    //     } else {
+    //       log.v("Going for");
+    //       assert(isRegistrationAsCommunityManager
+    //           ? (referralCodeOrCommunityName != null)
+    //           : (parentCommunity != null));
+    //       String referralCode =
+    //           name!.substring(0, 3) + Random().nextInt(999999).toString();
+    //       user.updateProfile(displayName: referralCode);
+    //       locator<HiveDatabaseService>().openBox(uid: user.uid).then((value) {
+    //         /// Add the dummy data here in local storage here
+    //         /// depending on new user sign up register as community manager
+    //         /// Or regular user
+    //         PersonalData personalData = PersonalData(
+    //           name: name!,
+    //           email: email!,
+    //           contact: contact!,
+    //           password: password!,
+    //           deviceId: deviceId!,
+    //           referralId: referralCodeOrCommunityName!,
+    //           community: isRegistrationAsCommunityManager
+    //               ? referralCodeOrCommunityName!
+    //               : parentCommunity!,
+    //         );
+    //         locator<ProfileDataHandler>().updateProfileData(
+    //           data: personalData.toJson(),
+    //           typeOfDocument: ProfileDocument.userPersonalData,
+    //           userId: user.uid,
+    //           toLocalDatabase: true,
+    //         );
+    //         PlatformData platformData = PlatformData(
+    //           referralCode: referralCode,
+    //           referredBy: isRegistrationAsCommunityManager
+    //               ? "CM"
+    //               : referralCodeOrCommunityName!,
+    //           referredTo: <String>[],
+    //           isCommunityManager: isRegistrationAsCommunityManager,
+    //         );
+    //         locator<ProfileDataHandler>().updateProfileData(
+    //           data: platformData.toJson(),
+    //           typeOfDocument: ProfileDocument.userPlatformData,
+    //           userId: user.uid,
+    //           toLocalDatabase: true,
+    //         );
+    //         PlatformRatings platformRatings = PlatformRatings(
+    //           communityScore: 0.0,
+    //           personalScore: 5,
+    //           prestoCoins: 0,
+    //         );
+    //         locator<ProfileDataHandler>().updateProfileData(
+    //           data: platformRatings.toJson(),
+    //           typeOfDocument: ProfileDocument.userPlatformRatings,
+    //           userId: user.uid,
+    //           toLocalDatabase: true,
+    //         );
+    //         TransactionData transactionData = TransactionData(
+    //           paymentMethodsUsed: <String, dynamic>{
+    //             paymentMethodsToString(PaymentMethods.creditCard): 0,
+    //             paymentMethodsToString(PaymentMethods.debitCard): 0,
+    //             paymentMethodsToString(PaymentMethods.googlePay): 0,
+    //             paymentMethodsToString(PaymentMethods.payTm): 0,
+    //             paymentMethodsToString(PaymentMethods.upi): 0,
+    //           },
+    //           transactionIds: <String>[],
+    //           totalBorrowed: 0,
+    //           totalLent: 0,
+    //           activeTransactions: <String>[],
+    //         );
+    //         locator<ProfileDataHandler>().updateProfileData(
+    //           data: transactionData.toJson(),
+    //           typeOfDocument: ProfileDocument.userTransactionsData,
+    //           userId: user.uid,
+    //           toLocalDatabase: true,
+    //         );
+    //         FirebaseMessaging.instance.getToken().then((newToken) {
+    //           NotificationToken token =
+    //               NotificationToken(notificationToken: newToken!);
+    //           setBusy(false);
+    //           locator<ProfileDataHandler>().updateProfileData(
+    //             data: token.toJson(),
+    //             typeOfDocument: ProfileDocument.userNotificationToken,
+    //             userId: user.uid,
+    //             toLocalDatabase: true,
+    //           );
+    //           _navigationService.navigateTo(
+    //             Routes.phoneVerificationView,
+    //             arguments: PhoneVerificationViewArguments(
+    //               phoneNumber: '+91' + contact!.trim(),
+    //             ),
+    //           );
+    //         });
+    //       });
+    //     }
+    //   });
+    // } else {
+    //   setBusy(false);
+    //   print(
+    //     "$nameValidated $emailValidated $contactValidated $passwordValidated $referralCodeOrCommunityNameValidated $userAcceptedTermsAndConditions",
+    //   );
+    //   _errorHandlingService.handleError(
+    //     error: "Please fill details appropriately.",
+    //   );
+    // }
   }
 }

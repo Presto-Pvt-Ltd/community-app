@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -33,6 +37,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   setupLocator();
+  _initHive();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   print("channel created");
   var initializationSettingsAndroid =
@@ -61,6 +66,11 @@ Future<void> main() async {
   ///
   /// We use this channel in the `AndroidManifest.xml` file to override the
   /// default FCM channel to enable heads up notifications.
+}
+
+Future _initHive() async {
+  var dir = await getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
 }
 
 class MyApp extends StatelessWidget {

@@ -8,12 +8,13 @@ part of 'transaction_limit_model.dart';
 
 TransactionLimits _$TransactionLimitsFromJson(Map<String, dynamic> json) {
   return TransactionLimits(
-    levelCounter: json['levelCounter'] as int,
-    borrowLowerLimit: json['borrowLowerLimit'] as int,
-    borrowUpperLimit: json['borrowUpperLimit'] as int,
-    transactionDefaultsAfterDays: json['transactionDefaultsAfterDays'] as int,
+    levelCounter: json['levelCounter'] ?? 0 as int,
+    borrowLowerLimit: json['borrowLowerLimit'] ?? 0 as int,
+    borrowUpperLimit: json['borrowUpperLimit'] ?? 2000 as int,
+    transactionDefaultsAfterDays:
+        json['transactionDefaultsAfterDays'] ?? 30 as int,
     keepTransactionActiveTillHours:
-        json['keepTransactionActiveTillHours'] as int,
+        json['keepTransactionActiveTillHours'] ?? 6 as int,
   );
 }
 

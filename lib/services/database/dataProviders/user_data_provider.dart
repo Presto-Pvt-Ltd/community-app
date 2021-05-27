@@ -25,7 +25,7 @@ class UserDataProvider {
   PlatformRatings? _platformRatingsData;
   StreamController<List<String>> _transactionIdAsStream =
       StreamController<List<String>>();
-  StreamController<bool> _gotData = StreamController<bool>();
+  StreamController<bool> _gotData = StreamController<bool>.broadcast();
 
   /// Getters for profile data
   NotificationToken? get token => _token;

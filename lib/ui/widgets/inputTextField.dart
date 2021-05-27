@@ -36,6 +36,9 @@ class InputField extends StatefulWidget {
   /// This will itself show a toggle icon for visibility of the obscured text
   final bool shouldObscure;
 
+  /// Validate only on onSubmitted?
+  final bool validateOnlyOnSubmit;
+
   /// If user wishes to control the focus of text field explicitly,
   /// provide [focusNode] to gain more control over the field.
   final FocusNode? focusNode;
@@ -66,6 +69,7 @@ class InputField extends StatefulWidget {
     this.focusNode,
     this.suffixWidget,
     this.prefixWidget,
+    this.validateOnlyOnSubmit = false,
     this.success = Colors.green,
     this.failure = Colors.red,
   }) : super(key: key);
@@ -119,7 +123,9 @@ class _InputFieldState extends State<InputField> {
 
   @override
   Widget build(BuildContext context) {
+    String? finalText;
     return TextFormField(
+      controller: widget.controller,
       key: widget.fieldKey,
       obscureText: obscureText,
       focusNode: widget.focusNode,
@@ -169,32 +175,66 @@ class _InputFieldState extends State<InputField> {
           ),
         ),
       ),
-      onChanged: (text) async {
-        try {
-          setState(() {
-            inProcess = true;
-          });
-          String? result = await widget.validator!(text);
-          if (result == null) {
-            /// Validation Success
+      onFieldSubmitted: (text) async {
+        if (widget.validateOnlyOnSubmit) {
+          try {
             setState(() {
-              inProcess = false;
-              validated = true;
-              error = null;
+              inProcess = true;
             });
-            widget.validationSuccessCallBack!();
-          } else {
-            /// Failed validation
-            setState(() {
-              inProcess = false;
-              validated = false;
-              error = result;
-            });
-            widget.validationFailureCallBack!();
+            String? result = await widget.validator!(finalText!);
+            if (result == null) {
+              /// Validation Success
+              setState(() {
+                inProcess = false;
+                validated = true;
+                error = null;
+              });
+              widget.validationSuccessCallBack!();
+            } else {
+              /// Failed validation
+              setState(() {
+                inProcess = false;
+                validated = false;
+                error = result;
+              });
+              widget.validationFailureCallBack!();
+            }
+          } catch (e) {
+            if (e is TypeError) {
+              print(e.toString());
+            }
           }
-        } catch (e) {
-          if (e is TypeError) {
-            print("No validator was supplied");
+        }
+      },
+      onChanged: (text) async {
+        finalText = text;
+        if (!widget.validateOnlyOnSubmit) {
+          try {
+            setState(() {
+              inProcess = true;
+            });
+            String? result = await widget.validator!(text);
+            if (result == null) {
+              /// Validation Success
+              setState(() {
+                inProcess = false;
+                validated = true;
+                error = null;
+              });
+              widget.validationSuccessCallBack!();
+            } else {
+              /// Failed validation
+              setState(() {
+                inProcess = false;
+                validated = false;
+                error = result;
+              });
+              widget.validationFailureCallBack!();
+            }
+          } catch (e) {
+            if (e is TypeError) {
+              print("No validator was supplied");
+            }
           }
         }
       },

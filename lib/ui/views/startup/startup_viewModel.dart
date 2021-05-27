@@ -19,28 +19,9 @@ class StartUpViewModel extends BaseViewModel {
     try {
       log.d("Checking for active user");
       Future.delayed(Duration(seconds: 0), () {
-        _connectivity.onConnectivityChanged.listen((event) {
-          switch (event) {
-            case ConnectivityResult.wifi:
-              if (_navigationService.currentRoute == Routes.startUpView)
-                _authenticationService.uid == null
-                    ? _navigationService.replaceWith(Routes.loginView)
-                    : _navigationService.replaceWith(Routes.homeView);
-              break;
-            case ConnectivityResult.mobile:
-              if (_navigationService.currentRoute == Routes.startUpView)
-                _authenticationService.uid == null
-                    ? _navigationService.replaceWith(Routes.loginView)
-                    : _navigationService.replaceWith(Routes.homeView);
-              break;
-            case ConnectivityResult.none:
-              if (_navigationService.currentRoute == Routes.startUpView)
-                _navigationService.replaceWith(Routes.noInternetView);
-              else
-                _navigationService.clearStackAndShow(Routes.noInternetView);
-              break;
-          }
-        });
+        _authenticationService.uid == null
+            ? _navigationService.replaceWith(Routes.loginView)
+            : _navigationService.replaceWith(Routes.homeView);
       });
     } catch (error) {
       log.e("Some error while checking active user");

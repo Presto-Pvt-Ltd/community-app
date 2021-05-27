@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -75,6 +73,10 @@ class FirestoreService {
 
   Future<QuerySnapshot> checkForCollectionExistence(
       {required String community}) async {
-    return await FirebaseFirestore.instance.collection(community).get();
+    log.d(community);
+    final QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection(community).get();
+    log.d(querySnapshot.docs);
+    return querySnapshot;
   }
 }

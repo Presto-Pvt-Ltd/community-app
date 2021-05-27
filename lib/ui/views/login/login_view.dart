@@ -14,6 +14,7 @@ class LoginView extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     return ViewModelBuilder<LoginViewModel>.reactive(
       viewModelBuilder: () => LoginViewModel(),
+      onModelReady: (model) => model.onModelReady(),
       builder: (context, model, child) {
         return Scaffold(
           body: KeyboardDismisser(

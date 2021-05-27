@@ -91,6 +91,8 @@ class PhoneVerificationViewModel extends BaseViewModel {
   }
 
   void verificationFailed(FirebaseAuthException exception) {
+    _authenticationService.auth.currentUser!.delete();
+    _navigationService.back();
     log.e("Verification failed !!");
     _errorHandlingService.handleError(error: exception.message);
   }
@@ -136,34 +138,34 @@ class PhoneVerificationViewModel extends BaseViewModel {
         setBusy(false);
         log.d("Invalid Otp was Entered");
       } else {
-        locator<ProfileDataHandler>().updateProfileData(
+        locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.personalData!.toJson(),
           typeOfDocument: ProfileDocument.userPersonalData,
-          userId: user.uid,
+          userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().updateProfileData(
+        locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.platformData!.toJson(),
           typeOfDocument: ProfileDocument.userPlatformData,
-          userId: user.uid,
+          userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().updateProfileData(
+        locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.platformRatingsData!.toJson(),
           typeOfDocument: ProfileDocument.userPlatformRatings,
-          userId: user.uid,
+          userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().updateProfileData(
+        locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.transactionData!.toJson(),
           typeOfDocument: ProfileDocument.userTransactionsData,
-          userId: user.uid,
+          userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().updateProfileData(
+        locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.token!.toJson(),
           typeOfDocument: ProfileDocument.userNotificationToken,
-          userId: user.uid,
+          userId: user.displayName!,
           toLocalDatabase: false,
         );
 

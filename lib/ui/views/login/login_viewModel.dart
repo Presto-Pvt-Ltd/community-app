@@ -113,6 +113,10 @@ class LoginViewModel extends FormViewModel {
     }
   }
 
+  void onModelReady() {
+    log.v("Current Route: ${_navigationService.currentRoute}");
+  }
+
   @override
   void setFormStatus() {}
 }
