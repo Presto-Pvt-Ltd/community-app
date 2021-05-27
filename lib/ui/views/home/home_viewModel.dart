@@ -33,23 +33,57 @@ class HomeViewModel extends IndexTrackingViewModel {
 
   Future<void> onModelReady(int index) async {
     /// Getting initial data:
-    try {
-      uid = _authenticationService.uid!;
-      _transactionIdListAsStream = _userDataProvider.transactionIdAsStream;
-      _transactionIdListAsStream.listen((gotIds) {
-        if (gotIds.length != 0) {
-          _transactionsDataProvider.loadData(transactionIds: gotIds);
-        }
-      });
-      ProfileDocument.values.forEach((typeOfDocument) {
-        _userDataProvider.loadData(uid: uid, typeOfDocument: typeOfDocument);
-      });
-    } catch (e) {
-      _errorHandlingService.handleError(error: e);
-    }
 
     Future.delayed(Duration(microseconds: 0), () {
       setIndex(index);
+      try {
+        uid = _authenticationService.uid!;
+        _userDataProvider
+            .loadData(
+                uid: uid, typeOfDocument: ProfileDocument.userPersonalData)
+            .then((value) {
+          if (value) {
+            _userDataProvider
+                .loadData(
+                    uid: uid,
+                    typeOfDocument: ProfileDocument.userNotificationToken)
+                .then((value) {
+              if (value) {
+                _userDataProvider
+                    .loadData(
+                        uid: uid,
+                        typeOfDocument: ProfileDocument.userTransactionsData)
+                    .then((value) {
+                  if (value) {
+                    _userDataProvider
+                        .loadData(
+                            uid: uid,
+                            typeOfDocument: ProfileDocument.userPlatformData)
+                        .then((value) {
+                      if (value) {
+                        _userDataProvider.loadData(
+                            uid: uid,
+                            typeOfDocument:
+                                ProfileDocument.userPlatformRatings);
+                        _transactionIdListAsStream =
+                            _userDataProvider.transactionIdAsStream;
+                        _transactionIdListAsStream.listen((gotIds) {
+                          if (gotIds.length != 0) {
+                            _transactionsDataProvider.loadData(
+                                transactionIds: gotIds);
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      } catch (e) {
+        _errorHandlingService.handleError(error: e);
+      }
     });
   }
 

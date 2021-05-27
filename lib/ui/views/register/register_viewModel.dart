@@ -13,6 +13,7 @@ import 'package:presto/models/user/platform_ratings_data.dart';
 import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/authentication.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
@@ -107,7 +108,7 @@ class RegisterViewModel extends FormViewModel {
   bool nameValidated = false;
   Future<String?> nameValidator(String? name) async {
     this.name = name;
-    if (name == null || name == "" || name.trim() == "")
+    if (name == null || name == "" || name.trim() == "" || name.length < 3)
       return "Please enter valid name";
     return null;
   }
@@ -283,12 +284,7 @@ class RegisterViewModel extends FormViewModel {
                         ? referralCodeOrCommunityName!
                         : parentCommunity!,
                   );
-                  locator<ProfileDataHandler>().updateProfileData(
-                    data: personalData.toJson(),
-                    typeOfDocument: ProfileDocument.userPersonalData,
-                    userId: user.uid,
-                    toLocalDatabase: true,
-                  );
+                  locator<UserDataProvider>().personalData = personalData;
                   PlatformData platformData = PlatformData(
                     referralCode: referralCode,
                     referredBy: isRegistrationAsCommunityManager
@@ -297,23 +293,13 @@ class RegisterViewModel extends FormViewModel {
                     referredTo: <String>[],
                     isCommunityManager: isRegistrationAsCommunityManager,
                   );
-                  locator<ProfileDataHandler>().updateProfileData(
-                    data: platformData.toJson(),
-                    typeOfDocument: ProfileDocument.userPlatformData,
-                    userId: user.uid,
-                    toLocalDatabase: true,
-                  );
+                  locator<UserDataProvider>().platformData = platformData;
                   PlatformRatings platformRatings = PlatformRatings(
                     communityScore: 0.0,
                     personalScore: 5,
                     prestoCoins: 0,
                   );
-                  locator<ProfileDataHandler>().updateProfileData(
-                    data: platformRatings.toJson(),
-                    typeOfDocument: ProfileDocument.userPlatformRatings,
-                    userId: user.uid,
-                    toLocalDatabase: true,
-                  );
+                  locator<UserDataProvider>().platformRatings = platformRatings;
                   TransactionData transactionData = TransactionData(
                     paymentMethodsUsed: <String, dynamic>{
                       paymentMethodsToString(PaymentMethods.creditCard): 0,
@@ -327,22 +313,13 @@ class RegisterViewModel extends FormViewModel {
                     totalLent: 0,
                     activeTransactions: <String>[],
                   );
-                  locator<ProfileDataHandler>().updateProfileData(
-                    data: transactionData.toJson(),
-                    typeOfDocument: ProfileDocument.userTransactionsData,
-                    userId: user.uid,
-                    toLocalDatabase: true,
-                  );
+                  locator<UserDataProvider>().transactionData = transactionData;
                   FirebaseMessaging.instance.getToken().then((newToken) {
                     NotificationToken token =
                         NotificationToken(notificationToken: newToken!);
+                    locator<UserDataProvider>().token = token;
                     setBusy(false);
-                    locator<ProfileDataHandler>().updateProfileData(
-                      data: token.toJson(),
-                      typeOfDocument: ProfileDocument.userNotificationToken,
-                      userId: user.uid,
-                      toLocalDatabase: true,
-                    );
+
                     _navigationService.navigateTo(
                       Routes.phoneVerificationView,
                       arguments: PhoneVerificationViewArguments(

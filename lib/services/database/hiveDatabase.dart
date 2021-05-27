@@ -17,6 +17,17 @@ class HiveDatabaseService {
     });
   }
 
+  Future<bool> deleteBox({required String uid}) async {
+    return Hive.openBox(uid).then((box) {
+      try {
+        return box.deleteFromDisk().then((value) => true);
+      } catch (e) {
+        _errorHandlingService.handleError(error: e);
+        return false;
+      }
+    });
+  }
+
   dynamic getDataFromHive({required String key}) {
     if (isBoxOpened)
       return box.get(key);
@@ -26,7 +37,8 @@ class HiveDatabaseService {
 
   List<CustomTransaction> getListFromHive({required String key}) {
     if (isBoxOpened)
-      return box.get(key).cast<List<CustomTransaction>>();
+      return box.get(key,
+          defaultValue: <CustomTransaction>[]).cast<List<CustomTransaction>>();
     else
       return throw Exception("Reading from your storage");
   }

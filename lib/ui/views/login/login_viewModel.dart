@@ -78,38 +78,44 @@ class LoginViewModel extends FormViewModel {
   }
 
   Future<void> proceedLogin() async {
-    setBusy(true);
-    if (emailValidated && passwordValidated) {
-      log.v("Proceeding for registration");
-      log.v("Attempting Registration for :");
-      log.v('Email-' + finalEmail);
-      log.v('pass-' + finalPassword);
-      await _authenticationService
-          .signInViaEmailAndPassword(
-        finalEmail,
-        finalPassword,
-      )
-          .then((user) {
-        log.v("Sign-in attempted");
-        if (user == null) {
-          log.e("Error in Sign-in");
-          return;
-        } else {
-          log.v("Going for");
-          locator<HiveDatabaseService>().openBox(uid: user.uid);
-          _navigationService.clearStackAndShow(
-            Routes.homeView,
-            arguments: HomeViewArguments(index: 2),
-          );
-        }
+    try {
+      setBusy(true);
+      if (emailValidated && passwordValidated) {
+        log.v("Proceeding for registration");
+        log.v("Attempting Registration for :");
+        log.v('Email-' + finalEmail);
+        log.v('pass-' + finalPassword);
+        await _authenticationService
+            .signInViaEmailAndPassword(
+          finalEmail,
+          finalPassword,
+        )
+            .then((user) {
+          log.v("Sign-in attempted");
+          if (user == null) {
+            log.e("Error in Sign-in");
+            setBusy(false);
+            return;
+          } else {
+            log.v("Going for");
+            locator<HiveDatabaseService>().openBox(uid: user.uid);
+            _navigationService.clearStackAndShow(
+              Routes.homeView,
+              arguments: HomeViewArguments(index: 2),
+            );
+          }
+          setBusy(false);
+        });
+      } else {
         setBusy(false);
-      });
-    } else {
+        print("$emailValidated  $passwordValidated");
+        _errorHandlingService.handleError(
+          error: "Please fill details appropriately.",
+        );
+      }
+    } catch (e) {
       setBusy(false);
-      print("$emailValidated  $passwordValidated");
-      _errorHandlingService.handleError(
-        error: "Please fill details appropriately.",
-      );
+      _errorHandlingService.handleError(error: e);
     }
   }
 

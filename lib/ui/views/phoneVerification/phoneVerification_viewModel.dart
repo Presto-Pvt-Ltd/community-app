@@ -29,26 +29,26 @@ class PhoneVerificationViewModel extends BaseViewModel {
   final UserDataProvider _userDataProvider = locator<UserDataProvider>();
 
   void onModelReady(String phoneNumber) {
-    _userDataProvider.loadData(
-      uid: _authenticationService.uid!,
-      typeOfDocument: ProfileDocument.userPersonalData,
-    );
-    _userDataProvider.loadData(
-      uid: _authenticationService.uid!,
-      typeOfDocument: ProfileDocument.userNotificationToken,
-    );
-    _userDataProvider.loadData(
-      uid: _authenticationService.uid!,
-      typeOfDocument: ProfileDocument.userPlatformData,
-    );
-    _userDataProvider.loadData(
-      uid: _authenticationService.uid!,
-      typeOfDocument: ProfileDocument.userPlatformRatings,
-    );
-    _userDataProvider.loadData(
-      uid: _authenticationService.uid!,
-      typeOfDocument: ProfileDocument.userTransactionsData,
-    );
+    // _userDataProvider.loadData(
+    //   uid: _authenticationService.uid!,
+    //   typeOfDocument: ProfileDocument.userPersonalData,
+    // );
+    // _userDataProvider.loadData(
+    //   uid: _authenticationService.uid!,
+    //   typeOfDocument: ProfileDocument.userNotificationToken,
+    // );
+    // _userDataProvider.loadData(
+    //   uid: _authenticationService.uid!,
+    //   typeOfDocument: ProfileDocument.userPlatformData,
+    // );
+    // _userDataProvider.loadData(
+    //   uid: _authenticationService.uid!,
+    //   typeOfDocument: ProfileDocument.userPlatformRatings,
+    // );
+    // _userDataProvider.loadData(
+    //   uid: _authenticationService.uid!,
+    //   typeOfDocument: ProfileDocument.userTransactionsData,
+    // );
 
     log.d("Setting Phone Number : $phoneNumber");
     this.phoneNumber = phoneNumber;
@@ -189,6 +189,36 @@ class PhoneVerificationViewModel extends BaseViewModel {
           typeOfDocument: ProfileDocument.userNotificationToken,
           userId: user.displayName!,
           toLocalDatabase: false,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.personalData!.toJson(),
+          typeOfDocument: ProfileDocument.userPersonalData,
+          userId: user.displayName!,
+          toLocalDatabase: true,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.platformData!.toJson(),
+          typeOfDocument: ProfileDocument.userPlatformData,
+          userId: user.displayName!,
+          toLocalDatabase: true,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.platformRatingsData!.toJson(),
+          typeOfDocument: ProfileDocument.userPlatformRatings,
+          userId: user.displayName!,
+          toLocalDatabase: true,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.transactionData!.toJson(),
+          typeOfDocument: ProfileDocument.userTransactionsData,
+          userId: user.displayName!,
+          toLocalDatabase: true,
+        );
+        locator<ProfileDataHandler>().setProfileData(
+          data: _userDataProvider.token!.toJson(),
+          typeOfDocument: ProfileDocument.userNotificationToken,
+          userId: user.displayName!,
+          toLocalDatabase: true,
         );
 
         _userDataProvider.platformData!.isCommunityManager

@@ -26,7 +26,7 @@ class ErrorHandlingService {
     } else if (error is Exception) {
       message = e.toString();
     } else
-      message = error;
+      message = error.toString();
     log.e(message);
     BuildContext context = StackedService.navigatorKey!.currentContext!;
     ScaffoldMessenger.of(context).showSnackBar(

@@ -14,7 +14,7 @@ class AuthenticationService {
   FirebaseAuth get auth => _auth;
   String? get referralCode => _auth.currentUser?.displayName;
 
-  Future<void> setDisplayName(String referralCode) async{
+  Future<void> setDisplayName(String referralCode) async {
     await _auth.currentUser?.updateProfile(displayName: referralCode);
   }
 
@@ -65,21 +65,13 @@ class AuthenticationService {
     }
   }
 
-  // Future<User?> linkWithPhoneDirect(String phone) async {
-  //   try {
-  //     log.d("Attempting to link phone with email");
-  //     log.wtf(_auth.currentUser!.email);
-  //     ConfirmationResult result = await _auth.currentUser!.linkWithPhoneNumber(
-  //       phone,
-  //     );
-  //     log.d("Linking success");
-  //     String? verId = result.verificationId;
-  //     return result.confirm(verId).then((user) {
-  //       return user.user;
-  //     });
-  //   } catch (e) {
-  //     log.e("Linking process failed");
-  //     _errorHandlingService.handleError(error: e);
-  //   }
-  // }
+  Future<bool> deleteUser() async {
+    return await _auth.currentUser!.delete().then((value) {
+      _auth.signOut();
+      return true;
+    }).onError((error, stackTrace) {
+      _errorHandlingService.handleError(error: error);
+      return false;
+    });
+  }
 }
