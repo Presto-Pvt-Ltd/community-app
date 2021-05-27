@@ -21,7 +21,7 @@ class CommunityTreeDataHandler {
     try {
       log.v("Creating community");
       Map<String, List<String>> tempMap = {
-        "Members": [managerReferralID]
+        "Members": [managerReferralID].toList(),
       };
       return await FirebaseFirestore.instance
           .collection(communityName.trim())

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
+import 'package:presto/models/user/platform_data_model.dart';
 import 'package:presto/services/authentication.dart';
 import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
@@ -142,6 +143,23 @@ class PhoneVerificationViewModel extends BaseViewModel {
         setBusy(false);
         log.d("Invalid Otp was Entered");
       } else {
+        locator<ProfileDataHandler>()
+            .getProfileData(
+          typeOfData: ProfileDocument.userPlatformData,
+          fromLocalDatabase: false,
+          userId: _userDataProvider.platformData!.referredBy,
+        )
+            .then((value) {
+          PlatformData parentData = PlatformData.fromJson(value);
+          parentData.referredTo
+              .add(_userDataProvider.platformData!.referralCode);
+          locator<ProfileDataHandler>().updateProfileData(
+            data: parentData.toJson(),
+            typeOfDocument: ProfileDocument.userPlatformData,
+            userId: _userDataProvider.platformData!.referredBy,
+            toLocalDatabase: false,
+          );
+        });
         locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.personalData!.toJson(),
           typeOfDocument: ProfileDocument.userPersonalData,

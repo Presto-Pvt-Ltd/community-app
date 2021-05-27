@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
@@ -174,17 +175,14 @@ class RegisterViewModel extends FormViewModel {
             return "Entered Community Name is either taken or not valid";
           }
         } else {
-          final DocumentSnapshot documentSnapshot =
-              await locator<FirestoreService>().checkForUserDocumentExistence(
-                  docId: referralCodeOrCommunityName.trim());
-          if (documentSnapshot.exists) {
-            Map<String, dynamic> parent =
-                await locator<ProfileDataHandler>().getProfileData(
-              typeOfData: ProfileDocument.userPersonalData,
-              userId: referralCodeOrCommunityName.trim(),
-              fromLocalDatabase: false,
-            );
-            parentCommunity = PersonalData.fromJson(parent).community;
+          final Map<String, dynamic> personalData =
+              await locator<ProfileDataHandler>().getProfileData(
+            userId: referralCodeOrCommunityName.trim(),
+            typeOfData: ProfileDocument.userPersonalData,
+            fromLocalDatabase: false,
+          );
+          if (personalData != <String, dynamic>{}) {
+            parentCommunity = PersonalData.fromJson(personalData).community;
           } else
             return "Please enter valid Referral Code";
         }
