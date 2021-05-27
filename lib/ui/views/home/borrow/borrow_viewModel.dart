@@ -20,6 +20,7 @@ class BorrowViewModel extends BaseViewModel {
   late void Function(bool) callback;
 
   void onModelReady(void Function(bool) callback) {
+    log.v("Borrow View Model initiated");
     this.callback = callback;
     setBusy(true);
     _limitsDataHandler
@@ -34,32 +35,5 @@ class BorrowViewModel extends BaseViewModel {
     });
   }
 
-  void initiatePayment() {
-    // UpiPay.getInstalledUpiApplications().then((value) {
-    //   apps = value;
-    //   value.map((e) {
-    //     print(e.upiApplication.getAppName());
-    //   });
-    // }).catchError((e) {
-    //   log.d('error fetching apps ', e.toString());
-    //   apps = [];
-    // });
-    // log.d('UPI app list-' + apps.toString());
-    // UpiPay.initiateTransaction(
-    //   app: UpiApplication.googlePay,
-    //   transactionRef: "&hjkfwa9(*^UhjkGIufgliwoa7ieu",
-    //   amount: "1.00",
-    //   transactionNote: "Hello testing",
-    //   receiverUpiAddress: "9695428701@paytm",
-    //   receiverName: 'Shikkhar Uttam',
-    // ).then((value) {
-    //   print("Success");
-    //   print(value.status);
-    //   print(value.responseCode);
-    //   print(value.approvalRefNo);
-    //   print(value.txnRef);
-    // }, onError: (error) {
-    //   print(error.toString());
-    // });
-  }
+  void initiatePayment() {}
 }
