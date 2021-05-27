@@ -97,6 +97,10 @@ class PhoneVerificationViewModel extends BaseViewModel {
     _errorHandlingService.handleError(error: exception.message);
   }
 
+  void deleteUser() {
+    _authenticationService.auth.currentUser!.delete();
+  }
+
   void codeSent(String code, int? forceResendToken) {
     setBusy(false);
     resendToken = forceResendToken;
