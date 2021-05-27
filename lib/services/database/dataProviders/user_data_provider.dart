@@ -37,6 +37,27 @@ class UserDataProvider {
       _transactionIdAsStream.stream;
   Stream<bool> get gotData => _gotData.stream;
 
+  /// Setters for profile Data
+  set token(NotificationToken? token) {
+    this._token = token!;
+  }
+
+  set personalData(PersonalData? personalData) {
+    this._personalData = personalData!;
+  }
+
+  set platformData(PlatformData? platformData) {
+    this._platformData = platformData!;
+  }
+
+  set transactionData(TransactionData? transactionData) {
+    this._transactionData = transactionData!;
+  }
+
+  set platformRatings(PlatformRatings platformRatings) {
+    this._platformRatingsData = platformRatings;
+  }
+
   void disposeStreams() {
     _gotData.close();
   }

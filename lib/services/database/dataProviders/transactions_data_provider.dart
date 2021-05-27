@@ -20,10 +20,15 @@ class TransactionsDataProvider {
   /// Transactions Data
   List<CustomTransaction>? _userTransactions;
 
-  /// Getters for profile data
+  /// Getters for transaction data
   List<CustomTransaction>? get userTransactions => _userTransactions;
   StreamController<bool> _gotData = StreamController<bool>.broadcast();
   Stream<bool> get gotData => _gotData.stream;
+
+  /// Setter for transaction list
+  set userTransactions(List<CustomTransaction>? transactionList) {
+    userTransactions = transactionList;
+  }
 
   void disposeStreams() {
     _gotData.close();
