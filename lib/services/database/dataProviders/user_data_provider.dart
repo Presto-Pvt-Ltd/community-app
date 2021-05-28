@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:logger/logger.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
+import 'package:presto/main.dart';
 import 'package:presto/models/user/notification_data_model.dart';
 import 'package:presto/models/user/personal_data_model.dart';
 import 'package:presto/models/user/platform_data_model.dart';
@@ -30,7 +32,6 @@ class UserDataProvider {
   PlatformRatings? _platformRatingsData;
   StreamController<List<String>> _transactionIdAsStream =
       StreamController<List<String>>();
-  StreamController<bool> _gotData = StreamController<bool>.broadcast();
 
   /// Getters for profile data
   NotificationToken? get token => _token;
@@ -40,9 +41,6 @@ class UserDataProvider {
   PlatformRatings? get platformRatingsData => _platformRatingsData;
   Stream<List<String>> get transactionIdAsStream =>
       _transactionIdAsStream.stream;
-  Stream<bool> get gotData => _gotData.stream;
-
-  bool userDeleted = false;
 
   /// Setters for profile Data
   set token(NotificationToken? token) {
@@ -65,95 +63,87 @@ class UserDataProvider {
     this._platformRatingsData = platformRatings;
   }
 
-  void disposeStreams() {
-    _gotData.close();
-  }
-
   Future<bool> loadData({
-    required String uid,
+    required String referralCode,
     required ProfileDocument typeOfDocument,
   }) async {
     try {
-      _gotData.add(false);
+      gotUserDataStreamController.add(false);
       log.v("Trying to get data from local storage");
 
       /// Fetch data from local storage
       return await _profileDataHandler
           .getProfileData(
         typeOfData: typeOfDocument,
-        userId: uid,
+        userId: referralCode,
         fromLocalDatabase: true,
       )
           .then((dataMap) {
         if (dataMap == {} || dataMap.isEmpty) {
-          if (!userDeleted) {
-            log.v("Local Storage is empty");
+          log.v("Local Storage is empty");
 
-            ///  if [dataMap] is empty i.e. local storage dont have data
-            /// fetch from online storage
-            return _profileDataHandler
-                .getProfileData(
-              typeOfData: typeOfDocument,
-              userId: uid,
-              fromLocalDatabase: false,
-            )
-                .then((onlineDataMap) {
-              if (onlineDataMap == {} ||
-                  onlineDataMap.isEmpty ||
-                  onlineDataMap == <String, dynamic>{}) {
-                return locator<HiveDatabaseService>()
-                    .deleteBox(uid: locator<AuthenticationService>().uid!)
+          ///  if [dataMap] is empty i.e. local storage dont have data
+          /// fetch from online storage
+          return _profileDataHandler
+              .getProfileData(
+            typeOfData: typeOfDocument,
+            userId: referralCode,
+            fromLocalDatabase: false,
+          )
+              .then((onlineDataMap) {
+            if (onlineDataMap == {} ||
+                onlineDataMap.isEmpty ||
+                onlineDataMap == <String, dynamic>{}) {
+              return locator<HiveDatabaseService>()
+                  .deleteBox(uid: locator<AuthenticationService>().uid!)
+                  .then((value) {
+                return locator<AuthenticationService>()
+                    .deleteUser()
                     .then((value) {
-                  return locator<AuthenticationService>()
-                      .deleteUser()
-                      .then((value) {
-                    userDeleted = true;
-                    locator<NavigationService>()
-                        .clearStackAndShow(Routes.startUpView);
-                    return false;
-                  });
+                  locator<NavigationService>()
+                      .clearStackAndShow(Routes.startUpView);
+                  return false;
                 });
-              } else {
-                log.v("Retrieved from online storage: $onlineDataMap");
+              });
+            } else {
+              log.v("Retrieved from online storage: $onlineDataMap");
 
-                /// after fetching from online storage update local storage
-                _profileDataHandler.updateProfileData(
-                  data: onlineDataMap,
-                  typeOfDocument: typeOfDocument,
-                  userId: uid,
-                  toLocalDatabase: true,
-                );
-                switch (typeOfDocument) {
-                  case ProfileDocument.userPersonalData:
-                    _personalData = PersonalData.fromJson(onlineDataMap);
+              /// after fetching from online storage update local storage
+              _profileDataHandler.updateProfileData(
+                data: onlineDataMap,
+                typeOfDocument: typeOfDocument,
+                userId: referralCode,
+                toLocalDatabase: true,
+              );
+              switch (typeOfDocument) {
+                case ProfileDocument.userPersonalData:
+                  _personalData = PersonalData.fromJson(onlineDataMap);
+                  break;
+                case ProfileDocument.userTransactionsData:
+                  {
+                    _transactionData = TransactionData.fromJson(onlineDataMap);
+                    _transactionIdAsStream
+                        .add(_transactionData!.transactionIds);
                     break;
-                  case ProfileDocument.userTransactionsData:
-                    {
-                      _transactionData =
-                          TransactionData.fromJson(onlineDataMap);
-                      _transactionIdAsStream
-                          .add(_transactionData!.transactionIds);
-                      break;
-                    }
-                  case ProfileDocument.userNotificationToken:
-                    _token = NotificationToken.fromJson(onlineDataMap);
+                  }
+                case ProfileDocument.userNotificationToken:
+                  _token = NotificationToken.fromJson(onlineDataMap);
+                  break;
+                case ProfileDocument.userPlatformData:
+                  _platformData = PlatformData.fromJson(onlineDataMap);
+                  break;
+                case ProfileDocument.userPlatformRatings:
+                  {
+                    _platformRatingsData =
+                        PlatformRatings.fromJson(onlineDataMap);
+                    log.log(Level.warning, "Fetched data stream updated");
+                    gotUserDataStreamController.add(true);
                     break;
-                  case ProfileDocument.userPlatformData:
-                    _platformData = PlatformData.fromJson(onlineDataMap);
-                    break;
-                  case ProfileDocument.userPlatformRatings:
-                    {
-                      _platformRatingsData =
-                          PlatformRatings.fromJson(onlineDataMap);
-                      _gotData.add(true);
-                      break;
-                    }
-                }
-                return true;
+                  }
               }
-            });
-          } else
-            return false;
+              return true;
+            }
+          });
         } else {
           /// if [dataMap] is not empty fill the data
           log.v("Local Storage is not empty : $dataMap");
@@ -183,10 +173,11 @@ class UserDataProvider {
       });
     } catch (e) {
       _errorHandlingService.handleError(error: e);
-      Future.delayed(
+      return Future.delayed(
         Duration(seconds: 2),
         () {
-          loadData(uid: uid, typeOfDocument: typeOfDocument);
+          return loadData(
+              referralCode: referralCode, typeOfDocument: typeOfDocument);
         },
       );
       return false;

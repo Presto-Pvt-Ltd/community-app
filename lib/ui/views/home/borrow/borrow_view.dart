@@ -35,7 +35,7 @@ class BorrowView extends StatelessWidget {
             },
             child: Scaffold(
               body: SingleChildScrollView(
-                child: model.isBusy
+                child: !model.gotData || model.isBusy
                     ? Center(
                         child: CircularProgressIndicator(),
                       )
@@ -44,12 +44,16 @@ class BorrowView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              model.transactionLimits!.borrowLowerLimit
-                                  .toString(),
+                              model.transactionLimits == null
+                                  ? ""
+                                  : model.transactionLimits!.borrowLowerLimit
+                                      .toString(),
                             ),
                             Text(
-                              model.transactionLimits!.borrowUpperLimit
-                                  .toString(),
+                              model.transactionLimits == null
+                                  ? ""
+                                  : model.transactionLimits!.borrowUpperLimit
+                                      .toString(),
                             ),
                           ],
                         ),

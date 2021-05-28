@@ -27,11 +27,15 @@ class LendView extends StatelessWidget {
             }
             print('end');
           },
-          child: Scaffold(
-            body: Center(
-              child: Text(model.title),
-            ),
-          ),
+          child: model.dataReady || !model.isBusy
+              ? Scaffold(
+                  body: Center(
+                    child: Text(model.title),
+                  ),
+                )
+              : Center(
+                  child: CircularProgressIndicator(),
+                ),
         );
       },
     );

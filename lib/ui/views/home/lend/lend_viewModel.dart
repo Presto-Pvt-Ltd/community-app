@@ -18,12 +18,10 @@ class LendViewModel extends StreamViewModel {
 
   void onModelReady(void Function(bool) callback) {
     this.callback = callback;
-    setBusy(true);
   }
 
   @override
   void onData(data) {
-    setBusy(false);
     if (data is QuerySnapshot) {
       if (data.docs.isNotEmpty) {
         data.docs.forEach((particularDoc) {
@@ -37,5 +35,5 @@ class LendViewModel extends StreamViewModel {
 
   @override
   Stream<QuerySnapshot> get stream => _notificationDataHandler.getStream(
-      referralCode: _authenticationService.uid!);
+      referralCode: _authenticationService.referralCode!);
 }

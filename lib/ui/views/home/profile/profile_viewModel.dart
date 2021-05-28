@@ -1,5 +1,6 @@
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/main.dart';
 import 'package:presto/models/user/personal_data_model.dart';
 import 'package:presto/models/user/platform_data_model.dart';
 import 'package:presto/models/user/platform_ratings_data.dart';
@@ -13,21 +14,22 @@ class ProfileViewModel extends BaseViewModel {
   late void Function(bool) callback;
   UserDataProvider _userDataProvider = locator<UserDataProvider>();
   UserDataProvider get userData => _userDataProvider;
-  PersonalData? personalData;
-  PlatformData? platformData;
-  PlatformRatings? platformRatings;
-  TransactionData? transactionData;
+  late PersonalData personalData;
+  late PlatformData platformData;
+  late PlatformRatings platformRatings;
+  late TransactionData transactionData;
+  bool gotData = false;
   void onModelReady(void Function(bool) callback) {
-    setBusy(true);
     this.callback = callback;
-    _userDataProvider.gotData.listen((event) {
+    gotUserData.listen((event) {
+      log.w("There are updates in User Stream : $event");
       if (event) {
-        personalData = _userDataProvider.personalData;
-        platformData = _userDataProvider.platformData;
-        platformRatings = _userDataProvider.platformRatingsData;
-        transactionData = _userDataProvider.transactionData;
+        personalData = _userDataProvider.personalData!;
+        platformData = _userDataProvider.platformData!;
+        platformRatings = _userDataProvider.platformRatingsData!;
+        transactionData = _userDataProvider.transactionData!;
+        gotData = true;
         notifyListeners();
-        _userDataProvider.disposeStreams();
         setBusy(false);
       }
     });

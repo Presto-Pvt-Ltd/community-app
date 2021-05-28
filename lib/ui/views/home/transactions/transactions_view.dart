@@ -30,14 +30,14 @@ class TransactionsView extends StatelessWidget {
             print('end');
           },
           child: Scaffold(
-            body: model.isBusy
+            body: !model.gotData || model.isBusy
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
                 : Center(
                     child: Column(
                       children: [
-                        Text(model.transactions!.length.toString()),
+                        Text(model.transactions.length.toString()),
                       ],
                     ),
                   ),

@@ -14,11 +14,11 @@ class BorrowViewModel extends BaseViewModel {
   TransactionLimits? transactionLimits;
 
   late void Function(bool) callback;
-
+  bool gotData = false;
   void onModelReady(void Function(bool) callback) {
     log.v("Borrow View Model initiated");
     this.callback = callback;
-    setBusy(true);
+
     _limitsDataHandler
         .getLimitsData(
       typeOfLimit: LimitDocument.transactionLimits,
@@ -26,6 +26,7 @@ class BorrowViewModel extends BaseViewModel {
     )
         .then((mapData) {
       transactionLimits = TransactionLimits.fromJson(mapData);
+      gotData = true;
       notifyListeners();
       setBusy(false);
     });
