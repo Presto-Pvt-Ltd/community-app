@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -7,16 +6,10 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:presto/app/app.router.dart';
-import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/app.locator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'models/limits/referral_limit_model.dart';
-import 'models/limits/reward_limit_model.dart';
-import 'models/limits/share_text.dart';
-import 'models/limits/transaction_limit_model.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -120,3 +113,12 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/// Streams keeping a track of data in data-providers
+StreamController<bool> gotTransactionsDataStreamController =
+    StreamController<bool>.broadcast();
+Stream<bool> get gotTransactionsData =>
+    gotTransactionsDataStreamController.stream;
+StreamController<bool> gotUserDataStreamController =
+    StreamController<bool>.broadcast();
+Stream<bool> get gotUserData => gotUserDataStreamController.stream;

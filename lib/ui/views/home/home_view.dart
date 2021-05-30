@@ -55,27 +55,23 @@ class HomeView extends StatelessWidget {
               ),
             ],
           ),
-          body: model.isBusy
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : PageTransitionSwitcher(
-                  duration: const Duration(milliseconds: 1000),
-                  reverse: model.reverse,
-                  transitionBuilder: (
-                    Widget child,
-                    Animation<double> animation,
-                    Animation<double> secondaryAnimation,
-                  ) {
-                    return SharedAxisTransition(
-                      child: child,
-                      animation: animation,
-                      secondaryAnimation: secondaryAnimation,
-                      transitionType: SharedAxisTransitionType.horizontal,
-                    );
-                  },
-                  child: getViewForIndex(model.currentIndex),
-                ),
+          body: PageTransitionSwitcher(
+            duration: const Duration(milliseconds: 1000),
+            reverse: model.reverse,
+            transitionBuilder: (
+              Widget child,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+            ) {
+              return SharedAxisTransition(
+                child: child,
+                animation: animation,
+                secondaryAnimation: secondaryAnimation,
+                transitionType: SharedAxisTransitionType.horizontal,
+              );
+            },
+            child: getViewForIndex(model.currentIndex),
+          ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             currentIndex: model.currentIndex,

@@ -36,7 +36,7 @@ class BorrowView extends StatelessWidget {
             },
             child: Scaffold(
               body: SingleChildScrollView(
-                child: model.isBusy
+                child: !model.gotData || model.isBusy
                     ? Center(
                         child: CircularProgressIndicator(),
                       )
@@ -79,7 +79,6 @@ class BorrowView extends StatelessWidget {
                               )
                             ],
                           ),
-                        ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height / 25,
                         ),

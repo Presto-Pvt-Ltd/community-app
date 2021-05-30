@@ -29,7 +29,7 @@ class LendView extends StatelessWidget {
             print('end');
           },
           child: Scaffold(
-            body: Column(
+            body: model.dataReady || !model.isBusy ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -135,8 +135,10 @@ class LendView extends StatelessWidget {
                   ],
                 )
               ],
-            ),
-          ),
+            )   : Center(
+                  child: CircularProgressIndicator(),
+                ),
+          )
         );
       },
     );

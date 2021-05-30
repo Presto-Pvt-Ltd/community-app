@@ -20,6 +20,11 @@ class ProfileView extends StatelessWidget {
       // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,
       builder: (context, model, child) {
+        print("-----------------------------------\n\n");
+        print(!model.gotData || model.isBusy);
+        print(model.gotData);
+        print(model.isBusy);
+        print("\n\n-----------------------------------");
         return GestureDetector(
           onHorizontalDragEnd: (dragEndDetails) {
             print(dragEndDetails.velocity);
@@ -32,7 +37,7 @@ class ProfileView extends StatelessWidget {
             print('end');
           },
           child: Scaffold(
-            body: model.isBusy
+            body: (!model.gotData || model.isBusy)
                 ? Center(
                     child: CircularProgressIndicator(),
                   )

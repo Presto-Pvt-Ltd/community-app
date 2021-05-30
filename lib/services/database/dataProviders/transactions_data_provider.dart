@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/main.dart';
 import 'package:presto/models/transactions/borrower_data_model.dart';
 import 'package:presto/models/transactions/generic_data_model.dart';
 import 'package:presto/models/transactions/lender_data_model.dart';
@@ -22,27 +23,21 @@ class TransactionsDataProvider {
 
   /// Getters for transaction data
   List<CustomTransaction>? get userTransactions => _userTransactions;
-  StreamController<bool> _gotData = StreamController<bool>.broadcast();
-  Stream<bool> get gotData => _gotData.stream;
 
   /// Setter for transaction list
   set userTransactions(List<CustomTransaction>? transactionList) {
     userTransactions = transactionList;
   }
 
-  void disposeStreams() {
-    _gotData.close();
-  }
-
   void loadData({required List<String> transactionIds}) async {
     try {
       log.v("Checking whether there are any transactions");
 
-      _gotData.add(false);
+      gotTransactionsDataStreamController.add(false);
       if (transactionIds.length == 0) {
-        log.v("transactions dont exist");
+        log.v("transactions don't exist");
         _userTransactions = <CustomTransaction>[];
-        _gotData.add(true);
+        gotTransactionsDataStreamController.add(true);
       } else {
         log.v("Trying to load data from local storage");
 
@@ -120,7 +115,7 @@ class TransactionsDataProvider {
                   ),
                 );
                 if (_userTransactions!.length == transactionIds.length) {
-                  _gotData.add(true);
+                  gotTransactionsDataStreamController.add(true);
                   log.v("Got final transactions from cloud storage");
                   _transactionsDataHandler.updateTransactionListInHive(
                     list: _userTransactions,
@@ -132,7 +127,7 @@ class TransactionsDataProvider {
         } else {
           log.v("Got final transactions from local storage");
           _userTransactions = transactionList;
-          _gotData.add(true);
+          gotTransactionsDataStreamController.add(true);
         }
       }
     } catch (e) {

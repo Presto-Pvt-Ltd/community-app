@@ -13,16 +13,12 @@ import '../../../services/authentication.dart';
 
 class HomeViewModel extends IndexTrackingViewModel {
   final log = getLogger("HomeViewModel");
-  late String uid;
+  late String referralCode;
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
   final NavigationService _navigationService = locator<NavigationService>();
-  final ProfileDataHandler _profileDataHandler = locator<ProfileDataHandler>();
-  final LimitsDataHandler _limitsDataHandler = locator<LimitsDataHandler>();
-  final TransactionsDataHandler _transactionsDataHandler =
-      locator<TransactionsDataHandler>();
 
   /// Data providers
   final UserDataProvider _userDataProvider = locator<UserDataProvider>();
@@ -33,36 +29,40 @@ class HomeViewModel extends IndexTrackingViewModel {
 
   Future<void> onModelReady(int index) async {
     /// Getting initial data:
-
-    Future.delayed(Duration(microseconds: 0), () {
+    Future.delayed(Duration(seconds: 0), () {
       setIndex(index);
       try {
-        uid = _authenticationService.uid!;
+        referralCode = _authenticationService.referralCode!;
+
+        /// Trying to load data
         _userDataProvider
             .loadData(
-                uid: uid, typeOfDocument: ProfileDocument.userPersonalData)
+          referralCode: referralCode,
+          typeOfDocument: ProfileDocument.userPersonalData,
+        )
             .then((value) {
+          log.wtf(value);
           if (value) {
             _userDataProvider
                 .loadData(
-                    uid: uid,
+                    referralCode: referralCode,
                     typeOfDocument: ProfileDocument.userNotificationToken)
                 .then((value) {
               if (value) {
                 _userDataProvider
                     .loadData(
-                        uid: uid,
+                        referralCode: referralCode,
                         typeOfDocument: ProfileDocument.userTransactionsData)
                     .then((value) {
                   if (value) {
                     _userDataProvider
                         .loadData(
-                            uid: uid,
+                            referralCode: referralCode,
                             typeOfDocument: ProfileDocument.userPlatformData)
                         .then((value) {
                       if (value) {
                         _userDataProvider.loadData(
-                            uid: uid,
+                            referralCode: referralCode,
                             typeOfDocument:
                                 ProfileDocument.userPlatformRatings);
                         _transactionIdListAsStream =
@@ -82,6 +82,7 @@ class HomeViewModel extends IndexTrackingViewModel {
           }
         });
       } catch (e) {
+        log.e("There was error here");
         _errorHandlingService.handleError(error: e);
       }
     });
