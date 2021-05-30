@@ -1,8 +1,15 @@
 import 'package:presto/app/app.locator.dart';
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/models/enums.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
+import 'package:presto/models/transactions/borrower_data_model.dart';
+import 'package:presto/models/transactions/generic_data_model.dart';
+import 'package:presto/models/transactions/lender_data_model.dart';
+import 'package:presto/models/transactions/transaction_status_data_model.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
+import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -54,6 +61,35 @@ class BorrowViewModel extends BaseViewModel {
           /// initiate the process
           // TODO: ask for user preference in payment method
           // TODO: Timer
+
+          ///create transaction and update databases
+          locator<TransactionsDataProvider>().createTransaction(
+              transaction: CustomTransaction(
+            genericInformation: GenericInformation(
+              transactionId:
+                  locator<TransactionsDataProvider>().createRandomString(),
+              amount: amount.toInt(),
+              transactionMethods: [PaymentMethods.payTm],
+              interestRate: 0,
+              initiationAt: DateTime.now(),
+            ),
+            borrowerInformation: BorrowerInformation(
+              borrowerReferralCode:
+                  locator<UserDataProvider>().platformData!.referralCode,
+              borrowerSentMoneyAt: null,
+            ),
+            transactionStatus: TransactionStatus(
+              approvedStatus: false,
+              lenderSentMoney: false,
+              borrowerSentMoney: false,
+              isBorrowerPenalised: false,
+              isLenderPenalised: false,
+            ),
+            lenderInformation: LenderInformation(
+              lenderReferralCode: null,
+              lenderSentMoneyAt: null,
+            ),
+          ));
         }
       });
   }

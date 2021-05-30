@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -27,6 +29,13 @@ class TransactionsDataProvider {
   /// Setter for transaction list
   set userTransactions(List<CustomTransaction>? transactionList) {
     userTransactions = transactionList;
+  }
+
+  /// transaction id generator
+  final Random _random = Random.secure();
+  String createRandomString([int length = 12]) {
+    var values = List<int>.generate(length, (i) => _random.nextInt(256));
+    return base64Url.encode(values);
   }
 
   void loadData({required List<String> transactionIds}) async {
@@ -139,6 +148,39 @@ class TransactionsDataProvider {
         },
       );
     }
+  }
+
+  void createTransaction({required CustomTransaction transaction}) async {
+    List<CustomTransaction> tempList =
+        _userTransactions ?? <CustomTransaction>[];
+    tempList.add(transaction);
+    _userTransactions = tempList;
+
+    ///Hive update transaction list
+    _transactionsDataHandler.updateTransactionListInHive(
+        list: _userTransactions);
+
+    ///Firebase create new transaction
+    _transactionsDataHandler.createTransaction(
+        data: transaction.borrowerInformation.toJson(),
+        typeOfDocument: TransactionDocument.borrowerInformation,
+        transactionId: transaction.genericInformation.transactionId,
+        toLocalStorage: false);
+    _transactionsDataHandler.createTransaction(
+        data: transaction.genericInformation.toJson(),
+        typeOfDocument: TransactionDocument.genericInformation,
+        transactionId: transaction.genericInformation.transactionId,
+        toLocalStorage: false);
+    _transactionsDataHandler.createTransaction(
+        data: transaction.transactionStatus.toJson(),
+        typeOfDocument: TransactionDocument.transactionStatus,
+        transactionId: transaction.genericInformation.transactionId,
+        toLocalStorage: false);
+    _transactionsDataHandler.createTransaction(
+        data: transaction.lenderInformation!.toJson(),
+        typeOfDocument: TransactionDocument.lenderInformation,
+        transactionId: transaction.genericInformation.transactionId,
+        toLocalStorage: false);
   }
 }
 

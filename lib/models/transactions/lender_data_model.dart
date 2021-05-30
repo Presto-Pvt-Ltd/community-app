@@ -4,7 +4,7 @@ part 'lender_data_model.g.dart';
 @JsonSerializable()
 class LenderInformation {
   final DateTime? lenderSentMoneyAt;
-  final String lenderReferralCode;
+  final String? lenderReferralCode;
   LenderInformation({
     this.lenderSentMoneyAt,
     required this.lenderReferralCode,

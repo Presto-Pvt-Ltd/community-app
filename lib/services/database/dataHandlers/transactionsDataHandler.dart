@@ -48,7 +48,7 @@ class TransactionsDataHandler {
   }
 
   /// Updates [data] for transaction with [transactionId] and [typeOfDocument]
-  Future<bool> updateTransactionStatus({
+  Future<bool> updateTransaction({
     required Map<String, dynamic> data,
     required TransactionDocument typeOfDocument,
     required String transactionId,
@@ -64,6 +64,33 @@ class TransactionsDataHandler {
         final CollectionReference collectionReference =
             _getTransactionReference(transactionId, docId);
         return await _firestoreService.updateData(
+          data: data,
+          document: collectionReference.doc(docId),
+        );
+      }
+    } catch (e) {
+      _errorHandlingService.handleError(error: e);
+      return false;
+    }
+  }
+
+  /// Sets [data] for transaction with [transactionId] and [typeOfDocument]
+  Future<bool> createTransaction({
+    required Map<String, dynamic> data,
+    required TransactionDocument typeOfDocument,
+    required String transactionId,
+    required bool toLocalStorage,
+  }) async {
+    try {
+      if (toLocalStorage) {
+        log.v("Creating data in local database");
+        return throw Exception("NOt Applicable");
+      } else {
+        log.v("Creating data in cloud database");
+        final String docId = _getDocId(typeOfDocument);
+        final CollectionReference collectionReference =
+            _getTransactionReference(transactionId, docId);
+        return await _firestoreService.setData(
           data: data,
           document: collectionReference.doc(docId),
         );

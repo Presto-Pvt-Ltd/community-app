@@ -7,7 +7,6 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
-import 'package:presto/ui/views/home/profile/profile_view.dart';
 import 'package:stacked/stacked.dart';
 
 import '../ui/views/dummyView/dummy_view.dart';
@@ -122,7 +121,7 @@ class StackedRouter extends RouterBase {
 class HomeViewArguments {
   final Key? key;
   final int index;
-  HomeViewArguments({this.key, this.index = 1});
+  HomeViewArguments({this.key, this.index = 0});
 }
 
 /// RegisterView arguments holder class

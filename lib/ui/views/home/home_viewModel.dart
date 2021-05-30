@@ -4,6 +4,7 @@ import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -28,8 +29,11 @@ class HomeViewModel extends IndexTrackingViewModel {
   late Stream<List<String>> _transactionIdListAsStream;
 
   Future<void> onModelReady(int index) async {
-    /// Getting initial data:
-    Future.delayed(Duration(seconds: 0), () {
+    locator<HiveDatabaseService>()
+        .openBox(uid: locator<AuthenticationService>().uid!)
+        .then((value) {
+      /// Getting initial data:
+
       setIndex(index);
       try {
         referralCode = _authenticationService.referralCode!;

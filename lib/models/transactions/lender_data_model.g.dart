@@ -11,7 +11,7 @@ LenderInformation _$LenderInformationFromJson(Map<String, dynamic> json) {
     lenderSentMoneyAt: json['lenderSentMoneyAt'] == null
         ? null
         : DateTime.parse(json['lenderSentMoneyAt'] as String),
-    lenderReferralCode: json['lenderReferralCode'] as String,
+    lenderReferralCode: json['lenderReferralCode'] as String?,
   );
 }
 

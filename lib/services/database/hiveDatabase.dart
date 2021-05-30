@@ -14,6 +14,7 @@ class HiveDatabaseService {
     await Hive.openBox(uid).then((value) {
       box = value;
       isBoxOpened = true;
+      log.wtf('Box is opened $uid');
     });
   }
 
