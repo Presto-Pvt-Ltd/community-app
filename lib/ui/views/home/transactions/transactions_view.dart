@@ -30,81 +30,84 @@ class TransactionsView extends StatelessWidget {
             print('end');
           },
           child: Scaffold(
-            body: !model.gotData || model.isBusy
+            body: model.isBusy
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
                 : SafeArea(
-              child: Scaffold(
-                body: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        height: height/25,
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          "Recent Transactions",
-                          style: TextStyle(
-                            fontSize: height/22,
-                            color: Colors.black,
-                            fontFamily: "Oswald",
-                          ),
+                    child: Scaffold(
+                      body: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            SizedBox(
+                              height: height / 25,
+                            ),
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                "Recent Transactions",
+                                style: TextStyle(
+                                  fontSize: height / 22,
+                                  color: Colors.black,
+                                  fontFamily: "Oswald",
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: height / 25,
+                            ),
+                            Column(
+                              // children: model.recentTransactions != null
+                              //     ? model.recentTransactions
+                              children: [
+                                Container(
+                                  child: Text(
+                                    "No Transactions to Display",
+                                    style: TextStyle(
+                                        fontSize: height / 45,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: height / 25,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Text(
+                                  "All Transactions",
+                                  style: TextStyle(
+                                      fontSize: height / 22,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: height / 25,
+                            ),
+                            Column(
+                              // children: model.allTransactions.length > 0 &&
+                              //     model.allTransactions != null
+                              //     ? model.allTransactions
+                              children: [
+                                Container(
+                                  child: Text(
+                                    "No Transactions to Display",
+                                    style: TextStyle(
+                                        fontSize: height / 45,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        height: height/25,
-                      ),
-                      Column(
-                        // children: model.recentTransactions != null
-                        //     ? model.recentTransactions
-                            children: [
-                          Container(
-                            child: Text(
-                              "No Transactions to Display",
-                              style: TextStyle(
-                                  fontSize: height/45, color: Colors.black),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: height/25,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Text(
-                            "All Transactions",
-                            style: TextStyle(fontSize: height/22, color: Colors.black),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: height/25,
-                      ),
-                      Column(
-                        // children: model.allTransactions.length > 0 &&
-                        //     model.allTransactions != null
-                        //     ? model.allTransactions
-                            children: [
-                          Container(
-                            child: Text(
-                              "No Transactions to Display",
-                              style: TextStyle(
-                                  fontSize: height/45, color: Colors.black),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-
+                    ),
                   ),
-                ),
-              ),
-            ),
           ),
         );
       },

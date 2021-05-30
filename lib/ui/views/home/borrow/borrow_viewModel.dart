@@ -2,7 +2,9 @@ import 'package:presto/app/app.locator.dart';
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
+import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:stacked/stacked.dart';
 
 class BorrowViewModel extends BaseViewModel {
@@ -32,5 +34,13 @@ class BorrowViewModel extends BaseViewModel {
     });
   }
 
-  void initiatePayment() {}
+  void initiatePayment() {
+    locator<UserDataProvider>().transactionData = TransactionData(
+        paymentMethodsUsed: <String, dynamic>{},
+        transactionIds: <String>[],
+        totalBorrowed:
+            locator<UserDataProvider>().transactionData!.totalBorrowed + 100,
+        totalLent: 100,
+        activeTransactions: <String>[]);
+  }
 }

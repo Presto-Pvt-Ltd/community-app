@@ -201,7 +201,9 @@ class BorrowView extends StatelessWidget {
                                   Radius.circular(width / 15.0)),
                             ),
                             //busy: model.isBusy || model.borrowingLimits == null,
-                            //onPressed: () async => model.goToPaymentPage(),
+                            onPressed: () {
+                              model.initiatePayment();
+                            },
                           ),
                         ],
                       ),
