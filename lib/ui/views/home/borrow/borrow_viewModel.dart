@@ -34,13 +34,5 @@ class BorrowViewModel extends BaseViewModel {
     });
   }
 
-  void initiatePayment() {
-    locator<UserDataProvider>().transactionData = TransactionData(
-        paymentMethodsUsed: <String, dynamic>{},
-        transactionIds: <String>[],
-        totalBorrowed:
-            locator<UserDataProvider>().transactionData!.totalBorrowed + 100,
-        totalLent: 100,
-        activeTransactions: <String>[]);
-  }
+  void initiatePayment() {}
 }
