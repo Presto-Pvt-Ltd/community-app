@@ -70,7 +70,8 @@ class HomeViewModel extends IndexTrackingViewModel {
                         _transactionIdListAsStream.listen((gotIds) {
                           if (gotIds.length != 0) {
                             _transactionsDataProvider.loadData(
-                                transactionIds: gotIds);
+                              transactionIds: gotIds,
+                            );
                           }
                         });
                       }

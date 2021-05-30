@@ -8,7 +8,7 @@ import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:stacked/stacked.dart';
 
-class ProfileViewModel extends BaseViewModel {
+class ProfileViewModel extends StreamViewModel {
   final log = getLogger("ProfileViewModel");
   String title = "I am Profile";
   late void Function(bool) callback;
@@ -21,17 +21,25 @@ class ProfileViewModel extends BaseViewModel {
   bool gotData = false;
   void onModelReady(void Function(bool) callback) {
     this.callback = callback;
-    gotUserData.listen((event) {
-      log.w("There are updates in User Stream : $event");
-      if (event) {
-        personalData = _userDataProvider.personalData!;
-        platformData = _userDataProvider.platformData!;
-        platformRatings = _userDataProvider.platformRatingsData!;
-        transactionData = _userDataProvider.transactionData!;
-        gotData = true;
-        notifyListeners();
-        setBusy(false);
-      }
-    });
   }
+
+  @override
+  bool get dataReady => gotData;
+
+  @override
+  void onData(event) {
+    super.onData(event);
+    log.w("There are updates in User Stream : $event");
+    if (event) {
+      personalData = _userDataProvider.personalData!;
+      platformData = _userDataProvider.platformData!;
+      platformRatings = _userDataProvider.platformRatingsData!;
+      transactionData = _userDataProvider.transactionData!;
+      gotData = true;
+      log.w("Data in User Stream : ${personalData.toJson()}");
+    }
+  }
+
+  @override
+  Stream<bool> get stream => gotUserDataStreamController.stream;
 }

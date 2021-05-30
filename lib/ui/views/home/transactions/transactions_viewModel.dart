@@ -4,7 +4,7 @@ import 'package:presto/main.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:stacked/stacked.dart';
 
-class TransactionsViewModel extends BaseViewModel {
+class TransactionsViewModel extends StreamViewModel {
   final log = getLogger("TransactionsViewModel");
   String title = "I am Transactions";
   late List<CustomTransaction> transactions;
@@ -14,13 +14,20 @@ class TransactionsViewModel extends BaseViewModel {
   bool gotData = false;
   void onModelReady(void Function(bool) callback) {
     this.callback = callback;
-    gotTransactionsData.listen((event) {
-      if (event) {
-        transactions = _transactionsDataProvider.userTransactions!;
-        gotData = true;
-        notifyListeners();
-        setBusy(false);
-      }
-    });
   }
+
+  @override
+  void onData(event) {
+    log.w("There are updates in Transaction List Stream : $event");
+    if (event) {
+      transactions = _transactionsDataProvider.userTransactions!;
+      gotData = true;
+      notifyListeners();
+      setBusy(false);
+    }
+    super.onData(event);
+  }
+
+  @override
+  Stream<bool> get stream => gotTransactionsDataStreamController.stream;
 }

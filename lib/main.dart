@@ -117,8 +117,5 @@ class MyApp extends StatelessWidget {
 /// Streams keeping a track of data in data-providers
 StreamController<bool> gotTransactionsDataStreamController =
     StreamController<bool>.broadcast();
-Stream<bool> get gotTransactionsData =>
-    gotTransactionsDataStreamController.stream;
 StreamController<bool> gotUserDataStreamController =
     StreamController<bool>.broadcast();
-Stream<bool> get gotUserData => gotUserDataStreamController.stream;
