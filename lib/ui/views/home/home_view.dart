@@ -10,7 +10,7 @@ import 'lend/lend_view.dart';
 // ignore: must_be_immutable
 class HomeView extends StatelessWidget {
   int index;
-  HomeView({Key? key, this.index = 1}) : super(key: key);
+  HomeView({Key? key, this.index = 0}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
@@ -45,16 +45,6 @@ class HomeView extends StatelessWidget {
         }
 
         return Scaffold(
-          appBar: AppBar(
-            actions: [
-              IconButton(
-                icon: Icon(Icons.logout),
-                onPressed: () {
-                  model.goToLoginScreen();
-                },
-              ),
-            ],
-          ),
           body: PageTransitionSwitcher(
             duration: const Duration(milliseconds: 1000),
             reverse: model.reverse,
