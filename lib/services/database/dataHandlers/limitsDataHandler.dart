@@ -39,6 +39,7 @@ class LimitsDataHandler {
   }) async {
     if (fromLocalDatabase) {
       final String docId = _getDocId(typeOfLimit);
+      log.wtf('limit rannnnnn');
       return hiveDatabaseService.getMapDataFromHive(key: docId);
     } else {
       final String docId = _getDocId(typeOfLimit);

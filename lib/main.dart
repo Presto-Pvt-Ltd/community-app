@@ -68,8 +68,9 @@ Future<void> main() async {
 }
 
 Future _initHive() async {
-  var dir = await getApplicationDocumentsDirectory();
-  Hive.init(dir.path);
+  await getApplicationDocumentsDirectory().then((dir) {
+    Hive.init(dir.path);
+  });
 }
 
 class MyApp extends StatelessWidget {

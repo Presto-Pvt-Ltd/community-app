@@ -176,8 +176,11 @@ class UserDataProvider {
       return Future.delayed(
         Duration(seconds: 2),
         () {
-          return loadData(
-              referralCode: referralCode, typeOfDocument: typeOfDocument);
+          if (e.toString() == "Reading from your storage")
+            return loadData(
+                referralCode: referralCode, typeOfDocument: typeOfDocument);
+          else
+            return false;
         },
       );
       return false;

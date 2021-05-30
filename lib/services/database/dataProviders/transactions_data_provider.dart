@@ -6,6 +6,7 @@ import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/main.dart';
 import 'package:presto/models/transactions/borrower_data_model.dart';
+import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/models/transactions/generic_data_model.dart';
 import 'package:presto/models/transactions/lender_data_model.dart';
 import 'package:presto/models/transactions/transaction_status_data_model.dart';
@@ -144,7 +145,8 @@ class TransactionsDataProvider {
       Future.delayed(
         Duration(seconds: 2),
         () {
-          loadData(transactionIds: transactionIds);
+          if (e.toString() == "Reading from your storage")
+            loadData(transactionIds: transactionIds);
         },
       );
     }
@@ -182,17 +184,4 @@ class TransactionsDataProvider {
         transactionId: transaction.genericInformation.transactionId,
         toLocalStorage: false);
   }
-}
-
-class CustomTransaction {
-  final GenericInformation genericInformation;
-  final BorrowerInformation borrowerInformation;
-  LenderInformation? lenderInformation;
-  TransactionStatus transactionStatus;
-  CustomTransaction({
-    required this.genericInformation,
-    required this.borrowerInformation,
-    required this.transactionStatus,
-    this.lenderInformation,
-  });
 }

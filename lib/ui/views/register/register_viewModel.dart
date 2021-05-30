@@ -224,7 +224,6 @@ class RegisterViewModel extends FormViewModel {
     try {
       setBusy(true);
       referralCodeOrCommunityName = referralCodeController.text.trim();
-      log.wtf(referralCodeController.text);
       if (referralCodeOrCommunityName == null) {
         setBusy(false);
         _errorHandlingService.handleError(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/error/error.dart';
 
@@ -16,7 +17,6 @@ class HiveDatabaseService {
     await Hive.openBox(uid).then((value) {
       box = value;
       isBoxOpened = true;
-      log.wtf('Box is opened $uid');
     });
   }
 
@@ -40,19 +40,30 @@ class HiveDatabaseService {
 
   List<CustomTransaction> getListFromHive({required String key}) {
     if (isBoxOpened)
-      return jsonDecode(box
-          .get(key, defaultValue: jsonEncode(<CustomTransaction>[]))
-          .toString());
+      return jsonDecode(
+              box.get(key, defaultValue: jsonEncode(<CustomTransaction>[])))
+          .map((value) {
+        return CustomTransaction.fromJson(value);
+      }).toList();
     else
       return throw Exception("Reading from your storage");
   }
 
   Map<String, dynamic> getMapDataFromHive({required String key}) {
-    if (isBoxOpened)
-      return jsonDecode(box
-          .get(key, defaultValue: jsonEncode(<String, dynamic>{}))
-          .toString());
-    else
+    // box.keys.forEach((e) {
+    //   //log.wtf(box.get(e));
+    // });
+    if (isBoxOpened) {
+      //log.wtf(box.get(key));
+      //log.wtf(Map<String, dynamic>.from(box.get(key)).runtimeType);
+      //return <String, dynamic>{};
+      try {
+        return Map<String, dynamic>.from(box.get(key));
+      } catch (e) {
+        log.e(e.toString());
+        return <String, dynamic>{};
+      }
+    } else
       return throw Exception("Reading from your storage");
   }
 
@@ -64,7 +75,7 @@ class HiveDatabaseService {
       if (isBoxOpened)
         return await box.put(key, data).then((value) => true);
       else
-        return throw Exception("Reading from your storage");
+        return throw false;
     } catch (e) {
       _errorHandlingService.handleError(error: e);
       return false;

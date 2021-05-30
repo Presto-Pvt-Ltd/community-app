@@ -45,25 +45,27 @@ class HomeViewModel extends IndexTrackingViewModel {
           typeOfDocument: ProfileDocument.userPersonalData,
         )
             .then((value) {
-          log.wtf(value);
           if (value) {
             _userDataProvider
                 .loadData(
                     referralCode: referralCode,
                     typeOfDocument: ProfileDocument.userNotificationToken)
                 .then((value) {
+              log.wtf('userNotificationToken $value');
               if (value) {
                 _userDataProvider
                     .loadData(
                         referralCode: referralCode,
                         typeOfDocument: ProfileDocument.userTransactionsData)
                     .then((value) {
+                  log.wtf('userTransactionsData $value');
                   if (value) {
                     _userDataProvider
                         .loadData(
                             referralCode: referralCode,
                             typeOfDocument: ProfileDocument.userPlatformData)
                         .then((value) {
+                      log.wtf('userPlatformData $value');
                       if (value) {
                         _userDataProvider.loadData(
                             referralCode: referralCode,

@@ -4,6 +4,7 @@ import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/enums.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/models/transactions/borrower_data_model.dart';
+import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/models/transactions/generic_data_model.dart';
 import 'package:presto/models/transactions/lender_data_model.dart';
 import 'package:presto/models/transactions/transaction_status_data_model.dart';
