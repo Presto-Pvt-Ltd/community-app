@@ -110,8 +110,8 @@ class ProfileView extends StatelessWidget {
                                                 color: Colors.white,
                                               ),
                                               onPressed: () {
-                                                //Sign Out
-                                                //model.signOut();
+                                                ///Sign Out
+                                                model.signOut();
                                               },
                                             )),
                                         Padding(
