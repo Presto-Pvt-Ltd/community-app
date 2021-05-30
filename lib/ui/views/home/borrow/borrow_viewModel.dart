@@ -48,11 +48,12 @@ class BorrowViewModel extends BaseViewModel {
           .showConfirmationDialog(
               title: "Confirmation",
               description:
-                  "Are you sure you want to borrow and amount of \u2B09 $amount")
+                  "Are you sure you want to borrow and amount of \u20B9 $amount")
           .then((value) {
         if (value!.confirmed) {
           /// initiate the process
-
+          // TODO: ask for user preference in payment method
+          // TODO: Timer
         }
       });
   }
