@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -90,7 +92,8 @@ class ProfileDataHandler {
         log.v("Updating data in local database");
 
         final String docId = _getDocId(typeOfDocument);
-        return hiveDatabaseService.setDataInHive(data: data, key: docId);
+        return hiveDatabaseService.setDataInHive(
+            data: jsonEncode(data), key: docId);
       } else {
         log.v("Updating data in cloud database");
         final String docId = _getDocId(typeOfDocument);

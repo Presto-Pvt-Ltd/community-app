@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive/hive.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -38,15 +40,18 @@ class HiveDatabaseService {
 
   List<CustomTransaction> getListFromHive({required String key}) {
     if (isBoxOpened)
-      return box.get(key,
-          defaultValue: <CustomTransaction>[]).cast<List<CustomTransaction>>();
+      return jsonDecode(box
+          .get(key, defaultValue: jsonEncode(<CustomTransaction>[]))
+          .toString());
     else
       return throw Exception("Reading from your storage");
   }
 
   Map<String, dynamic> getMapDataFromHive({required String key}) {
     if (isBoxOpened)
-      return box.get(key, defaultValue: <String, dynamic>{});
+      return jsonDecode(box
+          .get(key, defaultValue: jsonEncode(<String, dynamic>{}))
+          .toString());
     else
       return throw Exception("Reading from your storage");
   }

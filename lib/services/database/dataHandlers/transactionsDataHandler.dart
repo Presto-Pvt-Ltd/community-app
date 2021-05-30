@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -105,7 +107,8 @@ class TransactionsDataHandler {
     required List<CustomTransaction>? list,
   }) {
     return hiveDatabaseService.setDataInHive(
-        data: list == null ? <CustomTransaction>[] : list,
+        data:
+            list == null ? jsonEncode(<CustomTransaction>[]) : jsonEncode(list),
         key: 'transactionList');
   }
 
