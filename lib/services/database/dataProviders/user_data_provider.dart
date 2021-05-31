@@ -79,7 +79,8 @@ class UserDataProvider {
         fromLocalDatabase: true,
       )
           .then((dataMap) {
-        if (dataMap == {} || dataMap.isEmpty) {
+        log.v("Local Storage Response : $dataMap \n${dataMap.runtimeType}");
+        if (dataMap == <String, dynamic>{} || dataMap.isEmpty) {
           log.v("Local Storage is empty");
 
           ///  if [dataMap] is empty i.e. local storage dont have data
@@ -106,7 +107,8 @@ class UserDataProvider {
                 });
               });
             } else {
-              log.v("Retrieved from online storage: $onlineDataMap");
+              log.v(
+                  "Retrieved from online storage: $onlineDataMap \n${onlineDataMap.runtimeType}");
 
               /// after fetching from online storage update local storage
               _profileDataHandler.updateProfileData(
@@ -120,12 +122,9 @@ class UserDataProvider {
                   _personalData = PersonalData.fromJson(onlineDataMap);
                   break;
                 case ProfileDocument.userTransactionsData:
-                  {
-                    _transactionData = TransactionData.fromJson(onlineDataMap);
-                    _transactionIdAsStream
-                        .add(_transactionData!.transactionIds);
-                    break;
-                  }
+                  _transactionData = TransactionData.fromJson(onlineDataMap);
+                  _transactionIdAsStream.add(_transactionData!.transactionIds);
+                  break;
                 case ProfileDocument.userNotificationToken:
                   _token = NotificationToken.fromJson(onlineDataMap);
                   break;
@@ -146,18 +145,19 @@ class UserDataProvider {
           });
         } else {
           /// if [dataMap] is not empty fill the data
-          log.v("Local Storage is not empty : $dataMap");
-
+          log.v(
+              "Local Storage is not empty : $dataMap \n${dataMap.runtimeType}");
+          try {} catch (e) {}
           switch (typeOfDocument) {
             case ProfileDocument.userPersonalData:
               _personalData = PersonalData.fromJson(dataMap);
               break;
             case ProfileDocument.userTransactionsData:
-              {
-                _transactionData = TransactionData.fromJson(dataMap);
-                _transactionIdAsStream.add(_transactionData!.transactionIds);
-                break;
-              }
+              log.wtf(dataMap.runtimeType);
+              _transactionData = TransactionData.fromJson(dataMap);
+              _transactionIdAsStream.add(_transactionData!.transactionIds);
+              break;
+
             case ProfileDocument.userNotificationToken:
               _token = NotificationToken.fromJson(dataMap);
               break;
@@ -179,8 +179,11 @@ class UserDataProvider {
           if (e.toString() == "Reading from your storage")
             return loadData(
                 referralCode: referralCode, typeOfDocument: typeOfDocument);
-          else
+          else {
+            log.e(referralCode);
+            log.e(typeOfDocument);
             return false;
+          }
         },
       );
       return false;

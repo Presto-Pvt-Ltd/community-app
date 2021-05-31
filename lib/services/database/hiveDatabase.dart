@@ -58,7 +58,11 @@ class HiveDatabaseService {
       //log.wtf(Map<String, dynamic>.from(box.get(key)).runtimeType);
       //return <String, dynamic>{};
       try {
-        return Map<String, dynamic>.from(box.get(key));
+        return Map<String, dynamic>.from(
+          Map<String, dynamic>.from(
+            box.get(key, defaultValue: <String, dynamic>{}),
+          ),
+        );
       } catch (e) {
         log.e(e.toString());
         return <String, dynamic>{};

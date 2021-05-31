@@ -7,6 +7,7 @@ import 'package:presto/models/user/platform_ratings_data.dart';
 import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/authentication.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -55,6 +56,8 @@ class ProfileViewModel extends BaseViewModel {
   }
 
   void signOut() {
+    locator<HiveDatabaseService>()
+        .deleteBox(uid: locator<AuthenticationService>().uid!);
     locator<AuthenticationService>().auth.signOut();
     locator<NavigationService>().clearStackAndShow(Routes.loginView);
   }
