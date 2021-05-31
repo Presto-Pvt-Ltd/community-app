@@ -4,6 +4,7 @@ import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/amountButton.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:presto/ui/widgets/inputTextField.dart';
+import 'package:presto/ui/widgets/paymentSheet.dart';
 import 'package:stacked/stacked.dart';
 
 import 'borrow_viewModel.dart';
@@ -200,6 +201,12 @@ class BorrowView extends StatelessWidget {
                               borderRadius: BorderRadius.all(
                                   Radius.circular(width / 15.0)),
                             ),
+                            onPressed: () => showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => paymentSheet(height,width)
+                            )
                             //busy: model.isBusy || model.borrowingLimits == null,
                             //onPressed: () async => model.goToPaymentPage(),
                           ),
