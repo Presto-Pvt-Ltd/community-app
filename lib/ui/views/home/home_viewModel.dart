@@ -1,4 +1,6 @@
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
+import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
@@ -59,6 +61,26 @@ class HomeViewModel extends IndexTrackingViewModel {
                             referralCode: referralCode,
                             typeOfDocument: ProfileDocument.userPlatformData)
                         .then((value) {
+                      locator<LimitsDataHandler>()
+                          .getLimitsData(
+                              typeOfLimit: LimitDocument.transactionLimits,
+                              fromLocalDatabase: false)
+                          .then((limitMap) {
+                        locator<CommunityTreeDataHandler>()
+                            .getLenderNotificationTokens(
+                                currentReferralId:
+                                    locator<UserDataProvider>()
+                                        .platformData!
+                                        .referredBy,
+                                levelCounter:
+                                    int.parse(
+                                        (limitMap['levelCounter']).toString()),
+                                communityName: locator<UserDataProvider>()
+                                    .personalData!
+                                    .community,
+                                downCounter: int.parse(
+                                    (limitMap['downCounter']).toString()));
+                      });
                       if (value) {
                         _userDataProvider.loadData(
                             referralCode: referralCode,

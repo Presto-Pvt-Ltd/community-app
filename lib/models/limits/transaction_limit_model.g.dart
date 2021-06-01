@@ -13,6 +13,8 @@ TransactionLimits _$TransactionLimitsFromJson(Map<String, dynamic> json) {
     transactionDefaultsAfterDays: json['transactionDefaultsAfterDays'] as int,
     keepTransactionActiveTillHours:
         json['keepTransactionActiveTillHours'] as int,
+    levelCounter: json['levelCounter'] as int,
+    downCounter: json['downCounter'] as int,
   );
 }
 
@@ -22,4 +24,6 @@ Map<String, dynamic> _$TransactionLimitsToJson(TransactionLimits instance) =>
       'borrowUpperLimit': instance.borrowUpperLimit,
       'transactionDefaultsAfterDays': instance.transactionDefaultsAfterDays,
       'keepTransactionActiveTillHours': instance.keepTransactionActiveTillHours,
+      'levelCounter': instance.levelCounter,
+      'downCounter': instance.downCounter,
     };

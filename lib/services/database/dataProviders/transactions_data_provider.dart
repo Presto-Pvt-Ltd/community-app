@@ -26,12 +26,21 @@ class TransactionsDataProvider {
   /// Transactions Data
   List<CustomTransaction>? _userTransactions;
 
+  /// token list
+  List<String>? _notificationTokens;
+
+  ///getter and setter for tokens
+  List<String>? get notificationTokens => _notificationTokens;
+  set notificationTokens(List<String>? list) {
+    _notificationTokens = list;
+  }
+
   /// Getters for transaction data
   List<CustomTransaction>? get userTransactions => _userTransactions;
 
   /// Setter for transaction list
   set userTransactions(List<CustomTransaction>? transactionList) {
-    userTransactions = transactionList;
+    _userTransactions = transactionList;
   }
 
   /// transaction id generator

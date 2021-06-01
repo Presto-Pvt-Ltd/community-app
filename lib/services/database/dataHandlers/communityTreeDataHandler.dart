@@ -1,20 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
-import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
+import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/error/error.dart';
 
 class CommunityTreeDataHandler {
   final log = getLogger("CommunityTreeDataHandler");
 
-  late bool nextLevelExits;
-
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
-  final ProfileDataHandler _profileDataHandler = locator<ProfileDataHandler>();
-  final LimitsDataHandler _limitsDataHandler = locator<LimitsDataHandler>();
 
   Future<bool> createNewCommunity({
     required String managerReferralID,
@@ -86,11 +80,13 @@ class CommunityTreeDataHandler {
   }
 
   /// [tokens] is the final result stored in [finalTokenListForLenders].
-  Future<List<String>> getLenderNotificationTokens(
+  Future<void> getLenderNotificationTokens(
       {required currentReferralId,
       required int levelCounter,
-      required String communityName}) async {
+      required String communityName,
+      required int downCounter}) async {
     int level = 0;
+    int levelDown = 0;
     List<String>? tokens = [];
     log.v("Getting Lender Notifications");
     try {
@@ -100,30 +96,63 @@ class CommunityTreeDataHandler {
           .get()
           .then((value) async {
         level = int.parse(value.docs.first.id);
-        value.docs.getRange(level - 1, level - levelCounter).forEach((element) {
-          if (element.exists) {
-            tokens.addAll(element
-                .data()['Token']
-                .map<String>((s) => s as String)
-                .toList());
+        levelDown = level;
+        for (int i = 0; i <= levelCounter - 1; i++) {
+          if (level == -1) {
+            locator<TransactionsDataProvider>().notificationTokens = tokens;
+            break;
           }
-        });
-        return await FirebaseFirestore.instance
-            .collection(communityName)
-            .doc('Trusted')
-            .get()
-            .then((snapshot) {
-          if (snapshot.exists) {
-            tokens.addAll(
-                snapshot['Token'].map<String>((s) => s as String).toList());
-            return tokens;
-          } else
-            return <String>[];
-        });
+          FirebaseFirestore.instance
+              .collection(communityName)
+              .doc(level.toString())
+              .get()
+              .then((element) {
+            if (element.exists) {
+              tokens.addAll(element
+                  .data()!['Token']
+                  .map<String>((s) => s as String)
+                  .toList());
+            }
+            if (i == 0) {
+              FirebaseFirestore.instance
+                  .collection(communityName)
+                  .doc('Trusted')
+                  .get()
+                  .then((snapshot) {
+                if (snapshot.exists) {
+                  if (snapshot.data()!.containsKey('Token'))
+                    tokens.addAll(snapshot['Token']
+                        .map<String>((s) => s as String)
+                        .toList());
+                }
+              });
+            }
+          });
+          level--;
+          if (i == levelCounter)
+            locator<TransactionsDataProvider>().notificationTokens = tokens;
+        }
+        for (int i = 0; i < downCounter; i++) {
+          levelDown++;
+          FirebaseFirestore.instance
+              .collection(communityName)
+              .doc(levelDown.toString())
+              .get()
+              .then((element) {
+            if (element.exists) {
+              tokens.addAll(element
+                  .data()!['Token']
+                  .map<String>((s) => s as String)
+                  .toList());
+            }
+          });
+          levelDown++;
+          if (i == downCounter - 1)
+            locator<TransactionsDataProvider>().notificationTokens = tokens;
+        }
       });
     } catch (e) {
       _errorHandlingService.handleError(error: e);
-      return <String>[];
     }
   }
 }

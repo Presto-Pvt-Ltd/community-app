@@ -8,6 +8,7 @@ import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/models/transactions/generic_data_model.dart';
 import 'package:presto/models/transactions/lender_data_model.dart';
 import 'package:presto/models/transactions/transaction_status_data_model.dart';
+import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
@@ -92,6 +93,8 @@ class BorrowViewModel extends BaseViewModel {
             ),
           ));
         }
+        log.wtf(
+            locator<TransactionsDataProvider>().notificationTokens!.toString());
       });
   }
 }
