@@ -42,11 +42,12 @@ class FirestoreService {
     required DocumentReference document,
   }) async {
     try {
-      final snapshot = await document.get();
-      if (snapshot.exists)
-        return snapshot.data()!;
-      else
-        throw Exception("No Data Found");
+      return document.get().then((snapshot) {
+        if (snapshot.exists) {
+          return snapshot.data()!;
+        } else
+          throw Exception("No Data Found");
+      });
     } catch (e) {
       _errorHandlingService.handleError(error: e);
       return {};

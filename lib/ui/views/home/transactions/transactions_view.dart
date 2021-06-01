@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:stacked/stacked.dart';
 
 import 'transactions_viewModel.dart';
@@ -18,6 +21,7 @@ class TransactionsView extends StatelessWidget {
       // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,
       builder: (context, model, child) {
+        print(model.transactions);
         return GestureDetector(
           onHorizontalDragEnd: (dragEndDetails) {
             print(dragEndDetails.velocity);

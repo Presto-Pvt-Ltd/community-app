@@ -62,7 +62,7 @@ class BorrowViewModel extends BaseViewModel {
           /// initiate the process
           // TODO: ask for user preference in payment method
           // TODO: Timer
-
+          // TODO: Create lending request and send notifications
           ///create transaction and update databases
           locator<TransactionsDataProvider>().createTransaction(
               transaction: CustomTransaction(

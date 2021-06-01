@@ -114,9 +114,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/// Streams keeping a track of data in data-providers
-StreamController<bool> gotTransactionsDataStreamController =
-    StreamController<bool>.broadcast();
-StreamController<bool> gotUserDataStreamController =
-    StreamController<bool>.broadcast();

@@ -1,7 +1,5 @@
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
-import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
@@ -26,8 +24,6 @@ class HomeViewModel extends IndexTrackingViewModel {
   final TransactionsDataProvider _transactionsDataProvider =
       locator<TransactionsDataProvider>();
 
-  late Stream<List<String>> _transactionIdListAsStream;
-
   Future<void> onModelReady(int index) async {
     locator<HiveDatabaseService>()
         .openBox(uid: locator<AuthenticationService>().uid!)
@@ -51,35 +47,31 @@ class HomeViewModel extends IndexTrackingViewModel {
                     referralCode: referralCode,
                     typeOfDocument: ProfileDocument.userNotificationToken)
                 .then((value) {
-              log.wtf('userNotificationToken $value');
               if (value) {
                 _userDataProvider
                     .loadData(
                         referralCode: referralCode,
                         typeOfDocument: ProfileDocument.userTransactionsData)
                     .then((value) {
-                  log.wtf('userTransactionsData $value');
                   if (value) {
                     _userDataProvider
                         .loadData(
                             referralCode: referralCode,
                             typeOfDocument: ProfileDocument.userPlatformData)
                         .then((value) {
-                      log.wtf('userPlatformData $value');
                       if (value) {
                         _userDataProvider.loadData(
                             referralCode: referralCode,
                             typeOfDocument:
                                 ProfileDocument.userPlatformRatings);
-                        _transactionIdListAsStream =
-                            _userDataProvider.transactionIdAsStream;
-                        _transactionIdListAsStream.listen((gotIds) {
-                          if (gotIds.length != 0) {
-                            _transactionsDataProvider.loadData(
-                              transactionIds: gotIds,
-                            );
-                          }
-                        });
+                        if (_userDataProvider
+                                .transactionData!.transactionIds.length !=
+                            0) {
+                          _transactionsDataProvider.loadData(
+                            transactionIds: _userDataProvider
+                                .transactionData!.transactionIds,
+                          );
+                        }
                       }
                     });
                   }

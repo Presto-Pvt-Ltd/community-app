@@ -39,13 +39,13 @@ class HiveDatabaseService {
   }
 
   List<CustomTransaction> getListFromHive({required String key}) {
-    if (isBoxOpened)
-      return jsonDecode(
-              box.get(key, defaultValue: jsonEncode(<CustomTransaction>[])))
-          .map((value) {
-        return CustomTransaction.fromJson(value);
-      }).toList();
-    else
+    if (isBoxOpened) {
+      String encoded =
+          box.get(key, defaultValue: jsonEncode(<CustomTransaction>[]));
+      List decoded = jsonDecode(encoded);
+
+      return decoded.map((e) => CustomTransaction.fromJson(e)).toList();
+    } else
       return throw Exception("Reading from your storage");
   }
 

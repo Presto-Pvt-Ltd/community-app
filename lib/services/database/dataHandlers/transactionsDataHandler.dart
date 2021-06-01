@@ -105,12 +105,12 @@ class TransactionsDataHandler {
   }
 
   Future<bool> updateTransactionListInHive({
-    required List<CustomTransaction>? list,
+    required String? list,
   }) {
     return hiveDatabaseService.setDataInHive(
-        data:
-            list == null ? jsonEncode(<CustomTransaction>[]) : jsonEncode(list),
-        key: 'transactionList');
+      data: list,
+      key: 'transactionList',
+    );
   }
 
   List<CustomTransaction> getTransactionListFromHive() {

@@ -7,8 +7,9 @@ import 'package:stacked/stacked.dart';
 class TransactionsViewModel extends BaseViewModel {
   final log = getLogger("TransactionsViewModel");
   String title = "I am Transactions";
-  List transactions = locator<TransactionsDataProvider>().userTransactions ??
-      <CustomTransaction>[];
+  List<CustomTransaction> transactions =
+      locator<TransactionsDataProvider>().userTransactions ??
+          <CustomTransaction>[];
 
   late void Function(bool) callback;
   bool gotData = false;

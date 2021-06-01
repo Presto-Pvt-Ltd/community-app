@@ -1,11 +1,8 @@
 import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
-import 'package:presto/main.dart';
 import 'package:presto/models/user/notification_data_model.dart';
 import 'package:presto/models/user/personal_data_model.dart';
 import 'package:presto/models/user/platform_data_model.dart';
@@ -68,7 +65,6 @@ class UserDataProvider {
     required ProfileDocument typeOfDocument,
   }) async {
     try {
-      gotUserDataStreamController.add(false);
       log.v("Trying to get data from local storage");
 
       /// Fetch data from local storage
@@ -123,7 +119,6 @@ class UserDataProvider {
                   break;
                 case ProfileDocument.userTransactionsData:
                   _transactionData = TransactionData.fromJson(onlineDataMap);
-                  _transactionIdAsStream.add(_transactionData!.transactionIds);
                   break;
                 case ProfileDocument.userNotificationToken:
                   _token = NotificationToken.fromJson(onlineDataMap);
@@ -136,7 +131,6 @@ class UserDataProvider {
                     _platformRatingsData =
                         PlatformRatings.fromJson(onlineDataMap);
                     log.log(Level.warning, "Fetched data stream updated");
-                    gotUserDataStreamController.add(true);
                     break;
                   }
               }
@@ -153,7 +147,6 @@ class UserDataProvider {
               _personalData = PersonalData.fromJson(dataMap);
               break;
             case ProfileDocument.userTransactionsData:
-              log.wtf(dataMap.runtimeType);
               _transactionData = TransactionData.fromJson(dataMap);
               _transactionIdAsStream.add(_transactionData!.transactionIds);
               break;
@@ -186,7 +179,6 @@ class UserDataProvider {
           }
         },
       );
-      return false;
     }
   }
 }

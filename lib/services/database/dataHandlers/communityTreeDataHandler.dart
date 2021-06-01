@@ -32,12 +32,6 @@ class CommunityTreeDataHandler {
           .doc('0')
           .set(tempMap)
           .then((value) async {
-        // log.wtf('1st level cm');
-        // return await FirebaseFirestore.instance
-        //     .collection(communityName.trim())
-        //     .doc('1')
-        //     .set({"Members": []}).then((value) {
-        //   log.wtf('2nd level cm');
         return true;
       });
     } catch (e) {
