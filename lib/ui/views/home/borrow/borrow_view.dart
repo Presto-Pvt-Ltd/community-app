@@ -201,17 +201,17 @@ class BorrowView extends StatelessWidget {
                               borderRadius: BorderRadius.all(
                                   Radius.circular(width / 15.0)),
                             ),
-                            onPressed: () => showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) => paymentSheet(height,width)
-                            )
+                            // onPressed: () => showModalBottomSheet(
+                            //     context: context,
+                            //     isScrollControlled: true,
+                            //     backgroundColor: Colors.transparent,
+                            //     builder: (context) => paymentSheet(height,width)
+                            // )
                             //busy: model.isBusy || model.borrowingLimits == null,
-                            // onPressed: () {
-                            //   model.amount = 100;
-                            //   model.initiatePayment();
-                            // },
+                            onPressed: () {
+                              model.amount = 100;
+                              model.initiatePayment();
+                            },
                           ),
                         ],
                       ),
