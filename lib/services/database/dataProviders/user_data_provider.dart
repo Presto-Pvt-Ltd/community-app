@@ -1,11 +1,8 @@
 import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
-import 'package:presto/main.dart';
 import 'package:presto/models/user/notification_data_model.dart';
 import 'package:presto/models/user/personal_data_model.dart';
 import 'package:presto/models/user/platform_data_model.dart';
@@ -68,7 +65,6 @@ class UserDataProvider {
     required ProfileDocument typeOfDocument,
   }) async {
     try {
-      gotUserDataStreamController.add(false);
       log.v("Trying to get data from local storage");
 
       /// Fetch data from local storage
@@ -79,7 +75,8 @@ class UserDataProvider {
         fromLocalDatabase: true,
       )
           .then((dataMap) {
-        if (dataMap == {} || dataMap.isEmpty) {
+        log.v("Local Storage Response : $dataMap \n${dataMap.runtimeType}");
+        if (dataMap == <String, dynamic>{} || dataMap.isEmpty) {
           log.v("Local Storage is empty");
 
           ///  if [dataMap] is empty i.e. local storage dont have data
@@ -106,7 +103,8 @@ class UserDataProvider {
                 });
               });
             } else {
-              log.v("Retrieved from online storage: $onlineDataMap");
+              log.v(
+                  "Retrieved from online storage: $onlineDataMap \n${onlineDataMap.runtimeType}");
 
               /// after fetching from online storage update local storage
               _profileDataHandler.updateProfileData(
@@ -120,12 +118,8 @@ class UserDataProvider {
                   _personalData = PersonalData.fromJson(onlineDataMap);
                   break;
                 case ProfileDocument.userTransactionsData:
-                  {
-                    _transactionData = TransactionData.fromJson(onlineDataMap);
-                    _transactionIdAsStream
-                        .add(_transactionData!.transactionIds);
-                    break;
-                  }
+                  _transactionData = TransactionData.fromJson(onlineDataMap);
+                  break;
                 case ProfileDocument.userNotificationToken:
                   _token = NotificationToken.fromJson(onlineDataMap);
                   break;
@@ -137,7 +131,6 @@ class UserDataProvider {
                     _platformRatingsData =
                         PlatformRatings.fromJson(onlineDataMap);
                     log.log(Level.warning, "Fetched data stream updated");
-                    gotUserDataStreamController.add(true);
                     break;
                   }
               }
@@ -146,18 +139,18 @@ class UserDataProvider {
           });
         } else {
           /// if [dataMap] is not empty fill the data
-          log.v("Local Storage is not empty : $dataMap");
-
+          log.v(
+              "Local Storage is not empty : $dataMap \n${dataMap.runtimeType}");
+          try {} catch (e) {}
           switch (typeOfDocument) {
             case ProfileDocument.userPersonalData:
               _personalData = PersonalData.fromJson(dataMap);
               break;
             case ProfileDocument.userTransactionsData:
-              {
-                _transactionData = TransactionData.fromJson(dataMap);
-                _transactionIdAsStream.add(_transactionData!.transactionIds);
-                break;
-              }
+              _transactionData = TransactionData.fromJson(dataMap);
+              _transactionIdAsStream.add(_transactionData!.transactionIds);
+              break;
+
             case ProfileDocument.userNotificationToken:
               _token = NotificationToken.fromJson(dataMap);
               break;
@@ -176,11 +169,16 @@ class UserDataProvider {
       return Future.delayed(
         Duration(seconds: 2),
         () {
-          return loadData(
-              referralCode: referralCode, typeOfDocument: typeOfDocument);
+          if (e.toString() == "Reading from your storage")
+            return loadData(
+                referralCode: referralCode, typeOfDocument: typeOfDocument);
+          else {
+            log.e(referralCode);
+            log.e(typeOfDocument);
+            return false;
+          }
         },
       );
-      return false;
     }
   }
 }

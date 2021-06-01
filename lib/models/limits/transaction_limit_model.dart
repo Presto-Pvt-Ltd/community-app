@@ -7,10 +7,8 @@ class TransactionLimits {
   final int borrowUpperLimit;
   final int transactionDefaultsAfterDays;
   final int keepTransactionActiveTillHours;
-  final int levelCounter;
 
   TransactionLimits({
-    required this.levelCounter,
     required this.borrowLowerLimit,
     required this.borrowUpperLimit,
     required this.transactionDefaultsAfterDays,

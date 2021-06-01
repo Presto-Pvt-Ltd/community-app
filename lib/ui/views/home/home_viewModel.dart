@@ -1,9 +1,8 @@
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
-import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -25,11 +24,12 @@ class HomeViewModel extends IndexTrackingViewModel {
   final TransactionsDataProvider _transactionsDataProvider =
       locator<TransactionsDataProvider>();
 
-  late Stream<List<String>> _transactionIdListAsStream;
-
   Future<void> onModelReady(int index) async {
-    /// Getting initial data:
-    Future.delayed(Duration(seconds: 0), () {
+    locator<HiveDatabaseService>()
+        .openBox(uid: locator<AuthenticationService>().uid!)
+        .then((value) {
+      /// Getting initial data:
+
       setIndex(index);
       try {
         referralCode = _authenticationService.referralCode!;
@@ -41,7 +41,6 @@ class HomeViewModel extends IndexTrackingViewModel {
           typeOfDocument: ProfileDocument.userPersonalData,
         )
             .then((value) {
-          log.wtf(value);
           if (value) {
             _userDataProvider
                 .loadData(
@@ -65,15 +64,14 @@ class HomeViewModel extends IndexTrackingViewModel {
                             referralCode: referralCode,
                             typeOfDocument:
                                 ProfileDocument.userPlatformRatings);
-                        _transactionIdListAsStream =
-                            _userDataProvider.transactionIdAsStream;
-                        _transactionIdListAsStream.listen((gotIds) {
-                          if (gotIds.length != 0) {
-                            _transactionsDataProvider.loadData(
-                              transactionIds: gotIds,
-                            );
-                          }
-                        });
+                        if (_userDataProvider
+                                .transactionData!.transactionIds.length !=
+                            0) {
+                          _transactionsDataProvider.loadData(
+                            transactionIds: _userDataProvider
+                                .transactionData!.transactionIds,
+                          );
+                        }
                       }
                     });
                   }

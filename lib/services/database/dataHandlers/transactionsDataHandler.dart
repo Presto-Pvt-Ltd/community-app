@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/error/error.dart';
@@ -48,7 +51,7 @@ class TransactionsDataHandler {
   }
 
   /// Updates [data] for transaction with [transactionId] and [typeOfDocument]
-  Future<bool> updateTransactionStatus({
+  Future<bool> updateTransaction({
     required Map<String, dynamic> data,
     required TransactionDocument typeOfDocument,
     required String transactionId,
@@ -74,12 +77,40 @@ class TransactionsDataHandler {
     }
   }
 
+  /// Sets [data] for transaction with [transactionId] and [typeOfDocument]
+  Future<bool> createTransaction({
+    required Map<String, dynamic> data,
+    required TransactionDocument typeOfDocument,
+    required String transactionId,
+    required bool toLocalStorage,
+  }) async {
+    try {
+      if (toLocalStorage) {
+        log.v("Creating data in local database");
+        return throw Exception("NOt Applicable");
+      } else {
+        log.v("Creating data in cloud database");
+        final String docId = _getDocId(typeOfDocument);
+        final CollectionReference collectionReference =
+            _getTransactionReference(transactionId, docId);
+        return await _firestoreService.setData(
+          data: data,
+          document: collectionReference.doc(docId),
+        );
+      }
+    } catch (e) {
+      _errorHandlingService.handleError(error: e);
+      return false;
+    }
+  }
+
   Future<bool> updateTransactionListInHive({
-    required List<CustomTransaction>? list,
+    required String? list,
   }) {
     return hiveDatabaseService.setDataInHive(
-        data: list == null ? <CustomTransaction>[] : list,
-        key: 'transactionList');
+      data: list,
+      key: 'transactionList',
+    );
   }
 
   List<CustomTransaction> getTransactionListFromHive() {

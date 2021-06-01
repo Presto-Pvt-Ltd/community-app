@@ -3,11 +3,9 @@ part 'borrower_data_model.g.dart';
 
 @JsonSerializable()
 class BorrowerInformation {
-  final int borrowerSentMoneyHour;
   final DateTime? borrowerSentMoneyAt;
   final String borrowerReferralCode;
   BorrowerInformation({
-    required this.borrowerSentMoneyHour,
     this.borrowerSentMoneyAt,
     required this.borrowerReferralCode,
   });

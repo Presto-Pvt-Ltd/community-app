@@ -1,14 +1,8 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'transaction_data_model.dart';
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
 
 TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) {
   return TransactionData(
-    paymentMethodsUsed: json['paymentMethodsUsed'] as Map<String, dynamic>,
+    paymentMethodsUsed: Map<String, dynamic>.from(json['paymentMethodsUsed']),
     transactionIds: (json['transactionIds'] as List<dynamic>)
         .map((e) => e as String)
         .toList(),

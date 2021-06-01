@@ -21,7 +21,8 @@ class StartUpViewModel extends BaseViewModel {
       Future.delayed(Duration(seconds: 0), () {
         _authenticationService.uid == null
             ? _navigationService.replaceWith(Routes.loginView)
-            : _navigationService.replaceWith(Routes.homeView);
+            : _navigationService.replaceWith(Routes.homeView,
+                arguments: HomeViewArguments(index: 1));
       });
     } catch (error) {
       log.e("Some error while checking active user");

@@ -71,8 +71,9 @@ Future<void> main() async {
 }
 
 Future _initHive() async {
-  var dir = await getApplicationDocumentsDirectory();
-  Hive.init(dir.path);
+  await getApplicationDocumentsDirectory().then((dir) {
+    Hive.init(dir.path);
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -116,9 +117,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/// Streams keeping a track of data in data-providers
-StreamController<bool> gotTransactionsDataStreamController =
-    StreamController<bool>.broadcast();
-StreamController<bool> gotUserDataStreamController =
-    StreamController<bool>.broadcast();

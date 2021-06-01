@@ -78,10 +78,7 @@ class ProfileView extends StatelessWidget {
                                         //height: MediaQuery.of(context).size.height/17,
                                         width: width / 1.7,
                                         child: Text(
-                                          locator<UserDataProvider>()
-                                                  .personalData
-                                                  ?.name ??
-                                              "...",
+                                          model.personalData.name,
                                           style: TextStyle(
                                               fontSize: height / 30,
                                               color: Colors.white),
@@ -94,10 +91,7 @@ class ProfileView extends StatelessWidget {
                                         left: width / 30,
                                       ),
                                       child: Text(
-                                        locator<UserDataProvider>()
-                                                .personalData
-                                                ?.email ??
-                                            "...",
+                                        model.personalData.email,
                                         style: TextStyle(
                                             fontSize: height / 45,
                                             color: Colors.white),
@@ -116,8 +110,8 @@ class ProfileView extends StatelessWidget {
                                                 color: Colors.white,
                                               ),
                                               onPressed: () {
-                                                //Sign Out
-                                                //model.signOut();
+                                                ///Sign Out
+                                                model.signOut();
                                               },
                                             )),
                                         Padding(
@@ -178,38 +172,25 @@ class ProfileView extends StatelessWidget {
                             ListToken(
                               name: 'Contact Number',
                               icon: Icons.phone,
-                              trailName: locator<UserDataProvider>()
-                                      .personalData
-                                      ?.contact ??
-                                  "...",
+                              trailName: model.personalData.contact,
                             ),
                             ListToken(
                               name: 'Community Name',
                               icon: Icons.people,
-                              trailName: locator<UserDataProvider>()
-                                      .personalData
-                                      ?.community ??
-                                  "...",
+                              trailName: model.personalData.community,
                             ),
                             ListToken(
                               name: 'Total Amount Borrowed',
                               icon: Icons.attach_money,
                               trailName: '₹' +
-                                  (locator<UserDataProvider>()
-                                          .transactionData
-                                          ?.totalBorrowed
-                                          .toString() ??
-                                      "..."),
+                                  model.transactionData.totalBorrowed
+                                      .toString(),
                             ),
                             ListToken(
                               name: 'Total Amount Lent',
                               icon: Icons.monetization_on,
                               trailName: '₹' +
-                                  (locator<UserDataProvider>()
-                                          .transactionData
-                                          ?.totalLent
-                                          .toString() ??
-                                      "..."),
+                                  model.transactionData.totalLent.toString(),
                             ),
                             ListToken(
                               name: 'Most Used Mode',
@@ -217,18 +198,24 @@ class ProfileView extends StatelessWidget {
                               trailName: 'Paytm',
                             ),
                             ListToken(
-                                name: 'Community Code',
-                                icon: Icons.info,
-                                trailName: 'kuch bhi dedo'),
+                              name: 'Community Code',
+                              icon: Icons.info,
+                              trailName: model.platformData.referralCode,
+                            ),
                             ListToken(
                               name: 'Creditworthy score',
                               icon: Icons.credit_card_rounded,
-                              trailName: '0',
+                              trailName: ((model
+                                              .platformRatings.communityScore +
+                                          model.platformRatings.personalScore) *
+                                      0.5)
+                                  .toString(),
                             ),
                             ListToken(
                               name: 'Presto Coins',
                               icon: Icons.money,
-                              trailName: '0',
+                              trailName:
+                                  model.platformRatings.prestoCoins.toString(),
                             ),
                             SizedBox(
                               height: height / 18,
