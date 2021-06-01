@@ -9,9 +9,8 @@ Widget paymentSheet(var height, var width) {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(width/15))
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: ListView(
+        controller: controller,
         children: <Widget>[
           SizedBox(
             height: height / 45,
@@ -38,9 +37,11 @@ Widget paymentSheet(var height, var width) {
           SizedBox(
             height: height / 45,
           ),
-          Text(
-            'Choose Your Mode Of Payment',
-            style: TextStyle(color: Colors.black, fontSize: 20.0),
+          Center(
+            child: Text(
+              'Choose Your Mode Of Payment',
+              style: TextStyle(color: Colors.black, fontSize: 20.0),
+            ),
           ),
           SizedBox(
             height: height / 25,
@@ -50,9 +51,9 @@ Widget paymentSheet(var height, var width) {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                PaymentCard(imagePath: 'assets/images/paytmbox.webp'),
+                PaymentCard(imagePath: 'assets/images/paytmbox.webp',index: 0,),
                 SizedBox(width: width/10,),
-                PaymentCard(imagePath: 'assets/images/gpaybox.png')
+                PaymentCard(imagePath: 'assets/images/gpaybox.png', index: 1,)
               ],
             ),
           ),
@@ -64,21 +65,29 @@ Widget paymentSheet(var height, var width) {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                PaymentCard(imagePath: 'assets/images/paypalbox.png'),
-                SizedBox(width: width/15,),
-                PaymentCard(imagePath: 'assets/images/phonepaybox.png'),
+                PaymentCard(imagePath: 'assets/images/paypalbox.png', index: 2,),
+                SizedBox(width: width/10,),
+                PaymentCard(imagePath: 'assets/images/phonepaybox.png', index: 3,),
               ],
             ),
           ),
           SizedBox(
             height: height/25,
           ),
-          PaymentCard(imagePath: 'assets/images/amazonpaybox.png'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              PaymentCard(imagePath: 'assets/images/amazonpaybox.png', index: 4,),
+            ],
+          ),
           SizedBox(
             height: height/25,
           ),
-          InputField(
-            helperText: "Enter your UPI ID",
+          Padding(
+            padding: EdgeInsets.all(width/20),
+            child: InputField(
+              helperText: "Enter your UPI ID",
+            ),
           )
         ],
       ),

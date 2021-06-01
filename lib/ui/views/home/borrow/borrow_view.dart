@@ -208,10 +208,10 @@ class BorrowView extends StatelessWidget {
                                 builder: (context) => paymentSheet(height,width)
                             )
                             //busy: model.isBusy || model.borrowingLimits == null,
-                            onPressed: () {
-                              model.amount = 100;
-                              model.initiatePayment();
-                            },
+                            // onPressed: () {
+                            //   model.amount = 100;
+                            //   model.initiatePayment();
+                            // },
                           ),
                         ],
                       ),
