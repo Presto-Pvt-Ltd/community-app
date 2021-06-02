@@ -190,10 +190,10 @@ class BorrowView extends StatelessWidget {
                             height: height / 20,
                           ),
                           BusyButton(
+                            textColor: Colors.white,
                             height: height / 10,
                             width: width / 3,
                             title: "Get Paid!",
-                            color: Colors.white,
                             decoration: BoxDecoration(
                               color: primaryColor,
                               borderRadius: BorderRadius.all(

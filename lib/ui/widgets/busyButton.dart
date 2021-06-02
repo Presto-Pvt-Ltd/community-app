@@ -8,7 +8,8 @@ class BusyButton extends StatefulWidget {
   final bool enabled;
   final double? height;
   final double? width;
-  final Color? color;
+  final Color? buttonColor;
+  final Color? textColor;
   final BoxDecoration? decoration;
   BusyButton({
     Key? key,
@@ -18,8 +19,9 @@ class BusyButton extends StatefulWidget {
     this.enabled = true,
     this.width,
     this.height,
-    this.color,
+    this.buttonColor,
     this.decoration,
+    this.textColor,
   }) : super(key: key);
 
   @override
@@ -35,12 +37,13 @@ class _BusyButtonState extends State<BusyButton> {
             width: widget.width,
             decoration: widget.decoration,
             child: MaterialButton(
+              color: widget.buttonColor,
               onPressed: widget.onPressed,
               child: Text(
                 widget.title,
                 style: TextStyle(
                   fontSize: 19,
-                  color: widget.color,
+                  color: widget.textColor,
                 ),
               ),
             ),

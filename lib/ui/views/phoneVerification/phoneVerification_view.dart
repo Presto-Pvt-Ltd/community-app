@@ -117,6 +117,7 @@ class PhoneVerificationView extends StatelessWidget {
                           Radius.circular(15),
                         ),
                       ),
+                      textColor: Colors.white,
                       title: "Verify",
                       height: height / 13,
                       busy: model.isBusy,

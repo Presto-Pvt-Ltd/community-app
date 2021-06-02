@@ -121,6 +121,7 @@ class LoginView extends StatelessWidget {
                           BusyButton(
                             height: height / 13,
                             width: width * 0.5,
+                            textColor: Colors.white,
                             decoration: BoxDecoration(
                               color: primaryColor,
                               borderRadius: BorderRadius.all(
