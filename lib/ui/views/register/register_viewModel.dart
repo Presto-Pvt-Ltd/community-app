@@ -1,17 +1,18 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/models/enums.dart';
+import 'package:presto/models/limits/referral_limit_model.dart';
 import 'package:presto/models/user/notification_data_model.dart';
 import 'package:presto/models/user/personal_data_model.dart';
 import 'package:presto/models/user/platform_data_model.dart';
 import 'package:presto/models/user/platform_ratings_data.dart';
 import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
@@ -164,8 +165,8 @@ class RegisterViewModel extends FormViewModel {
       if (referralCodeOrCommunityName != null ||
           referralCodeOrCommunityName!.trim().length < 6) {
         if (isRegistrationAsCommunityManager) {
+          /// Check whether given community name is unique
           log.d("Going for validation");
-
           final QuerySnapshot querySnapshot =
               await locator<FirestoreService>().checkForCollectionExistence(
             community: referralCodeOrCommunityName.trim(),
@@ -176,16 +177,35 @@ class RegisterViewModel extends FormViewModel {
             return "Entered Community Name is either taken or not valid";
           }
         } else {
-          final Map<String, dynamic> personalData =
-              await locator<ProfileDataHandler>().getProfileData(
+          /// Checks whether referral code is valid
+          return await locator<ProfileDataHandler>()
+              .getProfileData(
             userId: referralCodeOrCommunityName.trim(),
-            typeOfData: ProfileDocument.userPersonalData,
+            typeOfData: ProfileDocument.userPlatformData,
             fromLocalDatabase: false,
-          );
-          if (personalData != <String, dynamic>{}) {
-            parentCommunity = PersonalData.fromJson(personalData).community;
-          } else
-            return "Please enter valid Referral Code";
+          )
+              .then((personalData) {
+            if (personalData != <String, dynamic>{}) {
+              PlatformData parentPlatformData =
+                  PlatformData.fromJson(personalData);
+              return locator<LimitsDataHandler>()
+                  .getLimitsData(
+                typeOfLimit: LimitDocument.referralLimits,
+                fromLocalDatabase: false,
+              )
+                  .then((limitsMap) {
+                ReferralLimit referralLimit = ReferralLimit.fromJson(limitsMap);
+                if (parentPlatformData.referredTo.length ==
+                    referralLimit.refereeLimit) {
+                  return "Referee limit of entered referral code has been exceeded";
+                } else {
+                  parentCommunity = parentPlatformData.community;
+                  return null;
+                }
+              });
+            } else
+              return "Please enter valid Referral Code";
+          });
         }
       }
     } catch (e) {
@@ -279,12 +299,12 @@ class RegisterViewModel extends FormViewModel {
                     password: password!,
                     deviceId: deviceId!,
                     referralId: referralCodeOrCommunityName!,
-                    community: isRegistrationAsCommunityManager
-                        ? referralCodeOrCommunityName!
-                        : parentCommunity!,
                   );
                   locator<UserDataProvider>().personalData = personalData;
                   PlatformData platformData = PlatformData(
+                    community: isRegistrationAsCommunityManager
+                        ? referralCodeOrCommunityName!
+                        : parentCommunity!,
                     referralCode: referralCode,
                     referredBy: isRegistrationAsCommunityManager
                         ? "CM"

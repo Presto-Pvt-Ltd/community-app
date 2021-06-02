@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../shared/colors.dart';
 
 class PaymentCard extends StatefulWidget {
   final String imagePath;
@@ -26,32 +25,27 @@ class _PaymentCardState extends State<PaymentCard> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: () async {
-        setState(() {
-          isSelected = !isSelected;
-        });
-        // setState(() {
-        //   isSelected = !isSelected;
-        //   if (isSelected)
-        //     widget.callBackToAddInTheOptionInTheList(widget.index);
-        //   else
-        //     widget.callBackToRemoveInTheOptionInTheList(widget.index);
-        // });
-      },
-      child: Container(
-        height: width/5,
-        width: width/5,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? Colors.lightGreen : Colors.white,
-            width: width/200
-          ),
-            image: DecorationImage(
-                image: AssetImage(widget.imagePath),
-                fit: BoxFit.fitWidth
-            )
-        ),
-      )
-    );
+        onTap: () async {
+          setState(() {
+            isSelected = !isSelected;
+          });
+          // setState(() {
+          //   isSelected = !isSelected;
+          //   if (isSelected)
+          //     widget.callBackToAddInTheOptionInTheList(widget.index);
+          //   else
+          //     widget.callBackToRemoveInTheOptionInTheList(widget.index);
+          // });
+        },
+        child: Container(
+          height: width / 5,
+          width: width / 5,
+          decoration: BoxDecoration(
+              border: Border.all(
+                  color: isSelected ? Colors.lightGreen : Colors.white,
+                  width: width / 200),
+              image: DecorationImage(
+                  image: AssetImage(widget.imagePath), fit: BoxFit.fitWidth)),
+        ));
   }
 }

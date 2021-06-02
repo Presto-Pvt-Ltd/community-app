@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/main.dart';
 import 'package:presto/models/transactions/borrower_data_model.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/models/transactions/generic_data_model.dart';
@@ -24,24 +23,10 @@ class TransactionsDataProvider {
       locator<ErrorHandlingService>();
 
   /// Transactions Data
-  List<CustomTransaction>? _userTransactions;
+  List<CustomTransaction>? userTransactions;
 
   /// token list
-  List<String>? _notificationTokens;
-
-  ///getter and setter for tokens
-  List<String>? get notificationTokens => _notificationTokens;
-  set notificationTokens(List<String>? list) {
-    _notificationTokens = list;
-  }
-
-  /// Getters for transaction data
-  List<CustomTransaction>? get userTransactions => _userTransactions;
-
-  /// Setter for transaction list
-  set userTransactions(List<CustomTransaction>? transactionList) {
-    _userTransactions = transactionList;
-  }
+  List<String>? notificationTokens;
 
   /// transaction id generator
   final Random _random = Random.secure();
@@ -55,14 +40,14 @@ class TransactionsDataProvider {
       log.v("Checking whether there are any transactions");
       if (transactionIds.length == 0) {
         log.v("transactions don't exist");
-        _userTransactions = <CustomTransaction>[];
+        userTransactions = <CustomTransaction>[];
       } else {
         log.v("Trying to load data from local storage");
 
         /// Get CustomTransactionListFrom local storage
         List<CustomTransaction> customTransactionList =
             _transactionsDataHandler.getTransactionListFromHive();
-        _userTransactions = customTransactionList;
+        userTransactions = customTransactionList;
         log.v("Got local transactions. no: ${customTransactionList.length}");
 
         /// Sync the local storage
@@ -89,16 +74,16 @@ class TransactionsDataProvider {
             "New TransactionIDs are : $transactionIds",
           );
 
-          /// for each [singlTransaction] wait for all of it's futures
-          /// then add in new [CustomTrasaction] to [_userTransactions]
+          /// for each [singleTransaction] wait for all of it's futures
+          /// then add in new [CustomTransaction] to [userTransactions]
           futures.forEach((singleTransaction) {
             log.v("for transaction: ${singleTransaction.toString()}");
             Future.wait(singleTransaction).then((transactionFetched) {
               log.v(
                 "Waited for future to complete, got transaction : $transactionFetched",
               );
-              if (_userTransactions == null)
-                _userTransactions = [
+              if (userTransactions == null)
+                userTransactions = [
                   CustomTransaction(
                     genericInformation:
                         GenericInformation.fromJson(transactionFetched[0]),
@@ -111,7 +96,7 @@ class TransactionsDataProvider {
                   ),
                 ];
               else {
-                _userTransactions!.add(
+                userTransactions!.add(
                   CustomTransaction(
                     genericInformation:
                         GenericInformation.fromJson(transactionFetched[0]),
@@ -123,10 +108,10 @@ class TransactionsDataProvider {
                         TransactionStatus.fromJson(transactionFetched[3]),
                   ),
                 );
-                if (_userTransactions!.length == transactionIds.length) {
+                if (userTransactions!.length == transactionIds.length) {
                   log.v("Got final transactions from cloud storage");
                   _transactionsDataHandler.updateTransactionListInHive(
-                    list: jsonEncode(_userTransactions),
+                    list: jsonEncode(userTransactions),
                   );
                 }
               }
@@ -134,7 +119,7 @@ class TransactionsDataProvider {
           });
         } else {
           log.v("Got final transactions from local storage");
-          _userTransactions = customTransactionList;
+          userTransactions = customTransactionList;
         }
       }
     } catch (e) {
@@ -150,14 +135,14 @@ class TransactionsDataProvider {
   }
 
   void createTransaction({required CustomTransaction transaction}) async {
-    _userTransactions == null
-        ? _userTransactions = [transaction]
-        : _userTransactions!.add(transaction);
+    userTransactions == null
+        ? userTransactions = [transaction]
+        : userTransactions!.add(transaction);
     log.v("Updated custom transactionList here");
 
     ///Hive update transaction list
     _transactionsDataHandler.updateTransactionListInHive(
-      list: jsonEncode(_userTransactions),
+      list: jsonEncode(userTransactions),
     );
     log.v("Updated custom transaction list in hive");
 

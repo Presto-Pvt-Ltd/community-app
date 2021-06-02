@@ -224,13 +224,13 @@ class PhoneVerificationViewModel extends BaseViewModel {
         _userDataProvider.platformData!.isCommunityManager
             ? locator<CommunityTreeDataHandler>().createNewCommunity(
                 managerReferralID: _userDataProvider.platformData!.referralCode,
-                communityName: _userDataProvider.personalData!.community,
+                communityName: _userDataProvider.platformData!.community,
                 token: _userDataProvider.token!.notificationToken,
               )
             : locator<CommunityTreeDataHandler>().createNewUser(
                 userReferralID: _userDataProvider.platformData!.referralCode,
                 parentReferralID: _userDataProvider.platformData!.referredBy,
-                communityName: _userDataProvider.personalData!.community,
+                communityName: _userDataProvider.platformData!.community,
                 token: _userDataProvider.token!.notificationToken,
               );
         setBusy(false);

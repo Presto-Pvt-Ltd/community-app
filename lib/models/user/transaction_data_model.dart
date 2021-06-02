@@ -1,5 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:presto/models/enums.dart';
 part 'transaction_data_model.g.dart';
 
 // TODO: Cross check if this is done.

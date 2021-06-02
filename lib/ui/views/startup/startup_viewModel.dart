@@ -1,4 +1,3 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
@@ -14,7 +13,6 @@ class StartUpViewModel extends BaseViewModel {
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
   final NavigationService _navigationService = locator<NavigationService>();
-  final Connectivity _connectivity = Connectivity();
   void onModelReady() {
     try {
       log.d("Checking for active user");

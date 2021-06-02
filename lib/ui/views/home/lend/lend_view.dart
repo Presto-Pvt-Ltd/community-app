@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked/stacked.dart';
 import 'lend_viewModel.dart';
 
@@ -32,29 +31,29 @@ class LendView extends StatelessWidget {
               child: Scaffold(
                 body: model.dataReady || !model.isBusy
                     ? SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: height / 25,
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          'All Notifications',
-                          style:
-                          TextStyle(color: Colors.black, fontSize: height/22),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: height / 25,
+                            ),
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                'All Notifications',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: height / 22),
+                              ),
+                            ),
+                            SizedBox(
+                              height: height / 30,
+                            ),
+                            Container(),
+                            // notificationListCard( , height, width),
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        height: height / 30,
-                      ),
-                      Container(),
-                      // notificationListCard( , height, width),
-                    ],
-                  ),
-                )
-                     : Center(
+                      )
+                    : Center(
                         child: CircularProgressIndicator(),
                       ),
               ),

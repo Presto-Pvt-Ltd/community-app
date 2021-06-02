@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:presto/app/app.locator.dart';
-import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/ListToken.dart';
 import 'package:stacked/stacked.dart';
@@ -177,7 +175,7 @@ class ProfileView extends StatelessWidget {
                             ListToken(
                               name: 'Community Name',
                               icon: Icons.people,
-                              trailName: model.personalData.community,
+                              trailName: model.platformData.community,
                             ),
                             ListToken(
                               name: 'Total Amount Borrowed',

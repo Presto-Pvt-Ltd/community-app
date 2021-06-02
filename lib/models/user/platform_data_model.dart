@@ -7,12 +7,14 @@ class PlatformData {
   final String referredBy;
   final List<String> referredTo;
   final bool isCommunityManager;
+  final String community;
 
   PlatformData({
     required this.referralCode,
     required this.referredBy,
     required this.referredTo,
     required this.isCommunityManager,
+    required this.community,
   });
   factory PlatformData.fromJson(Map<String, dynamic> json) =>
       _$PlatformDataFromJson(json);

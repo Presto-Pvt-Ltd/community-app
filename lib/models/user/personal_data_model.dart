@@ -10,7 +10,6 @@ class PersonalData {
   final String password;
   final String deviceId;
   final String referralId;
-  final String community;
 
   PersonalData({
     required this.name,
@@ -19,7 +18,6 @@ class PersonalData {
     required this.password,
     required this.deviceId,
     required this.referralId,
-    required this.community,
   });
 
   factory PersonalData.fromJson(Map<String, dynamic> json) =>

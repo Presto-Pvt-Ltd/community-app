@@ -76,7 +76,7 @@ class HomeViewModel extends IndexTrackingViewModel {
                                     int.parse(
                                         (limitMap['levelCounter']).toString()),
                                 communityName: locator<UserDataProvider>()
-                                    .personalData!
+                                    .platformData!
                                     .community,
                                 downCounter: int.parse(
                                     (limitMap['downCounter']).toString()));

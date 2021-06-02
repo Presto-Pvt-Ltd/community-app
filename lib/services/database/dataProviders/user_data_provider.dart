@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:logger/logger.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
@@ -27,8 +26,6 @@ class UserDataProvider {
   PlatformData? _platformData;
   TransactionData? _transactionData;
   PlatformRatings? _platformRatingsData;
-  StreamController<List<String>> _transactionIdAsStream =
-      StreamController<List<String>>();
 
   /// Getters for profile data
   NotificationToken? get token => _token;
@@ -36,8 +33,6 @@ class UserDataProvider {
   PlatformData? get platformData => _platformData;
   TransactionData? get transactionData => _transactionData;
   PlatformRatings? get platformRatingsData => _platformRatingsData;
-  Stream<List<String>> get transactionIdAsStream =>
-      _transactionIdAsStream.stream;
 
   /// Setters for profile Data
   set token(NotificationToken? token) {
@@ -127,12 +122,9 @@ class UserDataProvider {
                   _platformData = PlatformData.fromJson(onlineDataMap);
                   break;
                 case ProfileDocument.userPlatformRatings:
-                  {
-                    _platformRatingsData =
-                        PlatformRatings.fromJson(onlineDataMap);
-                    log.log(Level.warning, "Fetched data stream updated");
-                    break;
-                  }
+                  _platformRatingsData =
+                      PlatformRatings.fromJson(onlineDataMap);
+                  break;
               }
               return true;
             }
@@ -148,7 +140,6 @@ class UserDataProvider {
               break;
             case ProfileDocument.userTransactionsData:
               _transactionData = TransactionData.fromJson(dataMap);
-              _transactionIdAsStream.add(_transactionData!.transactionIds);
               break;
 
             case ProfileDocument.userNotificationToken:
@@ -171,7 +162,9 @@ class UserDataProvider {
         () {
           if (e.toString() == "Reading from your storage")
             return loadData(
-                referralCode: referralCode, typeOfDocument: typeOfDocument);
+              referralCode: referralCode,
+              typeOfDocument: typeOfDocument,
+            );
           else {
             log.e(referralCode);
             log.e(typeOfDocument);

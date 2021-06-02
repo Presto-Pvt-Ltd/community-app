@@ -25,13 +25,13 @@ class ProfileViewModel extends BaseViewModel {
         password: "...",
         deviceId: "...",
         referralId: "...",
-        community: "...",
       );
   PlatformData platformData = locator<UserDataProvider>().platformData ??
       PlatformData(
         referralCode: "...",
         referredBy: "...",
         referredTo: <String>[],
+        community: "....",
         isCommunityManager: false,
       );
   PlatformRatings platformRatings =
