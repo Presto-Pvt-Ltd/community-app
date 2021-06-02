@@ -166,7 +166,7 @@ class CommunityTreeDataHandler {
                       .map<String>((s) => s as String)
                       .toList());
                 if (snapshot.data()!.containsKey('Members'))
-                  tokens.addAll(snapshot
+                  lenders.addAll(snapshot
                       .data()!['Members']
                       .map<String>((s) => s as String)
                       .toList());
