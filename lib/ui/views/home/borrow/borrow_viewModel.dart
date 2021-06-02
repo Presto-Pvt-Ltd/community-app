@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/enums.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
+import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/models/transactions/borrower_data_model.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/models/transactions/generic_data_model.dart';
 import 'package:presto/models/transactions/lender_data_model.dart';
 import 'package:presto/models/transactions/transaction_status_data_model.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
+import 'package:presto/services/database/dataHandlers/notificationDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:stacked/stacked.dart';
@@ -64,36 +66,64 @@ class BorrowViewModel extends BaseViewModel {
           // TODO: Timer
           // TODO: Create lending request and send notifications
           ///create transaction and update databases
-          locator<TransactionsDataProvider>().createTransaction(
-              transaction: CustomTransaction(
-            genericInformation: GenericInformation(
-              transactionId:
-                  locator<TransactionsDataProvider>().createRandomString(),
-              amount: amount.toInt(),
-              transactionMethods: [PaymentMethods.payTm],
-              interestRate: 0,
-              initiationAt: DateTime.now(),
+          var transactionId =
+              locator<TransactionsDataProvider>().createRandomString();
+          locator<TransactionsDataProvider>().lenders!.remove(
+                locator<UserDataProvider>().platformData!.referralCode,
+              );
+          locator<TransactionsDataProvider>().notificationTokens!.remove(
+                locator<UserDataProvider>().token!.notificationToken,
+              );
+          locator<TransactionsDataProvider>()
+              .createTransaction(
+            transaction: CustomTransaction(
+              genericInformation: GenericInformation(
+                transactionId: transactionId,
+                amount: amount.toInt(),
+                transactionMethods: [PaymentMethods.payTm],
+                interestRate: 0,
+                initiationAt: DateTime.now(),
+              ),
+              borrowerInformation: BorrowerInformation(
+                borrowerReferralCode:
+                    locator<UserDataProvider>().platformData!.referralCode,
+                borrowerSentMoneyAt: null,
+              ),
+              transactionStatus: TransactionStatus(
+                approvedStatus: false,
+                lenderSentMoney: false,
+                borrowerSentMoney: false,
+                isBorrowerPenalised: false,
+                isLenderPenalised: false,
+              ),
+              lenderInformation: LenderInformation(
+                lenderReferralCode: null,
+                lenderSentMoneyAt: null,
+              ),
             ),
-            borrowerInformation: BorrowerInformation(
-              borrowerReferralCode:
-                  locator<UserDataProvider>().platformData!.referralCode,
-              borrowerSentMoneyAt: null,
-            ),
-            transactionStatus: TransactionStatus(
-              approvedStatus: false,
-              lenderSentMoney: false,
-              borrowerSentMoney: false,
-              isBorrowerPenalised: false,
-              isLenderPenalised: false,
-            ),
-            lenderInformation: LenderInformation(
-              lenderReferralCode: null,
-              lenderSentMoneyAt: null,
-            ),
-          ));
+          )
+              .then((value) {
+            locator<NotificationDataHandler>().setNotificationDocument(
+              docId: locator<UserDataProvider>().platformData!.referralCode,
+              data: CustomNotification(
+                borrowerRating: (locator<UserDataProvider>()
+                            .platformRatingsData!
+                            .personalScore +
+                        locator<UserDataProvider>()
+                            .platformRatingsData!
+                            .communityScore) /
+                    2,
+                amount: amount.ceil(),
+                transactionId: transactionId,
+                paymentMethods: [PaymentMethods.googlePay],
+                borrowerReferralCode:
+                    locator<UserDataProvider>().platformData!.referralCode,
+                lendersReferralCodes:
+                    locator<TransactionsDataProvider>().lenders!,
+              ).toJson(),
+            );
+          });
         }
-        log.wtf(
-            locator<TransactionsDataProvider>().notificationTokens!.toString());
       });
   }
 }

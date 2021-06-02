@@ -5,7 +5,7 @@ part 'notification_data_model.g.dart';
 @JsonSerializable()
 class CustomNotification {
   final String borrowerReferralCode;
-  final String lenderReferralCode;
+  final List<String> lendersReferralCodes;
   final String transactionId;
   final int amount;
   final double borrowerRating;
@@ -13,7 +13,7 @@ class CustomNotification {
 
   CustomNotification({
     required this.borrowerRating,
-    required this.lenderReferralCode,
+    required this.lendersReferralCodes,
     required this.amount,
     required this.transactionId,
     required this.paymentMethods,

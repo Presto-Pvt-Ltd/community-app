@@ -11,7 +11,7 @@ import 'lend/lend_view.dart';
 // ignore: must_be_immutable
 class HomeView extends StatelessWidget {
   int index;
-  HomeView({Key? key, this.index = 0}) : super(key: key);
+  HomeView({Key? key, this.index = 1}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
@@ -46,23 +46,29 @@ class HomeView extends StatelessWidget {
         }
 
         return Scaffold(
-          body: PageTransitionSwitcher(
-            duration: const Duration(milliseconds: 1000),
-            reverse: model.reverse,
-            transitionBuilder: (
-              Widget child,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-            ) {
-              return SharedAxisTransition(
-                child: child,
-                animation: animation,
-                secondaryAnimation: secondaryAnimation,
-                transitionType: SharedAxisTransitionType.horizontal,
-              );
-            },
-            child: getViewForIndex(model.currentIndex),
-          ),
+          body: model.isBusy
+              ? Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                  ),
+                )
+              : PageTransitionSwitcher(
+                  duration: const Duration(milliseconds: 1000),
+                  reverse: model.reverse,
+                  transitionBuilder: (
+                    Widget child,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                  ) {
+                    return SharedAxisTransition(
+                      child: child,
+                      animation: animation,
+                      secondaryAnimation: secondaryAnimation,
+                      transitionType: SharedAxisTransitionType.horizontal,
+                    );
+                  },
+                  child: getViewForIndex(model.currentIndex),
+                ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             currentIndex: model.currentIndex,

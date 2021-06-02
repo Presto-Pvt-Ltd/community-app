@@ -84,14 +84,16 @@ class CommunityTreeDataHandler {
   }
 
   /// [tokens] is the final result stored in [finalTokenListForLenders].
-  Future<void> getLenderNotificationTokens(
-      {required currentReferralId,
-      required int levelCounter,
-      required String communityName,
-      required int downCounter}) async {
+  Future<void> getLenderNotificationTokens({
+    required currentReferralId,
+    required int levelCounter,
+    required String communityName,
+    required int downCounter,
+  }) async {
     int level = 0;
     int levelDown = 0;
     List<String>? tokens = [];
+    List<String>? lenders = [];
     log.v("Getting Lender Notifications");
     try {
       return await FirebaseFirestore.instance
@@ -105,18 +107,25 @@ class CommunityTreeDataHandler {
           for (int i = 0; i <= levelCounter - 1; i++) {
             if (level == -1) {
               locator<TransactionsDataProvider>().notificationTokens = tokens;
+              locator<TransactionsDataProvider>().lenders = lenders;
               break;
             }
             FirebaseFirestore.instance
                 .collection(communityName)
                 .doc(level.toString())
                 .get()
-                .then((element) {
-              if (element.exists) {
-                tokens.addAll(element
-                    .data()!['Token']
-                    .map<String>((s) => s as String)
-                    .toList());
+                .then((snapshot) {
+              if (snapshot.exists) {
+                if (snapshot.data()!.containsKey('Token'))
+                  tokens.addAll(snapshot
+                      .data()!['Token']
+                      .map<String>((s) => s as String)
+                      .toList());
+                if (snapshot.data()!.containsKey('Members'))
+                  lenders.addAll(snapshot
+                      .data()!['Members']
+                      .map<String>((s) => s as String)
+                      .toList());
               }
               if (i == 0) {
                 FirebaseFirestore.instance
@@ -129,13 +138,19 @@ class CommunityTreeDataHandler {
                       tokens.addAll(snapshot['Token']
                           .map<String>((s) => s as String)
                           .toList());
+                    if (snapshot.data()!.containsKey('Members'))
+                      lenders.addAll(snapshot['Members']
+                          .map<String>((s) => s as String)
+                          .toList());
                   }
                 });
               }
             });
             level--;
-            if (i == levelCounter)
+            if (i == levelCounter) {
               locator<TransactionsDataProvider>().notificationTokens = tokens;
+              locator<TransactionsDataProvider>().lenders = lenders;
+            }
           }
           for (int i = 0; i < downCounter; i++) {
             levelDown++;
@@ -143,17 +158,25 @@ class CommunityTreeDataHandler {
                 .collection(communityName)
                 .doc(levelDown.toString())
                 .get()
-                .then((element) {
-              if (element.exists) {
-                tokens.addAll(element
-                    .data()!['Token']
-                    .map<String>((s) => s as String)
-                    .toList());
+                .then((snapshot) {
+              if (snapshot.exists) {
+                if (snapshot.data()!.containsKey('Token'))
+                  tokens.addAll(snapshot
+                      .data()!['Token']
+                      .map<String>((s) => s as String)
+                      .toList());
+                if (snapshot.data()!.containsKey('Members'))
+                  tokens.addAll(snapshot
+                      .data()!['Members']
+                      .map<String>((s) => s as String)
+                      .toList());
               }
             });
             levelDown++;
-            if (i == downCounter - 1)
+            if (i == downCounter - 1) {
               locator<TransactionsDataProvider>().notificationTokens = tokens;
+              locator<TransactionsDataProvider>().lenders = lenders;
+            }
           }
         }
       });

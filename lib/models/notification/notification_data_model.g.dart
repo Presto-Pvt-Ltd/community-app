@@ -9,7 +9,9 @@ part of 'notification_data_model.dart';
 CustomNotification _$CustomNotificationFromJson(Map<String, dynamic> json) {
   return CustomNotification(
     borrowerRating: (json['borrowerRating'] as num).toDouble(),
-    lenderReferralCode: json['lenderReferralCode'] as String,
+    lendersReferralCodes: (json['lendersReferralCodes'] as List<dynamic>)
+        .map((e) => e.toString())
+        .toList(),
     amount: json['amount'] as int,
     transactionId: json['transactionId'] as String,
     paymentMethods: (json['paymentMethods'] as List<dynamic>)
@@ -22,7 +24,7 @@ CustomNotification _$CustomNotificationFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$CustomNotificationToJson(CustomNotification instance) =>
     <String, dynamic>{
       'borrowerReferralCode': instance.borrowerReferralCode,
-      'lenderReferralCode': instance.lenderReferralCode,
+      'lendersReferralCodes': instance.lendersReferralCodes,
       'transactionId': instance.transactionId,
       'amount': instance.amount,
       'borrowerRating': instance.borrowerRating,

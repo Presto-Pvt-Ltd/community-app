@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
+import 'package:presto/models/user/notification_data_model.dart';
 import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
@@ -53,6 +55,27 @@ class HomeViewModel extends IndexTrackingViewModel {
               typeOfDocument: ProfileDocument.userNotificationToken,
             )
                 .then((value) {
+              FirebaseMessaging.instance.getToken().then((value) {
+                if (value != _userDataProvider.token!.notificationToken &&
+                    value != null) {
+                  // TODO: call notification token update function in community tree
+                  locator<ProfileDataHandler>().updateProfileData(
+                    data: NotificationToken(notificationToken: value).toJson(),
+                    typeOfDocument: ProfileDocument.userNotificationToken,
+                    userId: _userDataProvider.platformData!.referralCode,
+                    toLocalDatabase: false,
+                  );
+                  locator<ProfileDataHandler>().updateProfileData(
+                    data: NotificationToken(notificationToken: value).toJson(),
+                    typeOfDocument: ProfileDocument.userNotificationToken,
+                    userId: _userDataProvider.platformData!.referralCode,
+                    toLocalDatabase: true,
+                  );
+                  _userDataProvider.token =
+                      NotificationToken(notificationToken: value);
+                  log.e("Update Notification token in tree");
+                }
+              });
               if (value) {
                 _userDataProvider
                     .loadData(
@@ -76,15 +99,13 @@ class HomeViewModel extends IndexTrackingViewModel {
                             TransactionLimits.fromJson(limitMap);
                         locator<CommunityTreeDataHandler>()
                             .getLenderNotificationTokens(
-                          currentReferralId: locator<UserDataProvider>()
-                              .platformData!
-                              .referredBy,
+                          currentReferralId:
+                              _userDataProvider.platformData!.referredBy,
                           levelCounter: locator<LimitsDataProvider>()
                               .transactionLimits!
                               .levelCounter,
-                          communityName: locator<UserDataProvider>()
-                              .platformData!
-                              .community,
+                          communityName:
+                              _userDataProvider.platformData!.community,
                           downCounter: locator<LimitsDataProvider>()
                               .transactionLimits!
                               .downCounter,

@@ -76,10 +76,6 @@ Future _initHive() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FirebaseMessaging.instance.getToken().then((value) {
-      print("-----------------\n\n\n$value\n\n\n------------------");
-    });
-
     FirebaseMessaging.onMessage.listen((event) {
       FlutterRingtonePlayer.playNotification();
       print("Hello");

@@ -28,6 +28,9 @@ class TransactionsDataProvider {
   /// token list
   List<String>? notificationTokens;
 
+  /// lender list
+  List<String>? lenders;
+
   /// transaction id generator
   final Random _random = Random.secure();
   String createRandomString([int length = 12]) {
@@ -135,40 +138,41 @@ class TransactionsDataProvider {
     }
   }
 
-  void createTransaction({required CustomTransaction transaction}) async {
+  Future<void> createTransaction(
+      {required CustomTransaction transaction}) async {
     userTransactions == null
         ? userTransactions = [transaction]
         : userTransactions!.add(transaction);
     log.v("Updated custom transactionList here");
 
     ///Hive update transaction list
-    _transactionsDataHandler.updateTransactionListInHive(
+    await _transactionsDataHandler.updateTransactionListInHive(
       list: jsonEncode(userTransactions),
     );
     log.v("Updated custom transaction list in hive");
 
     ///Firebase create new [transaction] in transactions Collection
     log.v("Creating transaction in firebase");
-    _transactionsDataHandler.createTransaction(
+    await _transactionsDataHandler.createTransaction(
       data: transaction.borrowerInformation.toJson(),
       typeOfDocument: TransactionDocument.borrowerInformation,
       transactionId: transaction.genericInformation.transactionId,
       toLocalStorage: false,
     );
 
-    _transactionsDataHandler.createTransaction(
+    await _transactionsDataHandler.createTransaction(
       data: transaction.genericInformation.toJson(),
       typeOfDocument: TransactionDocument.genericInformation,
       transactionId: transaction.genericInformation.transactionId,
       toLocalStorage: false,
     );
-    _transactionsDataHandler.createTransaction(
+    await _transactionsDataHandler.createTransaction(
       data: transaction.transactionStatus.toJson(),
       typeOfDocument: TransactionDocument.transactionStatus,
       transactionId: transaction.genericInformation.transactionId,
       toLocalStorage: false,
     );
-    _transactionsDataHandler.createTransaction(
+    await _transactionsDataHandler.createTransaction(
       data: transaction.lenderInformation!.toJson(),
       typeOfDocument: TransactionDocument.lenderInformation,
       transactionId: transaction.genericInformation.transactionId,
@@ -182,7 +186,7 @@ class TransactionsDataProvider {
         );
     log.v("Updated user transaction data in data provider");
 
-    locator<ProfileDataHandler>().updateProfileData(
+    await locator<ProfileDataHandler>().updateProfileData(
       data: locator<UserDataProvider>().transactionData!.toJson(),
       typeOfDocument: ProfileDocument.userTransactionsData,
       userId: locator<UserDataProvider>().platformData!.referralCode,
@@ -190,7 +194,7 @@ class TransactionsDataProvider {
     );
     log.v("Updated user transaction data in hive");
 
-    locator<ProfileDataHandler>().updateProfileData(
+    await locator<ProfileDataHandler>().updateProfileData(
       data: locator<UserDataProvider>().transactionData!.toJson(),
       typeOfDocument: ProfileDocument.userTransactionsData,
       userId: locator<UserDataProvider>().platformData!.referralCode,
