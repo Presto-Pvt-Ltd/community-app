@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.logger.dart';
@@ -103,7 +104,8 @@ class BorrowViewModel extends BaseViewModel {
             ),
           )
               .then((value) {
-            locator<NotificationDataHandler>().setNotificationDocument(
+            locator<NotificationDataHandler>()
+                .setNotificationDocument(
               docId: locator<UserDataProvider>().platformData!.referralCode,
               data: CustomNotification(
                 borrowerRating: (locator<UserDataProvider>()
@@ -121,7 +123,11 @@ class BorrowViewModel extends BaseViewModel {
                 lendersReferralCodes:
                     locator<TransactionsDataProvider>().lenders!,
               ).toJson(),
-            );
+            )
+                .then((value) {
+              // TODO: send notification here
+              RemoteMessage message = RemoteMessage();
+            });
           });
         }
       });
