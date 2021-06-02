@@ -156,6 +156,7 @@ class UserDataProvider {
         }
       });
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return Future.delayed(
         Duration(seconds: 2),

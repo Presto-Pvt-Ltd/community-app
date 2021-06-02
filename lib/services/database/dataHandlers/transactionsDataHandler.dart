@@ -42,6 +42,7 @@ class TransactionsDataHandler {
         );
       }
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return <String, dynamic>{};
     }
@@ -69,6 +70,7 @@ class TransactionsDataHandler {
         );
       }
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }
@@ -96,6 +98,7 @@ class TransactionsDataHandler {
         );
       }
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }

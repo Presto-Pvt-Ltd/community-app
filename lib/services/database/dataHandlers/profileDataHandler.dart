@@ -47,6 +47,7 @@ class ProfileDataHandler {
         );
       }
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return <String, dynamic>{};
     }
@@ -76,6 +77,7 @@ class ProfileDataHandler {
         );
       }
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }
@@ -106,6 +108,7 @@ class ProfileDataHandler {
         );
       }
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }

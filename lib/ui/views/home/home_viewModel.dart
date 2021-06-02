@@ -1,7 +1,9 @@
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
+import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
@@ -27,6 +29,7 @@ class HomeViewModel extends IndexTrackingViewModel {
       locator<TransactionsDataProvider>();
 
   Future<void> onModelReady(int index) async {
+    setBusy(true);
     locator<HiveDatabaseService>()
         .openBox(uid: locator<AuthenticationService>().uid!)
         .then((value) {
@@ -46,46 +49,52 @@ class HomeViewModel extends IndexTrackingViewModel {
           if (value) {
             _userDataProvider
                 .loadData(
-                    referralCode: referralCode,
-                    typeOfDocument: ProfileDocument.userNotificationToken)
+              referralCode: referralCode,
+              typeOfDocument: ProfileDocument.userNotificationToken,
+            )
                 .then((value) {
               if (value) {
                 _userDataProvider
                     .loadData(
-                        referralCode: referralCode,
-                        typeOfDocument: ProfileDocument.userTransactionsData)
+                  referralCode: referralCode,
+                  typeOfDocument: ProfileDocument.userTransactionsData,
+                )
                     .then((value) {
                   if (value) {
                     _userDataProvider
                         .loadData(
-                            referralCode: referralCode,
-                            typeOfDocument: ProfileDocument.userPlatformData)
+                      referralCode: referralCode,
+                      typeOfDocument: ProfileDocument.userPlatformData,
+                    )
                         .then((value) {
                       locator<LimitsDataHandler>()
                           .getLimitsData(
                               typeOfLimit: LimitDocument.transactionLimits,
                               fromLocalDatabase: false)
                           .then((limitMap) {
+                        locator<LimitsDataProvider>().transactionLimits =
+                            TransactionLimits.fromJson(limitMap);
                         locator<CommunityTreeDataHandler>()
                             .getLenderNotificationTokens(
-                                currentReferralId:
-                                    locator<UserDataProvider>()
-                                        .platformData!
-                                        .referredBy,
-                                levelCounter:
-                                    int.parse(
-                                        (limitMap['levelCounter']).toString()),
-                                communityName: locator<UserDataProvider>()
-                                    .platformData!
-                                    .community,
-                                downCounter: int.parse(
-                                    (limitMap['downCounter']).toString()));
+                          currentReferralId: locator<UserDataProvider>()
+                              .platformData!
+                              .referredBy,
+                          levelCounter: locator<LimitsDataProvider>()
+                              .transactionLimits!
+                              .levelCounter,
+                          communityName: locator<UserDataProvider>()
+                              .platformData!
+                              .community,
+                          downCounter: locator<LimitsDataProvider>()
+                              .transactionLimits!
+                              .downCounter,
+                        );
                       });
                       if (value) {
                         _userDataProvider.loadData(
-                            referralCode: referralCode,
-                            typeOfDocument:
-                                ProfileDocument.userPlatformRatings);
+                          referralCode: referralCode,
+                          typeOfDocument: ProfileDocument.userPlatformRatings,
+                        );
                         if (_userDataProvider
                                 .transactionData!.transactionIds.length !=
                             0) {
@@ -93,6 +102,7 @@ class HomeViewModel extends IndexTrackingViewModel {
                             transactionIds: _userDataProvider
                                 .transactionData!.transactionIds,
                           );
+                          setBusy(false);
                         }
                       }
                     });

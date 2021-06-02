@@ -24,6 +24,7 @@ class HiveDatabaseService {
       try {
         return box.deleteFromDisk().then((value) => true);
       } catch (e) {
+        log.e("There was error here");
         _errorHandlingService.handleError(error: e);
         return false;
       }
@@ -80,6 +81,7 @@ class HiveDatabaseService {
       else
         return throw false;
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }

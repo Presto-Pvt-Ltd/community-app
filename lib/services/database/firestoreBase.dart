@@ -19,6 +19,7 @@ class FirestoreService {
     try {
       return await document.update(data).then((value) => true);
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }
@@ -32,6 +33,7 @@ class FirestoreService {
     try {
       return await document.set(data).then((value) => true);
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }
@@ -49,6 +51,7 @@ class FirestoreService {
           throw Exception("No Data Found");
       });
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return {};
     }
@@ -59,6 +62,7 @@ class FirestoreService {
     try {
       return await document.delete().then((value) => true);
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }

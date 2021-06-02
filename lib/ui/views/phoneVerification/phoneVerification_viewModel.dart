@@ -129,6 +129,7 @@ class PhoneVerificationViewModel extends BaseViewModel {
     } catch (e) {
       setBusy(false);
       print("Some error here");
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e.toString());
     }
   }

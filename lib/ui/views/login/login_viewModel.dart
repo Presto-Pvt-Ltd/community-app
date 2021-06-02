@@ -109,12 +109,14 @@ class LoginViewModel extends FormViewModel {
       } else {
         setBusy(false);
         print("$emailValidated  $passwordValidated");
+        log.e("There was error here");
         _errorHandlingService.handleError(
           error: "Please fill details appropriately.",
         );
       }
     } catch (e) {
       setBusy(false);
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
     }
   }

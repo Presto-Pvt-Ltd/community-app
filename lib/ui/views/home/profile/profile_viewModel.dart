@@ -61,4 +61,7 @@ class ProfileViewModel extends BaseViewModel {
     locator<AuthenticationService>().auth.signOut();
     locator<NavigationService>().clearStackAndShow(Routes.loginView);
   }
+
+  // TODO: when user clicks on my referees button fetch platform data from firestore and update it on local storage as well as providers
+
 }

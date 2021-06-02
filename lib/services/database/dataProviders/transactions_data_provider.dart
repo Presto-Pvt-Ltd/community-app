@@ -123,6 +123,7 @@ class TransactionsDataProvider {
         }
       }
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       Future.delayed(
         Duration(seconds: 2),

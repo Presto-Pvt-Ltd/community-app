@@ -29,6 +29,7 @@ class CommunityTreeDataHandler {
         return true;
       });
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
     }
@@ -52,29 +53,32 @@ class CommunityTreeDataHandler {
           .where('Members', arrayContains: parentReferralID)
           .get()
           .then((value) async {
-        level = int.parse(value.docs.first.id);
-        log.v('level- $level');
-        await FirebaseFirestore.instance
-            .collection(communityName)
-            .doc((level + 1).toString())
-            .get()
-            .then((snap) {
-          if (snap.exists) {
-            list = snap['Members'].map<String>((s) => s as String).toList();
-            tokens = snap['Token'].map<String>((s) => s as String).toList();
-            list.add(userReferralID);
-            tokens.add(token);
-          } else {
-            list.add(userReferralID);
-            tokens.add(token);
-          }
-          FirebaseFirestore.instance
+        if (value.docs.length != 0) {
+          level = int.parse(value.docs.first.id);
+          log.v('level- $level');
+          await FirebaseFirestore.instance
               .collection(communityName)
               .doc((level + 1).toString())
-              .set({"Members": list, "Token": tokens});
-        });
+              .get()
+              .then((snap) {
+            if (snap.exists) {
+              list = snap['Members'].map<String>((s) => s as String).toList();
+              tokens = snap['Token'].map<String>((s) => s as String).toList();
+              list.add(userReferralID);
+              tokens.add(token);
+            } else {
+              list.add(userReferralID);
+              tokens.add(token);
+            }
+            FirebaseFirestore.instance
+                .collection(communityName)
+                .doc((level + 1).toString())
+                .set({"Members": list, "Token": tokens});
+          });
+        }
       });
     } catch (e) {
+      log.e("There was error here ");
       _errorHandlingService.handleError(error: e);
     }
   }
@@ -95,63 +99,66 @@ class CommunityTreeDataHandler {
           .where('Members', arrayContains: currentReferralId)
           .get()
           .then((value) async {
-        level = int.parse(value.docs.first.id);
-        levelDown = level;
-        for (int i = 0; i <= levelCounter - 1; i++) {
-          if (level == -1) {
-            locator<TransactionsDataProvider>().notificationTokens = tokens;
-            break;
+        if (value.docs.length != 0) {
+          level = int.parse(value.docs.first.id);
+          levelDown = level;
+          for (int i = 0; i <= levelCounter - 1; i++) {
+            if (level == -1) {
+              locator<TransactionsDataProvider>().notificationTokens = tokens;
+              break;
+            }
+            FirebaseFirestore.instance
+                .collection(communityName)
+                .doc(level.toString())
+                .get()
+                .then((element) {
+              if (element.exists) {
+                tokens.addAll(element
+                    .data()!['Token']
+                    .map<String>((s) => s as String)
+                    .toList());
+              }
+              if (i == 0) {
+                FirebaseFirestore.instance
+                    .collection(communityName)
+                    .doc('Trusted')
+                    .get()
+                    .then((snapshot) {
+                  if (snapshot.exists) {
+                    if (snapshot.data()!.containsKey('Token'))
+                      tokens.addAll(snapshot['Token']
+                          .map<String>((s) => s as String)
+                          .toList());
+                  }
+                });
+              }
+            });
+            level--;
+            if (i == levelCounter)
+              locator<TransactionsDataProvider>().notificationTokens = tokens;
           }
-          FirebaseFirestore.instance
-              .collection(communityName)
-              .doc(level.toString())
-              .get()
-              .then((element) {
-            if (element.exists) {
-              tokens.addAll(element
-                  .data()!['Token']
-                  .map<String>((s) => s as String)
-                  .toList());
-            }
-            if (i == 0) {
-              FirebaseFirestore.instance
-                  .collection(communityName)
-                  .doc('Trusted')
-                  .get()
-                  .then((snapshot) {
-                if (snapshot.exists) {
-                  if (snapshot.data()!.containsKey('Token'))
-                    tokens.addAll(snapshot['Token']
-                        .map<String>((s) => s as String)
-                        .toList());
-                }
-              });
-            }
-          });
-          level--;
-          if (i == levelCounter)
-            locator<TransactionsDataProvider>().notificationTokens = tokens;
-        }
-        for (int i = 0; i < downCounter; i++) {
-          levelDown++;
-          FirebaseFirestore.instance
-              .collection(communityName)
-              .doc(levelDown.toString())
-              .get()
-              .then((element) {
-            if (element.exists) {
-              tokens.addAll(element
-                  .data()!['Token']
-                  .map<String>((s) => s as String)
-                  .toList());
-            }
-          });
-          levelDown++;
-          if (i == downCounter - 1)
-            locator<TransactionsDataProvider>().notificationTokens = tokens;
+          for (int i = 0; i < downCounter; i++) {
+            levelDown++;
+            FirebaseFirestore.instance
+                .collection(communityName)
+                .doc(levelDown.toString())
+                .get()
+                .then((element) {
+              if (element.exists) {
+                tokens.addAll(element
+                    .data()!['Token']
+                    .map<String>((s) => s as String)
+                    .toList());
+              }
+            });
+            levelDown++;
+            if (i == downCounter - 1)
+              locator<TransactionsDataProvider>().notificationTokens = tokens;
+          }
         }
       });
     } catch (e) {
+      log.e("There was error here : ${e.runtimeType}");
       _errorHandlingService.handleError(error: e);
     }
   }

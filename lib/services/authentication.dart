@@ -70,6 +70,7 @@ class AuthenticationService {
       _auth.signOut();
       return true;
     }).onError((error, stackTrace) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: error);
       return false;
     });

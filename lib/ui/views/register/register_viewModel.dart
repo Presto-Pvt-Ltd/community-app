@@ -210,6 +210,7 @@ class RegisterViewModel extends FormViewModel {
       }
     } catch (e) {
       setBusy(false);
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
     }
   }
@@ -236,6 +237,7 @@ class RegisterViewModel extends FormViewModel {
       gotDeviceId = true;
       print("Got Device Id");
     } catch (e) {
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
     }
   }
@@ -246,6 +248,7 @@ class RegisterViewModel extends FormViewModel {
       referralCodeOrCommunityName = referralCodeController.text.trim();
       if (referralCodeOrCommunityName == null) {
         setBusy(false);
+        log.e("There was error here");
         _errorHandlingService.handleError(
             error: "Please Enter valid values in input fields");
         return;
@@ -354,12 +357,14 @@ class RegisterViewModel extends FormViewModel {
             print(
               "$nameValidated $emailValidated $contactValidated $passwordValidated $referralCodeOrCommunityNameValidated $userAcceptedTermsAndConditions",
             );
+            log.e("There was error here");
             _errorHandlingService.handleError(
               error: "Please fill details appropriately.",
             );
           }
         }
         setBusy(false);
+        log.e("There was error here");
         _errorHandlingService.handleError(
           error: isRegistrationAsCommunityManager
               ? "Entered Community Name is either taken or invalid"
@@ -368,6 +373,7 @@ class RegisterViewModel extends FormViewModel {
       });
     } catch (e) {
       setBusy(false);
+      log.e("There was error here");
       _errorHandlingService.handleError(error: e);
     }
     // if (nameValidated &&

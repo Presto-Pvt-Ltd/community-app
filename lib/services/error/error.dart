@@ -25,6 +25,8 @@ class ErrorHandlingService {
       message = "${error.message}";
     } else if (error is Exception) {
       message = e.toString();
+    } else if (error is StateError) {
+      message = error.message;
     } else
       message = error.toString();
     log.e(message);

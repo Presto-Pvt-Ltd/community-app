@@ -6,6 +6,7 @@
 
 // ignore_for_file: public_member_api_docs
 
+import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -37,4 +38,5 @@ void setupLocator() {
   locator.registerLazySingleton(() => TransactionsDataHandler());
   locator.registerLazySingleton(() => UserDataProvider());
   locator.registerLazySingleton(() => TransactionsDataProvider());
+  locator.registerLazySingleton(() => LimitsDataProvider());
 }
