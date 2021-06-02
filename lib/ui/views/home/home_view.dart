@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/views/home/profile/profile_view.dart';
 import 'package:presto/ui/views/home/transactions/transactions_view.dart';
 import 'package:stacked/stacked.dart';
@@ -66,12 +67,13 @@ class HomeView extends StatelessWidget {
             type: BottomNavigationBarType.fixed,
             currentIndex: model.currentIndex,
             onTap: model.setIndex,
+            selectedItemColor: primaryColor,
             items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline),
+                icon: Icon(Icons.person),
                 label: 'Profile',
                 activeIcon: Icon(
-                  Icons.person_outline,
+                  Icons.person,
                   size: 40.0,
                 ),
               ),
