@@ -83,7 +83,7 @@ class CommunityTreeDataHandler {
     }
   }
 
-  /// [tokens] is the final result stored in [finalTokenListForLenders].
+  /// [tokens] is the final result.
   Future<void> getLenderNotificationTokens({
     required currentReferralId,
     required int levelCounter,
@@ -184,5 +184,42 @@ class CommunityTreeDataHandler {
       log.e("There was error here : ${e.runtimeType}");
       _errorHandlingService.handleError(error: e);
     }
+  }
+
+  Future<void> updateNotificationTokenInTree({
+    required String currentReferralId,
+    required String communityName,
+    required String newToken,
+  }) async {
+    log.v('Updating token in tree');
+    int level = 0;
+    int index = 0;
+    List<String>? refId = [];
+    List<String>? tokens = [];
+    await FirebaseFirestore.instance
+        .collection(communityName)
+        .where('Members', arrayContains: currentReferralId)
+        .get()
+        .then((value) async {
+      if (value.docs.length != 0) {
+        level = int.parse(value.docs.first.id);
+        refId = value.docs.first
+            .data()['Members']
+            .map<String>((s) => s as String)
+            .toList();
+        tokens = value.docs.first
+            .data()['Token']
+            .map<String>((s) => s as String)
+            .toList();
+        index = refId!.indexOf(currentReferralId);
+        tokens![index] = newToken;
+        FirebaseFirestore.instance
+            .collection(communityName)
+            .doc(level.toString())
+            .set({'Members': refId, 'Token': tokens}).then((value) {
+          log.v('token updated in Firestore tree');
+        });
+      }
+    });
   }
 }

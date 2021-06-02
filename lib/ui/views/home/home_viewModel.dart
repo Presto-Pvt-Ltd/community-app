@@ -58,7 +58,13 @@ class HomeViewModel extends IndexTrackingViewModel {
               FirebaseMessaging.instance.getToken().then((value) {
                 if (value != _userDataProvider.token!.notificationToken &&
                     value != null) {
-                  // TODO: call notification token update function in community tree
+                  locator<CommunityTreeDataHandler>()
+                      .updateNotificationTokenInTree(
+                    currentReferralId:
+                        _userDataProvider.platformData!.referralCode,
+                    communityName: _userDataProvider.platformData!.community,
+                    newToken: value,
+                  );
                   locator<ProfileDataHandler>().updateProfileData(
                     data: NotificationToken(notificationToken: value).toJson(),
                     typeOfDocument: ProfileDocument.userNotificationToken,
