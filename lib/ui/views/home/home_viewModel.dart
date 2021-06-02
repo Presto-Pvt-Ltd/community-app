@@ -55,33 +55,6 @@ class HomeViewModel extends IndexTrackingViewModel {
               typeOfDocument: ProfileDocument.userNotificationToken,
             )
                 .then((value) {
-              FirebaseMessaging.instance.getToken().then((value) {
-                if (value != _userDataProvider.token!.notificationToken &&
-                    value != null) {
-                  locator<CommunityTreeDataHandler>()
-                      .updateNotificationTokenInTree(
-                    currentReferralId:
-                        _userDataProvider.platformData!.referralCode,
-                    communityName: _userDataProvider.platformData!.community,
-                    newToken: value,
-                  );
-                  locator<ProfileDataHandler>().updateProfileData(
-                    data: NotificationToken(notificationToken: value).toJson(),
-                    typeOfDocument: ProfileDocument.userNotificationToken,
-                    userId: _userDataProvider.platformData!.referralCode,
-                    toLocalDatabase: false,
-                  );
-                  locator<ProfileDataHandler>().updateProfileData(
-                    data: NotificationToken(notificationToken: value).toJson(),
-                    typeOfDocument: ProfileDocument.userNotificationToken,
-                    userId: _userDataProvider.platformData!.referralCode,
-                    toLocalDatabase: true,
-                  );
-                  _userDataProvider.token =
-                      NotificationToken(notificationToken: value);
-                  log.e("Update Notification token in tree");
-                }
-              });
               if (value) {
                 _userDataProvider
                     .loadData(
@@ -118,6 +91,41 @@ class HomeViewModel extends IndexTrackingViewModel {
                         );
                       });
                       if (value) {
+                        FirebaseMessaging.instance.getToken().then((value) {
+                          if (value !=
+                                  _userDataProvider.token!.notificationToken &&
+                              value != null) {
+                            locator<CommunityTreeDataHandler>()
+                                .updateNotificationTokenInTree(
+                              currentReferralId:
+                                  _userDataProvider.platformData!.referralCode,
+                              communityName:
+                                  _userDataProvider.platformData!.community,
+                              newToken: value,
+                            );
+                            locator<ProfileDataHandler>().updateProfileData(
+                              data: NotificationToken(notificationToken: value)
+                                  .toJson(),
+                              typeOfDocument:
+                                  ProfileDocument.userNotificationToken,
+                              userId:
+                                  _userDataProvider.platformData!.referralCode,
+                              toLocalDatabase: false,
+                            );
+                            locator<ProfileDataHandler>().updateProfileData(
+                              data: NotificationToken(notificationToken: value)
+                                  .toJson(),
+                              typeOfDocument:
+                                  ProfileDocument.userNotificationToken,
+                              userId:
+                                  _userDataProvider.platformData!.referralCode,
+                              toLocalDatabase: true,
+                            );
+                            _userDataProvider.token =
+                                NotificationToken(notificationToken: value);
+                            log.v("Update Notification token in tree");
+                          }
+                        });
                         _userDataProvider.loadData(
                           referralCode: referralCode,
                           typeOfDocument: ProfileDocument.userPlatformRatings,
