@@ -29,8 +29,8 @@ var payload = {
 
 exports.sendPushNotification = functions.https.onCall((data, context) => {
   try {
-    for (var i = 0; i <= data.length; i++) {
-      console.log("Sending notification to\n\n" + data[i]);
+    for (var i = 0; i < data.length; i++) {
+      console.log("Sending notification to" + data[i]);
       admin
         .messaging()
         .send({
@@ -38,12 +38,10 @@ exports.sendPushNotification = functions.https.onCall((data, context) => {
             title: "Assistance Required",
             body: "Someone in your community requires your financial help!! Open the presto app to find out more.",
           },
-          data: {
-            channel_id: threadId,
-          },
+
           android: {
             ttl: 21600000,
-            channel_id: "presto_borrowing_channel",
+            // channel_id: "presto_borrowing_channel",
             priority: "high",
           },
           apns: {
