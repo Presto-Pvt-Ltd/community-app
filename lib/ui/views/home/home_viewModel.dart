@@ -24,6 +24,7 @@ class HomeViewModel extends IndexTrackingViewModel {
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
   final NavigationService _navigationService = locator<NavigationService>();
+  late final bool isCM;
 
   /// Data providers
   final UserDataProvider _userDataProvider = locator<UserDataProvider>();
@@ -126,6 +127,8 @@ class HomeViewModel extends IndexTrackingViewModel {
                             log.v("Update Notification token in tree");
                           }
                         });
+                        isCM =
+                            _userDataProvider.platformData!.isCommunityManager;
                         _userDataProvider.loadData(
                           referralCode: referralCode,
                           typeOfDocument: ProfileDocument.userPlatformRatings,

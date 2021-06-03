@@ -101,7 +101,7 @@ class LoginViewModel extends FormViewModel {
             locator<HiveDatabaseService>().openBox(uid: user.uid);
             _navigationService.clearStackAndShow(
               Routes.homeView,
-              arguments: HomeViewArguments(index: 2),
+              arguments: HomeViewArguments(index: 1),
             );
           }
           setBusy(false);

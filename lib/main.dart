@@ -19,7 +19,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'presto_borrowing_channel_test_1', // id
+  'presto_borrowing_channel', // id
   'Presto Requests', // title
   'This channel is used for notifications', // description
   importance: Importance.high,

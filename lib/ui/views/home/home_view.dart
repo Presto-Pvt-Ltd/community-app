@@ -20,7 +20,7 @@ class HomeView extends StatelessWidget {
         model.onModelReady(index);
       },
       builder: (context, model, child) {
-        Widget getViewForIndex(int index) {
+        Widget getViewForIndexRU(int index) {
           switch (index) {
             case 0:
               return ProfileView(
@@ -45,14 +45,98 @@ class HomeView extends StatelessWidget {
           }
         }
 
-        return Scaffold(
-          body: model.isBusy
-              ? Center(
+        Widget getViewForIndexCM(int index) {
+          switch (index) {
+            case 0:
+              return ProfileView(
+                slideChangeView: model.slideChangeViews,
+              );
+
+            case 1:
+              return TransactionsView(
+                slideChangeView: model.slideChangeViews,
+              );
+            case 2:
+              return LendView(
+                slideChangeView: model.slideChangeViews,
+              );
+            default:
+              return BorrowView(
+                slideChangeView: model.slideChangeViews,
+              );
+          }
+        }
+
+        List<BottomNavigationBarItem> bottomListRU = [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+            activeIcon: Icon(
+              Icons.person,
+              size: 40.0,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Borrow',
+            activeIcon: Icon(
+              Icons.home,
+              size: 40.0,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.monetization_on),
+            label: 'Transactions',
+            activeIcon: Icon(
+              Icons.monetization_on,
+              size: 40.0,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notifications',
+            activeIcon: Icon(
+              Icons.notifications,
+              size: 40.0,
+            ),
+          ),
+        ];
+        List<BottomNavigationBarItem> bottomListCM = [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+            activeIcon: Icon(
+              Icons.person,
+              size: 40.0,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.monetization_on),
+            label: 'Transactions',
+            activeIcon: Icon(
+              Icons.monetization_on,
+              size: 40.0,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notifications',
+            activeIcon: Icon(
+              Icons.notifications,
+              size: 40.0,
+            ),
+          ),
+        ];
+        return model.isBusy
+            ? Scaffold(
+                body: Center(
                   child: CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                   ),
-                )
-              : PageTransitionSwitcher(
+                ),
+              )
+            : Scaffold(
+                body: PageTransitionSwitcher(
                   duration: const Duration(milliseconds: 1000),
                   reverse: model.reverse,
                   transitionBuilder: (
@@ -67,49 +151,18 @@ class HomeView extends StatelessWidget {
                       transitionType: SharedAxisTransitionType.horizontal,
                     );
                   },
-                  child: getViewForIndex(model.currentIndex),
+                  child: model.isCM
+                      ? getViewForIndexCM(model.currentIndex)
+                      : getViewForIndexRU(model.currentIndex),
                 ),
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            currentIndex: model.currentIndex,
-            onTap: model.setIndex,
-            selectedItemColor: primaryColor,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
-                activeIcon: Icon(
-                  Icons.person,
-                  size: 40.0,
+                bottomNavigationBar: BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  currentIndex: model.currentIndex,
+                  onTap: model.setIndex,
+                  selectedItemColor: primaryColor,
+                  items: model.isCM ? bottomListCM : bottomListRU,
                 ),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Borrow',
-                activeIcon: Icon(
-                  Icons.home,
-                  size: 40.0,
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.monetization_on),
-                label: 'Transactions',
-                activeIcon: Icon(
-                  Icons.monetization_on,
-                  size: 40.0,
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.notifications),
-                label: 'Notifications',
-                activeIcon: Icon(
-                  Icons.notifications,
-                  size: 40.0,
-                ),
-              ),
-            ],
-          ),
-        );
+              );
       },
     );
   }

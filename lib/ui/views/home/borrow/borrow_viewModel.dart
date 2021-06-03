@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:flutter/material.dart';
@@ -67,8 +68,10 @@ class BorrowViewModel extends BaseViewModel {
           // TODO: Timer
           // TODO: send notifications
           ///create transaction and update databases
+          ///
           var transactionId =
               locator<TransactionsDataProvider>().createRandomString();
+
           locator<TransactionsDataProvider>().lenders!.remove(
                 locator<UserDataProvider>().platformData!.referralCode,
               );
@@ -126,7 +129,20 @@ class BorrowViewModel extends BaseViewModel {
             )
                 .then((value) {
               // TODO: send notification here
-              RemoteMessage message = RemoteMessage();
+              try {
+                FirebaseFunctions functions = FirebaseFunctions.instance;
+                Function sendPushNotification =
+                    functions.httpsCallable('sendPushNotification');
+                print(
+                    "\n\nSending Push Notification to ${locator<TransactionsDataProvider>().notificationTokens}\n\n");
+                sendPushNotification(
+                  locator<TransactionsDataProvider>().notificationTokens,
+                );
+              } on FirebaseFunctionsException catch (e) {
+                log.e("${e.toString()} \n ${e.runtimeType}");
+              } catch (e) {
+                log.e("${e.toString()} \n ${e.runtimeType}");
+              }
             });
           });
         }

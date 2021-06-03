@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:presto/app/app.locator.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'lend_viewModel.dart';
 
@@ -23,7 +25,9 @@ class LendView extends StatelessWidget {
               if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
                 model.callback(false);
               } else {
-                model.callback(true);
+                if (!locator<UserDataProvider>()
+                    .platformData!
+                    .isCommunityManager) model.callback(true);
               }
               print('end');
             },

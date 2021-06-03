@@ -44,6 +44,6 @@
             android:value="2" />
        <meta-data
            android:name="com.google.firebase.messaging.default_notification_channel_id"
-           android:value="presto_borrowing_channel_test_1" />
+           android:value="presto_borrowing_channel" />
     </application>
 </manifest>
