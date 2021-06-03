@@ -15,6 +15,7 @@ import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/notificationDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/services/razorpay.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -138,6 +139,7 @@ class BorrowViewModel extends BaseViewModel {
                 sendPushNotification(
                   locator<TransactionsDataProvider>().notificationTokens,
                 );
+                // locator<RazorpayService>().createOrderInServer();
               } on FirebaseFunctionsException catch (e) {
                 log.e("${e.toString()} \n ${e.runtimeType}");
               } catch (e) {

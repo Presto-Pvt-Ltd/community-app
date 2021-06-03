@@ -1,3 +1,5 @@
+import 'package:json_annotation/json_annotation.dart';
+
 part 'transaction_data_model.g.dart';
 
 // TODO: Cross check if this is done.
@@ -5,6 +7,7 @@ part 'transaction_data_model.g.dart';
 /// in the generated file for [paymentMethodsUsed]
 /// rewrite : paymentMethodsUsed:  json['paymentMethodsUsed'] as Map<String,dynamic>
 /// to : paymentMethodsUsed: Map<String, dynamic>.from(json['paymentMethodsUsed']),
+@JsonSerializable()
 class TransactionData {
   final Map<String, dynamic> paymentMethodsUsed;
   final List<String> transactionIds;

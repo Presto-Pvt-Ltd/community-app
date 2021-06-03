@@ -1,4 +1,10 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
 part of 'transaction_data_model.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
 
 TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) {
   return TransactionData(

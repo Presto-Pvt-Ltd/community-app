@@ -10,7 +10,7 @@ CustomNotification _$CustomNotificationFromJson(Map<String, dynamic> json) {
   return CustomNotification(
     borrowerRating: (json['borrowerRating'] as num).toDouble(),
     lendersReferralCodes: (json['lendersReferralCodes'] as List<dynamic>)
-        .map((e) => e.toString())
+        .map((e) => e as String)
         .toList(),
     amount: json['amount'] as int,
     transactionId: json['transactionId'] as String,

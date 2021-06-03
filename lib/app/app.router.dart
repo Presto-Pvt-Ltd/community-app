@@ -121,7 +121,7 @@ class StackedRouter extends RouterBase {
 class HomeViewArguments {
   final Key? key;
   final int index;
-  HomeViewArguments({this.key, this.index = 0});
+  HomeViewArguments({this.key, this.index = 1});
 }
 
 /// RegisterView arguments holder class

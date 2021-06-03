@@ -6,7 +6,6 @@
 
 // ignore_for_file: public_member_api_docs
 
-import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -16,11 +15,13 @@ import '../services/database/dataHandlers/limitsDataHandler.dart';
 import '../services/database/dataHandlers/notificationDataHandler.dart';
 import '../services/database/dataHandlers/profileDataHandler.dart';
 import '../services/database/dataHandlers/transactionsDataHandler.dart';
+import '../services/database/dataProviders/limits_data_provider.dart';
 import '../services/database/dataProviders/transactions_data_provider.dart';
 import '../services/database/dataProviders/user_data_provider.dart';
 import '../services/database/firestoreBase.dart';
 import '../services/database/hiveDatabase.dart';
 import '../services/error/error.dart';
+import '../services/razorpay.dart';
 
 final locator = StackedLocator.instance;
 
@@ -39,4 +40,5 @@ void setupLocator() {
   locator.registerLazySingleton(() => UserDataProvider());
   locator.registerLazySingleton(() => TransactionsDataProvider());
   locator.registerLazySingleton(() => LimitsDataProvider());
+  locator.registerLazySingleton(() => RazorpayService());
 }

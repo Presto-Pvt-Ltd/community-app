@@ -10,6 +10,7 @@ import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
+import 'package:presto/services/razorpay.dart';
 import 'package:presto/ui/views/dummyView/dummy_view.dart';
 import 'package:presto/ui/views/home/home_view.dart';
 import 'package:presto/ui/views/login/login_view.dart';
@@ -48,6 +49,7 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: UserDataProvider),
     LazySingleton(classType: TransactionsDataProvider),
     LazySingleton(classType: LimitsDataProvider),
+    LazySingleton(classType: RazorpayService),
   ],
   logger: StackedLogger(),
 )
