@@ -5,6 +5,7 @@ Widget mixedCard({
   required double height,
   required double width,
   required bool isBorrowed,
+  required int amount,
   required Function onTap,
 }) {
   Color cardColor;
@@ -29,29 +30,35 @@ Widget mixedCard({
   // textColor = isBorrowed ? Colors.red[800] : Colors.green[800];
 
   return GestureDetector(
-    onTap: () => onTap,
+    onTap: (){ onTap();},
     child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Card(
-        // color: cardColor,
-        elevation: 5,
-        child: Padding(
-          padding:
-              EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0, bottom: 6.0),
-          child: ExpansionTile(
-            title: Text(
-              '',
-              // displayText ?? "",
-              style: TextStyle(
-                fontSize: 20,
-                // color: textColor,
-              ),
-            ),
-            subtitle: Text(
-              "₹ ", // + transaction.amount,
-              style: TextStyle(
-                fontSize: 15,
-                // color: textColor,
+      padding: EdgeInsets.symmetric(horizontal: width * 0.05, vertical: width * 0.02),
+      child: Container(
+        height: height * 0.135,
+        child: Card(
+          elevation: 5,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: width * 0.05),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      '₹ $amount',
+                      style: TextStyle(
+                        fontSize: width * 0.07,
+                        // color: textColor,
+                      ),
+                    ),
+                  Text(
+                    'Lender Name',
+                      style: TextStyle(
+                        fontSize: width * 0.05
+                      )
+                  )
+                ],
               ),
             ),
           ),

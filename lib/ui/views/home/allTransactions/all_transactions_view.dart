@@ -3,6 +3,7 @@ import 'package:presto/app/app.locator.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/widgets/transactionCard.dart';
 import 'package:stacked/stacked.dart';
+import '../../../../app/app.router.dart';
 import 'all_transactions_viewModel.dart';
 
 class AllTransactionsView extends StatelessWidget {
@@ -44,21 +45,21 @@ class AllTransactionsView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             SizedBox(
-                              height: height / 25,
+                              height: height * 0.04,
                             ),
                             Align(
                               alignment: Alignment.topCenter,
                               child: Text(
                                 "Recent Transactions",
                                 style: TextStyle(
-                                  fontSize: height / 22,
+                                  fontSize: height * 0.045,
                                   color: Colors.black,
                                   fontFamily: "Oswald",
                                 ),
                               ),
                             ),
                             SizedBox(
-                              height: height / 25,
+                              height: height * 0.04,
                             ),
                             Column(
                               // children: model.recentTransactions != null
@@ -70,7 +71,7 @@ class AllTransactionsView extends StatelessWidget {
                                       ? Text(
                                           "No Transactions to Display",
                                           style: TextStyle(
-                                              fontSize: height / 45,
+                                              fontSize: height * 0.022,
                                               color: Colors.black),
                                         )
                                       : ListView.builder(
@@ -86,7 +87,19 @@ class AllTransactionsView extends StatelessWidget {
                                                   locator<UserDataProvider>()
                                                       .platformData!
                                                       .referralCode,
+                                              amount: model
+                                                      .transactions[index]
+                                                      .genericInformation
+                                                      .amount,
                                               onTap: () {
+                                                model
+                                                    .navigationService
+                                                    .navigateTo(
+                                                    Routes.transactionView,
+                                                    arguments: TransactionViewArguments(
+                                                        customTransaction: model.transactions[index]
+                                                    )
+                                                );
                                                 print("Mujhe dabaya gaya hai");
                                               },
                                             );
@@ -96,21 +109,18 @@ class AllTransactionsView extends StatelessWidget {
                               ],
                             ),
                             SizedBox(
-                              height: height / 25,
+                              height: height * 0.04,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Text(
-                                  "All Transactions",
-                                  style: TextStyle(
-                                      fontSize: height / 22,
-                                      color: Colors.black),
-                                ),
-                              ],
+                            Center(
+                              child: Text(
+                                "All Transactions",
+                                style: TextStyle(
+                                    fontSize: height * 0.045,
+                                    color: Colors.black),
+                              ),
                             ),
                             SizedBox(
-                              height: height / 25,
+                              height: height * 0.04,
                             ),
                             Column(
                               // children: model.allTransactions.length > 0 &&
@@ -118,11 +128,44 @@ class AllTransactionsView extends StatelessWidget {
                               //     ? model.allTransactions
                               children: [
                                 Container(
-                                  child: Text(
+                                  height: height * 0.3,
+                                  child: model.transactions.length == 0
+                                      ? Text(
                                     "No Transactions to Display",
                                     style: TextStyle(
-                                        fontSize: height / 45,
+                                        fontSize: height * 0.022,
                                         color: Colors.black),
+                                  )
+                                      : ListView.builder(
+                                    itemCount: model.transactions.length,
+                                    itemBuilder: (context, index) {
+                                      return mixedCard(
+                                        height: height,
+                                        width: width,
+                                        isBorrowed: model
+                                            .transactions[index]
+                                            .borrowerInformation
+                                            .borrowerReferralCode ==
+                                            locator<UserDataProvider>()
+                                                .platformData!
+                                                .referralCode,
+                                          amount: model
+                                              .transactions[index]
+                                              .genericInformation
+                                              .amount,
+                                        onTap: () {
+                                          model
+                                              .navigationService
+                                              .navigateTo(
+                                              Routes.transactionView,
+                                              arguments: TransactionViewArguments(
+                                                  customTransaction: model.transactions[index]
+                                              )
+                                          );
+                                          print("Mujhe dabaya gaya hai");
+                                        },
+                                      );
+                                    },
                                   ),
                                 ),
                               ],

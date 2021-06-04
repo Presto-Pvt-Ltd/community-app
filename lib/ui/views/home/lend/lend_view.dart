@@ -3,6 +3,8 @@ import 'package:presto/app/app.locator.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/widgets/notificationCard.dart';
 import 'package:stacked/stacked.dart';
+import '../../../../app/app.router.dart';
+import '../../../../app/app.router.dart';
 import 'lend_viewModel.dart';
 
 class LendView extends StatelessWidget {
@@ -39,7 +41,7 @@ class LendView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(
-                            height: height / 25,
+                            height: height * 0.04,
                           ),
                           Align(
                             alignment: Alignment.topCenter,
@@ -47,12 +49,12 @@ class LendView extends StatelessWidget {
                               'All Notifications',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: height / 22,
+                                fontSize: height * 0.045,
                               ),
                             ),
                           ),
                           SizedBox(
-                            height: height / 30,
+                            height: height * 0.033,
                           ),
                           model.notifications.length == 0
                               ? Align(
@@ -61,7 +63,7 @@ class LendView extends StatelessWidget {
                                     'No new notifications',
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: height / 25,
+                                      fontSize: height * 0.022,
                                     ),
                                   ),
                                 )
@@ -71,9 +73,9 @@ class LendView extends StatelessWidget {
                                     itemCount: model.notifications.length,
                                     itemBuilder: (context, index) {
                                       return notificationCard(
-                                        paymentOptions: model
-                                            .notifications[index]
-                                            .paymentMethods,
+                                        // paymentOptions: model
+                                        //     .notifications[index]
+                                        //     .paymentMethods,
                                         amount: model
                                             .notifications[index].amount
                                             .toString(),
@@ -85,6 +87,17 @@ class LendView extends StatelessWidget {
                                         handShakeCallBack: () {
                                           print("Trying handshake");
                                         },
+                                        onTap: () {
+                                          model
+                                              .navigationService
+                                              .navigateTo(
+                                              Routes.notificationView,
+                                              arguments: NotificationViewArguments(
+                                                  notification: model.notifications[index]
+                                              )
+                                          );
+                                          print('Mujhe Dabaya Gaya Hai');
+                                        }
                                       );
                                     },
                                   ),
