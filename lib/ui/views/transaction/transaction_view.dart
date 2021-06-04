@@ -5,6 +5,7 @@ import 'package:presto/ui/views/transaction/transaction_viewModel.dart';
 import 'package:presto/ui/widgets/ListToken.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:stacked/stacked.dart';
+import '../../../models/enums.dart';
 
 class TransactionView extends StatelessWidget {
   final CustomTransaction customTransaction;
@@ -17,6 +18,11 @@ class TransactionView extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    List<PaymentMethods> paymentMethods = customTransaction.genericInformation.transactionMethodsRequestedByBorrower;
+    String paymentMethodsString = '';
+    for(int i=0;i<paymentMethods.length;i++){
+      paymentMethodsString = paymentMethodsToString(paymentMethods[i]);
+    }
     return ViewModelBuilder<TransactionViewModel>.reactive(
       viewModelBuilder: () => TransactionViewModel(),
       disposeViewModel: false,
@@ -35,8 +41,14 @@ class TransactionView extends StatelessWidget {
               ),
               Center(
                 child: Text(
-                  '₹ 500',
+                  '₹ ${customTransaction.genericInformation.amount}',
                   style: TextStyle(fontSize: height / 15, color: primaryColor),
+                ),
+              ),
+              Center(
+                child: Text(
+                  'Lender\'s name',
+                  style: TextStyle(fontSize: height / 35, color: primaryColor),
                 ),
               ),
               SizedBox(
@@ -65,18 +77,20 @@ class TransactionView extends StatelessWidget {
               ListToken(
                   icon: Icons.date_range,
                   name: 'Date of Transaction:',
-                  trailName: '05-01-2020'),
+                  trailName: '${customTransaction.genericInformation.initiationAt.day}'
+                      '/${customTransaction.genericInformation.initiationAt.month}'
+                      '/${customTransaction.genericInformation.initiationAt.year}'),
               Tooltip(
-                message: 'Paytm, GPay, PayPal, PhonePay, AmazonPay',
+                message: '$paymentMethodsString',
                 child: ListToken(
                     icon: Icons.chrome_reader_mode,
                     name: 'Modes of Payment',
-                    trailName: 'Paytm, G...'),
+                    trailName: paymentMethods.length >1 ? '${paymentMethodsToString(paymentMethods[0])}...': '${paymentMethodsToString(paymentMethods[0])}'),
               ),
               ListToken(
                 icon: Icons.rate_review,
                 name: 'Interest Rate',
-                trailName: '0%',
+                trailName: '${customTransaction.genericInformation.interestRate}%',
               ),
               ListToken(
                 icon: Icons.credit_card_rounded,

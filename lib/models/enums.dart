@@ -9,9 +9,9 @@ enum PaymentMethods {
 String paymentMethodsToString(PaymentMethods methods) {
   switch (methods) {
     case PaymentMethods.googlePay:
-      return "googlePay";
+      return "GooglePay";
     case PaymentMethods.payTm:
-      return "payTm";
+      return "PayTm";
     case PaymentMethods.upi:
       return "upi";
     case PaymentMethods.creditCard:
