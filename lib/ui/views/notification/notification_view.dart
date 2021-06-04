@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked/stacked.dart';
 import 'notification_viewModel.dart';
+
 class NotificationView extends StatelessWidget {
-  const NotificationView({Key? key}) : super(key: key);
+  final CustomNotification notification;
+  const NotificationView({Key? key, required this.notification})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +15,11 @@ class NotificationView extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     return ViewModelBuilder<NotificationViewModel>.reactive(
       viewModelBuilder: () => NotificationViewModel(),
+      onModelReady: (model) => model.onModelReady(notification),
       disposeViewModel: false,
       // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,
-      builder:(context,model,child) => SingleChildScrollView(
+      builder: (context, model, child) => SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,8 +35,7 @@ class NotificationView extends StatelessWidget {
                   backgroundColor: primaryColor,
                   radius: width / 5.5,
                   child: Text('Local Icon',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 25.0)),
+                      style: TextStyle(color: Colors.white, fontSize: 25.0)),
                 ),
                 SizedBox(
                   width: width / 50,
@@ -64,8 +68,7 @@ class NotificationView extends StatelessWidget {
                 //'Amount Requested : ${widget.notification.amount}',
                 'Amount Requested : 20',
                 style: TextStyle(
-                    fontSize: height / 20,
-                    fontWeight: FontWeight.bold),
+                    fontSize: height / 20, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
@@ -76,8 +79,7 @@ class NotificationView extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(
-                  left: width / 20, top: width / 19),
+              padding: EdgeInsets.only(left: width / 20, top: width / 19),
               child: Container(
                 width: width / 2,
                 child: Text(
@@ -102,8 +104,7 @@ class NotificationView extends StatelessWidget {
                       child: Text(
                         'Yes',
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: height / 45),
+                            color: Colors.white, fontSize: height / 45),
                       ),
                     ),
                   ),
@@ -117,8 +118,7 @@ class NotificationView extends StatelessWidget {
                       child: Text(
                         'No',
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: height / 45),
+                            color: Colors.white, fontSize: height / 45),
                       ),
                     ),
                   ),

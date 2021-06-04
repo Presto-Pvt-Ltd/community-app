@@ -3,19 +3,19 @@ import 'package:presto/app/app.locator.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/widgets/transactionCard.dart';
 import 'package:stacked/stacked.dart';
-import 'transactions_viewModel.dart';
+import 'all_transactions_viewModel.dart';
 
-class TransactionsView extends StatelessWidget {
+class AllTransactionsView extends StatelessWidget {
   final void Function(bool) slideChangeView;
-  const TransactionsView({Key? key, required this.slideChangeView})
+  const AllTransactionsView({Key? key, required this.slideChangeView})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return ViewModelBuilder<TransactionsViewModel>.reactive(
+    return ViewModelBuilder<AllTransactionsViewModel>.reactive(
       onModelReady: (model) => model.onModelReady(slideChangeView),
-      viewModelBuilder: () => TransactionsViewModel(),
+      viewModelBuilder: () => AllTransactionsViewModel(),
       disposeViewModel: false,
       // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,

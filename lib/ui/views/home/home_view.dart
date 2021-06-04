@@ -2,7 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/views/home/profile/profile_view.dart';
-import 'package:presto/ui/views/home/transactions/transactions_view.dart';
+import 'package:presto/ui/views/home/allTransactions/all_transactions_view.dart';
 import 'package:stacked/stacked.dart';
 import 'borrow/borrow_view.dart';
 import 'home_viewModel.dart';
@@ -31,7 +31,7 @@ class HomeView extends StatelessWidget {
                 slideChangeView: model.slideChangeViews,
               );
             case 2:
-              return TransactionsView(
+              return AllTransactionsView(
                 slideChangeView: model.slideChangeViews,
               );
             case 3:
@@ -53,7 +53,7 @@ class HomeView extends StatelessWidget {
               );
 
             case 1:
-              return TransactionsView(
+              return AllTransactionsView(
                 slideChangeView: model.slideChangeViews,
               );
             case 2:

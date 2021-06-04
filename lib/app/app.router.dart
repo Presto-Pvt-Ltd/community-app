@@ -9,13 +9,17 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
+import '../models/notification/notification_data_model.dart';
+import '../models/transactions/custom_transaction_data_model.dart';
 import '../ui/views/dummyView/dummy_view.dart';
 import '../ui/views/home/home_view.dart';
 import '../ui/views/login/login_view.dart';
 import '../ui/views/no-internet/no-internet_view.dart';
+import '../ui/views/notification/notification_view.dart';
 import '../ui/views/phoneVerification/phoneVerification_view.dart';
 import '../ui/views/register/register_view.dart';
 import '../ui/views/startup/startup_view.dart';
+import '../ui/views/transaction/transaction_view.dart';
 
 class Routes {
   static const String startUpView = '/';
@@ -25,6 +29,8 @@ class Routes {
   static const String registerView = '/register-view';
   static const String phoneVerificationView = '/phone-verification-view';
   static const String noInternetView = '/no-internet-view';
+  static const String notificationView = '/notification-view';
+  static const String transactionView = '/transaction-view';
   static const all = <String>{
     startUpView,
     dummyView,
@@ -33,6 +39,8 @@ class Routes {
     registerView,
     phoneVerificationView,
     noInternetView,
+    notificationView,
+    transactionView,
   };
 }
 
@@ -47,6 +55,8 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.registerView, page: RegisterView),
     RouteDef(Routes.phoneVerificationView, page: PhoneVerificationView),
     RouteDef(Routes.noInternetView, page: NoInternetView),
+    RouteDef(Routes.notificationView, page: NotificationView),
+    RouteDef(Routes.transactionView, page: TransactionView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -110,6 +120,26 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    NotificationView: (data) {
+      var args = data.getArgs<NotificationViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => NotificationView(
+          key: args.key,
+          notification: args.notification,
+        ),
+        settings: data,
+      );
+    },
+    TransactionView: (data) {
+      var args = data.getArgs<TransactionViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => TransactionView(
+          key: args.key,
+          customTransaction: args.customTransaction,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -137,4 +167,18 @@ class PhoneVerificationViewArguments {
   final Key? key;
   final String phoneNumber;
   PhoneVerificationViewArguments({this.key, required this.phoneNumber});
+}
+
+/// NotificationView arguments holder class
+class NotificationViewArguments {
+  final Key? key;
+  final CustomNotification notification;
+  NotificationViewArguments({this.key, required this.notification});
+}
+
+/// TransactionView arguments holder class
+class TransactionViewArguments {
+  final Key? key;
+  final CustomTransaction customTransaction;
+  TransactionViewArguments({this.key, required this.customTransaction});
 }

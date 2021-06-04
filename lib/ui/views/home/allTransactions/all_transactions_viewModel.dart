@@ -4,7 +4,7 @@ import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:stacked/stacked.dart';
 
-class TransactionsViewModel extends BaseViewModel {
+class AllTransactionsViewModel extends BaseViewModel {
   final log = getLogger("TransactionsViewModel");
   String title = "I am Transactions";
   List<CustomTransaction> transactions =

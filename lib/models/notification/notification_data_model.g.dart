@@ -29,12 +29,12 @@ Map<String, dynamic> _$CustomNotificationToJson(CustomNotification instance) =>
       'lendersReferralCodes': instance.lendersReferralCodes,
       'transactionId': instance.transactionId,
       'amount': instance.amount,
-      'community': instance.community,
       'initiationTime': instance.initiationTime.toIso8601String(),
       'borrowerRating': instance.borrowerRating,
       'paymentMethods': instance.paymentMethods
           .map((e) => _$PaymentMethodsEnumMap[e])
           .toList(),
+      'community': instance.community,
     };
 
 K _$enumDecode<K, V>(
