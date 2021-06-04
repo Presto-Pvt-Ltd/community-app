@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:presto/app/app.locator.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/ui/widgets/transactionCard.dart';
 import 'package:stacked/stacked.dart';
 import 'transactions_viewModel.dart';
 
@@ -62,12 +65,33 @@ class TransactionsView extends StatelessWidget {
                               //     ? model.recentTransactions
                               children: [
                                 Container(
-                                  child: Text(
-                                    "No Transactions to Display",
-                                    style: TextStyle(
-                                        fontSize: height / 45,
-                                        color: Colors.black),
-                                  ),
+                                  height: height * 0.3,
+                                  child: model.transactions.length == 0
+                                      ? Text(
+                                          "No Transactions to Display",
+                                          style: TextStyle(
+                                              fontSize: height / 45,
+                                              color: Colors.black),
+                                        )
+                                      : ListView.builder(
+                                          itemCount: model.transactions.length,
+                                          itemBuilder: (context, index) {
+                                            return mixedCard(
+                                              height: height,
+                                              width: width,
+                                              isBorrowed: model
+                                                      .transactions[index]
+                                                      .borrowerInformation
+                                                      .borrowerReferralCode ==
+                                                  locator<UserDataProvider>()
+                                                      .platformData!
+                                                      .referralCode,
+                                              onTap: () {
+                                                print("Mujhe dabaya gaya hai");
+                                              },
+                                            );
+                                          },
+                                        ),
                                 ),
                               ],
                             ),

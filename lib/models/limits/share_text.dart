@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'share_text.g.dart';
 
+/// [text] contains the text to share.
 @JsonSerializable()
 class ShareText {
   final String text;

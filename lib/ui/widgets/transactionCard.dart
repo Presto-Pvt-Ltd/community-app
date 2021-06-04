@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+
 Widget mixedCard({
   //TransactionModel transaction,
   required double height,
   required double width,
   required bool isBorrowed,
-  required int duration,
   required Function onTap,
 }) {
   Color cardColor;
@@ -36,7 +36,8 @@ Widget mixedCard({
         // color: cardColor,
         elevation: 5,
         child: Padding(
-          padding: EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0, bottom: 6.0),
+          padding:
+              EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0, bottom: 6.0),
           child: ExpansionTile(
             title: Text(
               '',
@@ -47,7 +48,7 @@ Widget mixedCard({
               ),
             ),
             subtitle: Text(
-              "₹ ",// + transaction.amount,
+              "₹ ", // + transaction.amount,
               style: TextStyle(
                 fontSize: 15,
                 // color: textColor,

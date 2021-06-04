@@ -140,8 +140,8 @@ class HomeViewModel extends IndexTrackingViewModel {
                             transactionIds: _userDataProvider
                                 .transactionData!.transactionIds,
                           );
-                          setBusy(false);
                         }
+                        setBusy(false);
                       }
                     });
                   }

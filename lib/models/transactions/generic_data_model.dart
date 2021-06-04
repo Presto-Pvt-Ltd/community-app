@@ -2,19 +2,25 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:presto/models/enums.dart';
 part 'generic_data_model.g.dart';
 
+/// [transactionId] denotes the unique transaction ID.
+/// [amount] denotes the amount of transaction in rupees.
+/// [initiationAt] gives the time stamp of transaction initiation.
+/// [completionAt] gives the time stamp of transaction completion.
+/// [transactionMethodsRequestedByBorrower] gives us list of enum [PaymentMethods] requested by borrower.
+/// [interestRate] denotes interest rate.
 @JsonSerializable()
 class GenericInformation {
   final String transactionId;
   final int amount;
   final DateTime initiationAt;
   final DateTime? completionAt;
-  final List<PaymentMethods> transactionMethods;
+  final List<PaymentMethods> transactionMethodsRequestedByBorrower;
   final double interestRate;
 
   GenericInformation({
     required this.transactionId,
     required this.amount,
-    required this.transactionMethods,
+    required this.transactionMethodsRequestedByBorrower,
     required this.interestRate,
     required this.initiationAt,
     this.completionAt,

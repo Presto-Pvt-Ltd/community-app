@@ -37,7 +37,7 @@ class LendViewModel extends StreamViewModel {
           log.v(notification.initiationTime);
           int limitMinutes = locator<LimitsDataProvider>()
                   .transactionLimits!
-                  .keepTransactionActiveTillHours *
+                  .keepTransactionActiveForHours *
               60;
           if (currentTime.difference(notification.initiationTime).inMinutes <
               limitMinutes) {

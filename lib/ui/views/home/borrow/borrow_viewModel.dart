@@ -73,16 +73,16 @@ class BorrowViewModel extends BaseViewModel {
       if (differenceInMinutes <
           locator<LimitsDataProvider>()
               .transactionLimits!
-              .keepTransactionActiveTillHours) {
+              .keepTransactionActiveForHours) {
         log.wtf(locator<LimitsDataProvider>()
             .transactionLimits!
-            .keepTransactionActiveTillHours
+            .keepTransactionActiveForHours
             .toString());
         DateTime completionTime = lastRequestTime.add(
           Duration(
               hours: locator<LimitsDataProvider>()
                   .transactionLimits!
-                  .keepTransactionActiveTillHours),
+                  .keepTransactionActiveForHours),
         );
         int remainingMinutes =
             completionTime.difference(lastRequestTime).inMinutes;
@@ -134,7 +134,7 @@ class BorrowViewModel extends BaseViewModel {
               genericInformation: GenericInformation(
                 transactionId: transactionId,
                 amount: amount.toInt(),
-                transactionMethods: [PaymentMethods.payTm],
+                transactionMethodsRequestedByBorrower: [PaymentMethods.payTm],
                 interestRate: 0,
                 initiationAt: currentTime,
               ),
@@ -180,7 +180,6 @@ class BorrowViewModel extends BaseViewModel {
               ).toJson(),
             )
                 .then((value) {
-              // TODO: send notification here
               try {
                 FirebaseFunctions functions = FirebaseFunctions.instance;
                 Function sendPushNotification =

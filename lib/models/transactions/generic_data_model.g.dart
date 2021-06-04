@@ -10,9 +10,10 @@ GenericInformation _$GenericInformationFromJson(Map<String, dynamic> json) {
   return GenericInformation(
     transactionId: json['transactionId'] as String,
     amount: json['amount'] as int,
-    transactionMethods: (json['transactionMethods'] as List<dynamic>)
-        .map((e) => _$enumDecode(_$PaymentMethodsEnumMap, e))
-        .toList(),
+    transactionMethodsRequestedByBorrower:
+        (json['transactionMethodsRequestedByBorrower'] as List<dynamic>)
+            .map((e) => _$enumDecode(_$PaymentMethodsEnumMap, e))
+            .toList(),
     interestRate: (json['interestRate'] as num).toDouble(),
     initiationAt: DateTime.parse(json['initiationAt'] as String),
     completionAt: json['completionAt'] == null
@@ -27,7 +28,8 @@ Map<String, dynamic> _$GenericInformationToJson(GenericInformation instance) =>
       'amount': instance.amount,
       'initiationAt': instance.initiationAt.toIso8601String(),
       'completionAt': instance.completionAt?.toIso8601String(),
-      'transactionMethods': instance.transactionMethods
+      'transactionMethodsRequestedByBorrower': instance
+          .transactionMethodsRequestedByBorrower
           .map((e) => _$PaymentMethodsEnumMap[e])
           .toList(),
       'interestRate': instance.interestRate,
