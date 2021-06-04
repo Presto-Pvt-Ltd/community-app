@@ -334,6 +334,7 @@ class RegisterViewModel extends FormViewModel {
                     totalBorrowed: 0,
                     totalLent: 0,
                     activeTransactions: <String>[],
+                    borrowingRequestInProcess: false,
                   );
                   locator<UserDataProvider>().transactionData = transactionData;
                   FirebaseMessaging.instance.getToken().then((newToken) {

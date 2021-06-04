@@ -1,5 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/constants/T.dart';
+import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
+import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 
 import '../firestoreBase.dart';
 
@@ -9,12 +14,19 @@ class NotificationDataHandler {
   final CollectionReference collectionReference =
       FirebaseFirestore.instance.collection("notifications");
 
-  Stream<QuerySnapshot> getStream({required String referralCode}) {
+  /// Gets a stream of query snapshots of notifications
+  /// Queries :-
+  /// 1) referees array in notification doc must contain user's referral id
+  /// 2) the notification document must not be updated before activeHoursLimit
+  Stream<QuerySnapshot> getStream() {
     log.v(
-      "Getting stream for notifications with referral code : $referralCode",
+      "Getting stream for notifications with referral code : ${locator<UserDataProvider>().platformData!.referralCode}",
     );
     return collectionReference
-        .where("referees", arrayContains: referralCode)
+        .where(
+          "lendersReferralCodes",
+          arrayContains: locator<UserDataProvider>().platformData!.referralCode,
+        )
         .snapshots();
   }
 

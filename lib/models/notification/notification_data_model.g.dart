@@ -18,6 +18,8 @@ CustomNotification _$CustomNotificationFromJson(Map<String, dynamic> json) {
         .map((e) => _$enumDecode(_$PaymentMethodsEnumMap, e))
         .toList(),
     borrowerReferralCode: json['borrowerReferralCode'] as String,
+    initiationTime: DateTime.parse(json['initiationTime'] as String),
+    community: json['community'] as String,
   );
 }
 
@@ -27,6 +29,8 @@ Map<String, dynamic> _$CustomNotificationToJson(CustomNotification instance) =>
       'lendersReferralCodes': instance.lendersReferralCodes,
       'transactionId': instance.transactionId,
       'amount': instance.amount,
+      'community': instance.community,
+      'initiationTime': instance.initiationTime.toIso8601String(),
       'borrowerRating': instance.borrowerRating,
       'paymentMethods': instance.paymentMethods
           .map((e) => _$PaymentMethodsEnumMap[e])

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
-Widget notificationListCard({
+Widget notificationCard({
   required List<dynamic> paymentOptions,
   required String amount,
   required String score,
-  required String borrowerName,
-  required String borrowerContact,
-  required String transactionId,
+  required Function handShakeCallBack,
   required var height,
   required var width,
 }) {
@@ -31,7 +29,7 @@ Widget notificationListCard({
         padding: EdgeInsets.all(6.0),
         child: ExpansionTile(
           title: Text(
-            '₹ 500',
+            '₹ $amount',
             style: TextStyle(
               fontSize: 25.0,
             ),
@@ -39,12 +37,6 @@ Widget notificationListCard({
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '12/1/2021',
-                style: TextStyle(
-                  fontSize: 15.0,
-                ),
-              ),
               Text(
                 'Credit Score: $score',
                 style: TextStyle(
@@ -63,36 +55,7 @@ Widget notificationListCard({
             SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Text("Name:"),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Text(
-                    '$borrowerName',
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                  ),
-                  child: Text("Contact No.:"),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Text('$borrowerContact'),
-                ),
-              ],
-            ),
+
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
             //   children: <Widget>[
@@ -105,19 +68,19 @@ Widget notificationListCard({
             //         child: Text('12/2/2021')),
             //   ],
             // ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Text("Interest Rate:"),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Text("1%"),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: <Widget>[
+            //     Padding(
+            //       padding: EdgeInsets.only(left: 20),
+            //       child: Text("Interest Rate:"),
+            //     ),
+            //     Padding(
+            //       padding: EdgeInsets.only(right: 20),
+            //       child: Text("1%"),
+            //     ),
+            //   ],
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -143,16 +106,17 @@ Widget notificationListCard({
                             ),
                           ),
                         ),
-                        // onTap: () async {
-                        //   var result = await _fireStoreService
-                        //       .approveHandshake(transactionId);
-                        //   if (result is bool && result) {
-                        //     locator<DialogService>().showDialog(
-                        //         title: "Success",
-                        //         description:
-                        //         "Handshake Success!!\n You can pay the amount by closing the app and view the transaction in the transaction's screen. Please upload transcript when transaction is done.");
-                        //   }
-                        // },
+                        onTap: () async {
+                          handShakeCallBack();
+                          // var result = await _fireStoreService
+                          //     .approveHandshake(transactionId);
+                          // if (result is bool && result) {
+                          //   locator<DialogService>().showDialog(
+                          //       title: "Success",
+                          //       description:
+                          //       "Handshake Success!!\n You can pay the amount by closing the app and view the transaction in the transaction's screen. Please upload transcript when transaction is done.");
+                          // }
+                        },
                       ),
                       SizedBox(
                         width: 10.0,

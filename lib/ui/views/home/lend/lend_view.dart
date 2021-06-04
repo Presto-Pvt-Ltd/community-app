@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/ui/widgets/notificationCard.dart';
 import 'package:stacked/stacked.dart';
 import 'lend_viewModel.dart';
 
@@ -34,28 +35,62 @@ class LendView extends StatelessWidget {
             child: SafeArea(
               child: Scaffold(
                 body: model.dataReady || !model.isBusy
-                    ? SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: height / 25,
-                            ),
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Text(
-                                'All Notifications',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: height / 22),
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: height / 25,
+                          ),
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Text(
+                              'All Notifications',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: height / 22,
                               ),
                             ),
-                            SizedBox(
-                              height: height / 30,
-                            ),
-                            Container(),
-                            // notificationListCard( , height, width),
-                          ],
-                        ),
+                          ),
+                          SizedBox(
+                            height: height / 30,
+                          ),
+                          model.notifications.length == 0
+                              ? Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text(
+                                    'No new notifications',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: height / 25,
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  height: height * 0.6,
+                                  child: ListView.builder(
+                                    itemCount: model.notifications.length,
+                                    itemBuilder: (context, index) {
+                                      return notificationCard(
+                                        paymentOptions: model
+                                            .notifications[index]
+                                            .paymentMethods,
+                                        amount: model
+                                            .notifications[index].amount
+                                            .toString(),
+                                        score: model
+                                            .notifications[index].borrowerRating
+                                            .toString(),
+                                        height: height,
+                                        width: width,
+                                        handShakeCallBack: () {
+                                          print("Trying handshake");
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                          // notificationListCard( , height, width),
+                        ],
                       )
                     : Center(
                         child: CircularProgressIndicator(),

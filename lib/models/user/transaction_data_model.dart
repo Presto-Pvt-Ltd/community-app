@@ -14,6 +14,8 @@ class TransactionData {
   final int totalBorrowed;
   final int totalLent;
   final List<String> activeTransactions;
+  bool borrowingRequestInProcess;
+  DateTime? lastBorrowingRequestPlacedAt;
 
   TransactionData({
     required this.paymentMethodsUsed,
@@ -21,6 +23,8 @@ class TransactionData {
     required this.totalBorrowed,
     required this.totalLent,
     required this.activeTransactions,
+    this.borrowingRequestInProcess = false,
+    this.lastBorrowingRequestPlacedAt,
   });
   factory TransactionData.fromJson(Map<String, dynamic> json) =>
       _$TransactionDataFromJson(json);

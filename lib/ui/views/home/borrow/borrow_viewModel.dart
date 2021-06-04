@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/constants/T.dart';
 import 'package:presto/models/enums.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
@@ -13,6 +14,8 @@ import 'package:presto/models/transactions/lender_data_model.dart';
 import 'package:presto/models/transactions/transaction_status_data_model.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/notificationDataHandler.dart';
+import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
+import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/razorpay.dart';
@@ -56,20 +59,66 @@ class BorrowViewModel extends BaseViewModel {
     /// then create new transaction document in firebase and hive
     /// update provider
     /// send notifications and display some sort of timer
+    DateTime currentTime = DateTime.now();
+    if (locator<UserDataProvider>()
+        .transactionData!
+        .borrowingRequestInProcess) {
+      DateTime lastRequestTime = locator<UserDataProvider>()
+          .transactionData!
+          .lastBorrowingRequestPlacedAt!;
+      int differenceInMinutes =
+          currentTime.difference(lastRequestTime).inMinutes;
+      log.wtf(lastRequestTime);
+      log.wtf(currentTime);
+      if (differenceInMinutes <
+          locator<LimitsDataProvider>()
+              .transactionLimits!
+              .keepTransactionActiveTillHours) {
+        log.wtf(locator<LimitsDataProvider>()
+            .transactionLimits!
+            .keepTransactionActiveTillHours
+            .toString());
+        DateTime completionTime = lastRequestTime.add(
+          Duration(
+              hours: locator<LimitsDataProvider>()
+                  .transactionLimits!
+                  .keepTransactionActiveTillHours),
+        );
+        int remainingMinutes =
+            completionTime.difference(lastRequestTime).inMinutes;
+        locator<DialogService>().showDialog(
+          title: "Warning",
+          description:
+              "Your previous borrowing request is in process. Please wait for ${(remainingMinutes / 60).floor()} hrs ${(remainingMinutes % 60).floor()} min",
+        );
+        return;
+      } else {
+        /// Updates local data base to inform last transaction is dead
+        locator<UserDataProvider>()
+            .transactionData!
+            .lastBorrowingRequestPlacedAt = currentTime;
+        locator<UserDataProvider>().transactionData!.borrowingRequestInProcess =
+            false;
+        locator<ProfileDataHandler>().setProfileData(
+          data: locator<UserDataProvider>().transactionData!.toJson(),
+          typeOfDocument: ProfileDocument.userTransactionsData,
+          userId: locator<UserDataProvider>().platformData!.referralCode,
+          toLocalDatabase: true,
+        );
+      }
+    }
     if (amount != 0)
       locator<DialogService>()
           .showConfirmationDialog(
-              title: "Confirmation",
-              description:
-                  "Are you sure you want to borrow and amount of \u20B9 $amount")
+        title: "Confirmation",
+        description:
+            "Are you sure you want to borrow and amount of \u20B9 $amount",
+      )
           .then((value) {
         if (value!.confirmed) {
           /// initiate the process
           // TODO: ask for user preference in payment method
-          // TODO: Timer
-          // TODO: send notifications
           ///create transaction and update databases
-          ///
           var transactionId =
               locator<TransactionsDataProvider>().createRandomString();
 
@@ -87,7 +136,7 @@ class BorrowViewModel extends BaseViewModel {
                 amount: amount.toInt(),
                 transactionMethods: [PaymentMethods.payTm],
                 interestRate: 0,
-                initiationAt: DateTime.now(),
+                initiationAt: currentTime,
               ),
               borrowerInformation: BorrowerInformation(
                 borrowerReferralCode:
@@ -112,6 +161,7 @@ class BorrowViewModel extends BaseViewModel {
                 .setNotificationDocument(
               docId: locator<UserDataProvider>().platformData!.referralCode,
               data: CustomNotification(
+                community: locator<UserDataProvider>().platformData!.community,
                 borrowerRating: (locator<UserDataProvider>()
                             .platformRatingsData!
                             .personalScore +
@@ -126,6 +176,7 @@ class BorrowViewModel extends BaseViewModel {
                     locator<UserDataProvider>().platformData!.referralCode,
                 lendersReferralCodes:
                     locator<TransactionsDataProvider>().lenders!,
+                initiationTime: currentTime,
               ).toJson(),
             )
                 .then((value) {

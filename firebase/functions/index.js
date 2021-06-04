@@ -2,8 +2,8 @@ const functions = require("firebase-functions");
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 
 // The Firebase Admin SDK to access Firestore.
-const admin = require("firebase-admin");
-admin.initializeApp();
+const firebase = require("firebase-admin");
+firebase.initializeApp();
 
 var payload = {
   notification: {
@@ -26,6 +26,7 @@ var payload = {
     },
   },
 };
+var timeOut = 21600000;
 
 exports.sendPushNotification = functions.https.onCall((data, context) => {
   try {
@@ -40,7 +41,7 @@ exports.sendPushNotification = functions.https.onCall((data, context) => {
           },
 
           android: {
-            ttl: 21600000,
+            ttl: timeOut,
             // channel_id: "presto_borrowing_channel",
             priority: "high",
           },
@@ -75,45 +76,45 @@ exports.sendPushNotification = functions.https.onCall((data, context) => {
   }
 });
 
-exports.banUser = functions.https.onCall((uid, context) => {
-  admin
-    .auth()
-    .updateUser(uid, {
-      disabled: true,
-    })
-    .catch((error) => {
-      console.log("Error updating user:", error);
-    });
-});
-
-exports.paymentButtonPressed = functions.https.onCall((transID, context) => {
-  var timerRun;
-  function myTimer(arg) {
-    console.log("arg was => ${arg}");
-    timerRun = setTimeout(function () {
-      console.log("Timer has finished");
-    }, 21600000);
-  }
-
-  function stopTimer() {
-    clearTimeout(timerRun);
-  }
-
-  var transData;
-
-  myTimer("myArg");
-
-  firestore
-    .collection("notifications")
-    .doc(transID)
-    .get()
-    .then((doc) => {
-      transData = doc.data;
-    });
-
-  if (transData.approvedStatus) {
-    stopTimer();
-  } else {
-    transData.completionDate = null;
-  }
-});
+//exports.banUser = functions.https.onCall((uid, context) => {
+//  admin
+//    .auth()
+//    .updateUser(uid, {
+//      disabled: true,
+//    })
+//    .catch((error) => {
+//      console.log("Error updating user:", error);
+//    });
+//});
+//
+//exports.paymentButtonPressed = functions.https.onCall((transID, context) => {
+//  var timerRun;
+//  function myTimer(arg) {
+//    console.log("arg was => ${arg}");
+//    timerRun = setTimeout(function () {
+//      console.log("Timer has finished");
+//    }, 21600000);
+//  }
+//
+//  function stopTimer() {
+//    clearTimeout(timerRun);
+//  }
+//
+//  var transData;
+//
+//  myTimer("myArg");
+//
+//  firestore
+//    .collection("notifications")
+//    .doc(transID)
+//    .get()
+//    .then((doc) => {
+//      transData = doc.data;
+//    });
+//
+//  if (transData.approvedStatus) {
+//    stopTimer();
+//  } else {
+//    transData.completionDate = null;
+//  }
+//});

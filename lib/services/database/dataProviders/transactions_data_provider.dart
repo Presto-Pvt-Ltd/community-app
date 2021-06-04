@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/transactions/borrower_data_model.dart';
@@ -138,8 +139,9 @@ class TransactionsDataProvider {
     }
   }
 
-  Future<void> createTransaction(
-      {required CustomTransaction transaction}) async {
+  Future<void> createTransaction({
+    required CustomTransaction transaction,
+  }) async {
     userTransactions == null
         ? userTransactions = [transaction]
         : userTransactions!.add(transaction);
@@ -181,9 +183,18 @@ class TransactionsDataProvider {
     log.v("Created transaction in firebase");
 
     /// Update User document
+    /// Adds new [transactionId] in user Transaction Data
     locator<UserDataProvider>().transactionData!.transactionIds.add(
           transaction.genericInformation.transactionId,
         );
+
+    /// Sets active [borrowingRequestInProcess] to [true]
+    locator<UserDataProvider>().transactionData!.borrowingRequestInProcess =
+        true;
+
+    /// Sets [lastBorrowingRequestPlacesAt] to current timestamp
+    locator<UserDataProvider>().transactionData!.lastBorrowingRequestPlacedAt =
+        DateTime.now();
     log.v("Updated user transaction data in data provider");
 
     await locator<ProfileDataHandler>().updateProfileData(

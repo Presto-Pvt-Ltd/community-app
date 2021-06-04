@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:presto/models/enums.dart';
 part 'notification_data_model.g.dart';
@@ -8,8 +9,10 @@ class CustomNotification {
   final List<String> lendersReferralCodes;
   final String transactionId;
   final int amount;
+  final DateTime initiationTime;
   final double borrowerRating;
   final List<PaymentMethods> paymentMethods;
+  final String community;
 
   CustomNotification({
     required this.borrowerRating,
@@ -18,6 +21,8 @@ class CustomNotification {
     required this.transactionId,
     required this.paymentMethods,
     required this.borrowerReferralCode,
+    required this.initiationTime,
+    required this.community,
   });
   factory CustomNotification.fromJson(Map<String, dynamic> json) =>
       _$CustomNotificationFromJson(json);
