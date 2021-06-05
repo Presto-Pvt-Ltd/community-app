@@ -13,7 +13,6 @@ class GenericInformation {
   final String transactionId;
   final int amount;
   final DateTime initiationAt;
-  final DateTime? completionAt;
   final List<PaymentMethods> transactionMethodsRequestedByBorrower;
   final double interestRate;
 
@@ -23,7 +22,6 @@ class GenericInformation {
     required this.transactionMethodsRequestedByBorrower,
     required this.interestRate,
     required this.initiationAt,
-    this.completionAt,
   });
   factory GenericInformation.fromJson(Map<String, dynamic> json) =>
       _$GenericInformationFromJson(json);
