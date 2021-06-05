@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/reward_limit_model.dart';
@@ -33,12 +35,14 @@ class TransactionViewModel extends BaseViewModel {
     var userTransactionsFromProvider =
         locator<TransactionsDataProvider>().userTransactions!;
     log.w("Executing payBackComplete ");
+    log.w(locator<UserDataProvider>().transactionData!.activeTransactions);
 
     /// update user profile
     locator<UserDataProvider>()
         .transactionData!
         .activeTransactions
         .remove(transaction.genericInformation.transactionId);
+    log.w(locator<UserDataProvider>().transactionData!.activeTransactions);
     // TODO: add reward
     for (int i = 0; i < userTransactionsFromProvider.length; i++) {
       if (userTransactionsFromProvider[i].genericInformation.transactionId ==
@@ -72,6 +76,12 @@ class TransactionViewModel extends BaseViewModel {
           typeOfDocument: TransactionDocument.transactionStatus,
           transactionId: transaction.genericInformation.transactionId,
           toLocalStorage: false,
+        );
+
+        /// Update transaction list in Hive
+
+        locator<TransactionsDataHandler>().updateTransactionListInHive(
+          list: jsonEncode(userTransactionsFromProvider),
         );
 
         /// update borrower's user info in firestore and hive
