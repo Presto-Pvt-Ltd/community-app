@@ -1,31 +1,32 @@
-const functions = require("firebase-functions");
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 
 // The Firebase Admin SDK to access Firestore.
-const firebase = require("firebase-admin");
-firebase.initializeApp();
 
-var payload = {
-  notification: {
-    title: "Assistance Required",
-    body: "Someone in your community requires your financial help!! Open the presto app to find out more.",
-  },
-  android: {
-    notification: {
-      sound: "default",
-      ttl: 21600000,
-    },
-    channel_id: "presto_borrowing_channel",
-    priority: "high",
-  },
-  apns: {
-    payload: {
-      aps: {
-        sound: "default",
-      },
-    },
-  },
-};
+const admin = require("firebase-admin");
+const functions = require("firebase-functions");
+admin.initializeApp();
+
+// var payload = {
+//   notification: {
+//     title: "Assistance Required",
+//     body: "Someone in your community requires your financial help!! Open the presto app to find out more.",
+//   },
+//   android: {
+//     notification: {
+//       sound: "default",
+//       ttl: 21600000,
+//     },
+//     channel_id: "presto_borrowing_channel",
+//     priority: "high",
+//   },
+//   apns: {
+//     payload: {
+//       aps: {
+//         sound: "default",
+//       },
+//     },
+//   },
+// };
 var timeOut = 21600000;
 
 exports.sendPushNotification = functions.https.onCall((data, context) => {

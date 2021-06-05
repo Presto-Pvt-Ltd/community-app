@@ -26,7 +26,7 @@ class TransactionView extends StatelessWidget {
       paymentMethodsString = paymentMethodsToString(paymentMethods[i]);
     }
     bool isTransactionIncomplete =
-        customTransaction.transactionStatus.borrowerSentMoneyAt == null;
+        !customTransaction.transactionStatus.borrowerSentMoney;
     String buttonText = isTransactionIncomplete ? 'Payback' : 'Already Paid';
     return ViewModelBuilder<TransactionViewModel>.reactive(
       viewModelBuilder: () => TransactionViewModel(),

@@ -115,6 +115,7 @@ class TransactionViewModel extends BaseViewModel {
               userId: locator<UserDataProvider>().platformData!.referralCode,
               toLocalDatabase: false,
             );
+            setBusy(false);
           } else {
             locator<LimitsDataHandler>()
                 .getLimitsData(
