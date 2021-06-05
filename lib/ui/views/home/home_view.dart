@@ -136,24 +136,27 @@ class HomeView extends StatelessWidget {
                 ),
               )
             : Scaffold(
-                body: PageTransitionSwitcher(
-                  duration: const Duration(milliseconds: 1000),
-                  reverse: model.reverse,
-                  transitionBuilder: (
-                    Widget child,
-                    Animation<double> animation,
-                    Animation<double> secondaryAnimation,
-                  ) {
-                    return SharedAxisTransition(
-                      child: child,
-                      animation: animation,
-                      secondaryAnimation: secondaryAnimation,
-                      transitionType: SharedAxisTransitionType.horizontal,
-                    );
-                  },
-                  child: model.isCM
-                      ? getViewForIndexCM(model.currentIndex)
-                      : getViewForIndexRU(model.currentIndex),
+                body: RefreshIndicator(
+                  onRefresh: model.refresh,
+                  child: PageTransitionSwitcher(
+                    duration: const Duration(milliseconds: 1000),
+                    reverse: model.reverse,
+                    transitionBuilder: (
+                      Widget child,
+                      Animation<double> animation,
+                      Animation<double> secondaryAnimation,
+                    ) {
+                      return SharedAxisTransition(
+                        child: child,
+                        animation: animation,
+                        secondaryAnimation: secondaryAnimation,
+                        transitionType: SharedAxisTransitionType.horizontal,
+                      );
+                    },
+                    child: model.isCM
+                        ? getViewForIndexCM(model.currentIndex)
+                        : getViewForIndexRU(model.currentIndex),
+                  ),
                 ),
                 bottomNavigationBar: BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,

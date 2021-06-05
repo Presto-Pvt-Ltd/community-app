@@ -17,6 +17,7 @@ import '../ui/views/login/login_view.dart';
 import '../ui/views/no-internet/no-internet_view.dart';
 import '../ui/views/notification/notification_view.dart';
 import '../ui/views/phoneVerification/phoneVerification_view.dart';
+import '../ui/views/referees/referees_view.dart';
 import '../ui/views/register/register_view.dart';
 import '../ui/views/startup/startup_view.dart';
 import '../ui/views/transaction/transaction_view.dart';
@@ -31,6 +32,7 @@ class Routes {
   static const String noInternetView = '/no-internet-view';
   static const String notificationView = '/notification-view';
   static const String transactionView = '/transaction-view';
+  static const String refereesView = '/referees-view';
   static const all = <String>{
     startUpView,
     dummyView,
@@ -41,6 +43,7 @@ class Routes {
     noInternetView,
     notificationView,
     transactionView,
+    refereesView,
   };
 }
 
@@ -57,6 +60,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.noInternetView, page: NoInternetView),
     RouteDef(Routes.notificationView, page: NotificationView),
     RouteDef(Routes.transactionView, page: TransactionView),
+    RouteDef(Routes.refereesView, page: RefereesView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -141,6 +145,12 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    RefereesView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const RefereesView(),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -182,5 +192,6 @@ class TransactionViewArguments {
   final Key? key;
   final CustomTransaction customTransaction;
   final bool isBorrowed;
-  TransactionViewArguments({this.key, required this.customTransaction, required this.isBorrowed});
+  TransactionViewArguments(
+      {this.key, required this.customTransaction, required this.isBorrowed});
 }

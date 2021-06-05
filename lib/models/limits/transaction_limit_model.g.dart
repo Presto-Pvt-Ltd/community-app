@@ -29,8 +29,8 @@ Map<String, dynamic> _$TransactionLimitsToJson(TransactionLimits instance) =>
       'keepTransactionActiveForHours': instance.keepTransactionActiveForHours,
       'levelCounter': instance.levelCounter,
       'downCounter': instance.downCounter,
-      'maxActiveTransactionsPerBorrowerForFreeVersion':
-          instance.maxActiveTransactionsPerBorrowerForFreeVersion,
       'keepTransactionActiveForMinutes':
           instance.keepTransactionActiveForMinutes,
+      'maxActiveTransactionsPerBorrowerForFreeVersion':
+          instance.maxActiveTransactionsPerBorrowerForFreeVersion,
     };

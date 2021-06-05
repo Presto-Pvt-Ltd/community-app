@@ -25,12 +25,16 @@ class HomeViewModel extends IndexTrackingViewModel {
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
   final NavigationService _navigationService = locator<NavigationService>();
-  late final bool isCM;
+  late bool isCM;
 
   /// Data providers
   final UserDataProvider _userDataProvider = locator<UserDataProvider>();
   final TransactionsDataProvider _transactionsDataProvider =
       locator<TransactionsDataProvider>();
+
+  Future<void> refresh() async {
+    onModelReady(currentIndex);
+  }
 
   Future<void> onModelReady(int index) async {
     setBusy(true);

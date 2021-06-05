@@ -7,9 +7,6 @@ part of 'transaction_data_model.dart';
 // **************************************************************************
 
 TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) {
-  print("hello");
-  print(json['lastBorrowingRequestPlacedAt']);
-  print("Hello");
   return TransactionData(
     paymentMethodsUsed: Map<String, dynamic>.from(json['paymentMethodsUsed']),
     transactionIds: (json['transactionIds'] as List<dynamic>)
@@ -21,11 +18,9 @@ TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) {
         .map((e) => e as String)
         .toList(),
     borrowingRequestInProcess: json['borrowingRequestInProcess'] as bool,
-    lastBorrowingRequestPlacedAt:
-        json['lastBorrowingRequestPlacedAt'] == "null" ||
-                json['lastBorrowingRequestPlacedAt'] == null
-            ? null
-            : DateTime.parse(json['lastBorrowingRequestPlacedAt'] as String),
+    lastBorrowingRequestPlacedAt: json['lastBorrowingRequestPlacedAt'] == null
+        ? null
+        : DateTime.parse(json['lastBorrowingRequestPlacedAt'] as String),
   );
 }
 

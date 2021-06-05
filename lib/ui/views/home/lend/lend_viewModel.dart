@@ -99,10 +99,11 @@ class LendViewModel extends StreamViewModel {
       );
 
       /// add lender's info and update transaction status
-      newTransaction.lenderInformation!.lenderName =
-          locator<UserDataProvider>().personalData!.name;
-      newTransaction.lenderInformation!.lenderReferralCode =
-          locator<UserDataProvider>().platformData!.referralCode;
+      newTransaction.lenderInformation = LenderInformation(
+        lenderReferralCode:
+            locator<UserDataProvider>().platformData!.referralCode,
+        lenderName: locator<UserDataProvider>().personalData!.name,
+      );
       newTransaction.transactionStatus.approvedStatus = true;
       newTransaction.transactionStatus.lenderSentMoney = true;
       newTransaction.transactionStatus.lenderSentMoneyAt = DateTime.now();

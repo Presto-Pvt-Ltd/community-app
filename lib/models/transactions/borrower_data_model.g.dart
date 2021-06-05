@@ -10,7 +10,7 @@ BorrowerInformation _$BorrowerInformationFromJson(Map<String, dynamic> json) {
   return BorrowerInformation(
     borrowerReferralCode: json['borrowerReferralCode'] as String,
     borrowerName: json['borrowerName'] as String,
-    borrowerCreditScore: json['borrowerCreditScore'] as double,
+    borrowerCreditScore: (json['borrowerCreditScore'] as num).toDouble(),
   );
 }
 

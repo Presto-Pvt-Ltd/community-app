@@ -6,6 +6,7 @@ import 'package:presto/models/user/platform_data_model.dart';
 import 'package:presto/models/user/platform_ratings_data.dart';
 import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
@@ -68,6 +69,29 @@ class ProfileViewModel extends BaseViewModel {
       } else {
         log.wtf("What just happened");
       }
+    });
+  }
+
+  void goToMyReferees() {
+    setBusy(true);
+    locator<ProfileDataHandler>()
+        .getProfileData(
+      typeOfData: ProfileDocument.userPlatformData,
+      userId: locator<UserDataProvider>().platformData!.referralCode,
+      fromLocalDatabase: false,
+    )
+        .then((value) {
+      PlatformData platformData = PlatformData.fromJson(value);
+      locator<UserDataProvider>().platformData = platformData;
+      locator<ProfileDataHandler>().updateProfileData(
+        data: platformData.toJson(),
+        typeOfDocument: ProfileDocument.userPlatformData,
+        userId: locator<UserDataProvider>().platformData!.referralCode,
+        toLocalDatabase: true,
+      );
+    }).whenComplete(() {
+      locator<NavigationService>().navigateTo(Routes.refereesView);
+      setBusy(false);
     });
   }
 

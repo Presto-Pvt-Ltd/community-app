@@ -234,8 +234,10 @@ class ProfileView extends StatelessWidget {
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  print("Mujhe dabaya gaya hai");
+
                                   ///Add a Navigator method
-                                  //model.navigateToRefereesListView();
+                                  model.goToMyReferees();
                                 },
                                 child: Center(
                                   child: Text(
