@@ -18,7 +18,7 @@ class NotificationView extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     List<PaymentMethods> paymentMethods = notification.paymentMethods;
     String paymentMethodsString = '';
-    for(int i=0; i < paymentMethods.length; i++){
+    for (int i = 0; i < paymentMethods.length; i++) {
       paymentMethodsString = paymentMethodsToString(paymentMethods[i]);
     }
     return ViewModelBuilder<NotificationViewModel>.reactive(
@@ -41,10 +41,9 @@ class NotificationView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: width / 6.5,
-                    child: Image.asset('assets/images/PrestoLogo.png')
-                  ),
+                      backgroundColor: Colors.white,
+                      radius: width / 6.5,
+                      child: Image.asset('assets/images/PrestoLogo.png')),
                   SizedBox(
                     width: width / 50,
                   ),
@@ -52,7 +51,7 @@ class NotificationView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Creditworthy Score: 5.0',
+                        'Creditworthy Score: ${notification.borrowerRating}',
                         style: TextStyle(
                           fontSize: height / 45,
                         ),
@@ -104,6 +103,10 @@ class NotificationView extends StatelessWidget {
               Row(
                 children: [
                   GestureDetector(
+                    onTap: () {
+                      model.initiateTransaction();
+                      print("Notification yes card button dabaya gaya hai");
+                    },
                     child: Container(
                       width: width / 2,
                       height: height / 15,

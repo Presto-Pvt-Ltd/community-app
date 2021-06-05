@@ -20,15 +20,13 @@ class HiveDatabaseService {
   }
 
   Future<bool> deleteBox({required String uid}) async {
-    return Hive.openBox(uid).then((box) {
-      try {
-        return box.deleteFromDisk().then((value) => true);
-      } catch (e) {
-        log.e("There was error here");
-        _errorHandlingService.handleError(error: e);
-        return false;
-      }
-    });
+    try {
+      return Hive.deleteBoxFromDisk(uid).then((value) => true);
+    } catch (e) {
+      log.e("There was error here");
+      _errorHandlingService.handleError(error: e);
+      return false;
+    }
   }
 
   dynamic getDataFromHive({required String key}) {

@@ -51,8 +51,16 @@ class UserDataProvider {
     this._transactionData = transactionData!;
   }
 
-  set platformRatings(PlatformRatings platformRatings) {
+  set platformRatingsData(PlatformRatings? platformRatings) {
     this._platformRatingsData = platformRatings;
+  }
+
+  void dispose() {
+    _token = null;
+    _personalData = null;
+    _platformData = null;
+    _transactionData = null;
+    _platformRatingsData = null;
   }
 
   Future<bool> loadData({
@@ -71,6 +79,11 @@ class UserDataProvider {
       )
           .then((dataMap) {
         log.v("Local Storage Response : $dataMap \n${dataMap.runtimeType}");
+
+        /// Forcefully retrieve transactionData from firestore
+        if (typeOfDocument == ProfileDocument.userTransactionsData) {
+          dataMap = <String, dynamic>{};
+        }
         if (dataMap == <String, dynamic>{} || dataMap.isEmpty) {
           log.v("Local Storage is empty");
 

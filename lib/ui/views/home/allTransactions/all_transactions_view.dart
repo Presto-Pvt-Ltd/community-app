@@ -80,6 +80,10 @@ class AllTransactionsView extends StatelessWidget {
                                             return mixedCard(
                                               height: height,
                                               width: width,
+                                              lenderName: model
+                                                  .transactions[index]
+                                                  .lenderInformation!
+                                                  .lenderName,
                                               isBorrowed: model
                                                       .transactions[index]
                                                       .borrowerInformation
@@ -87,18 +91,17 @@ class AllTransactionsView extends StatelessWidget {
                                                   locator<UserDataProvider>()
                                                       .platformData!
                                                       .referralCode,
-                                              amount: model
-                                                      .transactions[index]
-                                                      .genericInformation
-                                                      .amount,
+                                              amount: model.transactions[index]
+                                                  .genericInformation.amount,
                                               onTap: () {
-                                                model
-                                                    .navigationService
+                                                model.navigationService
                                                     .navigateTo(
-                                                    Routes.transactionView,
-                                                    arguments: TransactionViewArguments(
-                                                        customTransaction: model.transactions[index]
-                                                    )
+                                                  Routes.transactionView,
+                                                  arguments:
+                                                      TransactionViewArguments(
+                                                    customTransaction: model
+                                                        .transactions[index],
+                                                  ),
                                                 );
                                                 print("Mujhe dabaya gaya hai");
                                               },
@@ -131,42 +134,45 @@ class AllTransactionsView extends StatelessWidget {
                                   height: height * 0.3,
                                   child: model.transactions.length == 0
                                       ? Text(
-                                    "No Transactions to Display",
-                                    style: TextStyle(
-                                        fontSize: height * 0.022,
-                                        color: Colors.black),
-                                  )
+                                          "No Transactions to Display",
+                                          style: TextStyle(
+                                              fontSize: height * 0.022,
+                                              color: Colors.black),
+                                        )
                                       : ListView.builder(
-                                    itemCount: model.transactions.length,
-                                    itemBuilder: (context, index) {
-                                      return mixedCard(
-                                        height: height,
-                                        width: width,
-                                        isBorrowed: model
-                                            .transactions[index]
-                                            .borrowerInformation
-                                            .borrowerReferralCode ==
-                                            locator<UserDataProvider>()
-                                                .platformData!
-                                                .referralCode,
-                                          amount: model
-                                              .transactions[index]
-                                              .genericInformation
-                                              .amount,
-                                        onTap: () {
-                                          model
-                                              .navigationService
-                                              .navigateTo(
-                                              Routes.transactionView,
-                                              arguments: TransactionViewArguments(
-                                                  customTransaction: model.transactions[index]
-                                              )
-                                          );
-                                          print("Mujhe dabaya gaya hai");
-                                        },
-                                      );
-                                    },
-                                  ),
+                                          itemCount: model.transactions.length,
+                                          itemBuilder: (context, index) {
+                                            return mixedCard(
+                                              height: height,
+                                              width: width,
+                                              lenderName: model
+                                                  .transactions[index]
+                                                  .lenderInformation!
+                                                  .lenderName,
+                                              isBorrowed: model
+                                                      .transactions[index]
+                                                      .borrowerInformation
+                                                      .borrowerReferralCode ==
+                                                  locator<UserDataProvider>()
+                                                      .platformData!
+                                                      .referralCode,
+                                              amount: model.transactions[index]
+                                                  .genericInformation.amount,
+                                              onTap: () {
+                                                model.navigationService
+                                                    .navigateTo(
+                                                  Routes.transactionView,
+                                                  arguments:
+                                                      TransactionViewArguments(
+                                                    customTransaction: model
+                                                        .transactions[index],
+                                                  ),
+                                                );
+                                                print("Mujhe dabaya gaya hai");
+                                              },
+                                            );
+                                          },
+                                        ),
                                 ),
                               ],
                             ),

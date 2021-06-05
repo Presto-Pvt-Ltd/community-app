@@ -8,16 +8,16 @@ part of 'borrower_data_model.dart';
 
 BorrowerInformation _$BorrowerInformationFromJson(Map<String, dynamic> json) {
   return BorrowerInformation(
-    borrowerSentMoneyAt: json['borrowerSentMoneyAt'] == null
-        ? null
-        : DateTime.parse(json['borrowerSentMoneyAt'] as String),
     borrowerReferralCode: json['borrowerReferralCode'] as String,
+    borrowerName: json['borrowerName'] as String,
+    borrowerCreditScore: json['borrowerCreditScore'] as double,
   );
 }
 
 Map<String, dynamic> _$BorrowerInformationToJson(
         BorrowerInformation instance) =>
     <String, dynamic>{
-      'borrowerSentMoneyAt': instance.borrowerSentMoneyAt?.toIso8601String(),
       'borrowerReferralCode': instance.borrowerReferralCode,
+      'borrowerName': instance.borrowerName,
+      'borrowerCreditScore': instance.borrowerCreditScore,
     };

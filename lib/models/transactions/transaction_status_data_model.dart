@@ -9,18 +9,21 @@ part 'transaction_status_data_model.g.dart';
 /// [isLenderPenalised] is [true] if lender has defaulted and penalised.
 @JsonSerializable()
 class TransactionStatus {
-  final bool approvedStatus;
-  final bool lenderSentMoney;
-  final bool borrowerSentMoney;
-  final bool isBorrowerPenalised;
-  final bool isLenderPenalised;
-
+  bool approvedStatus;
+  bool lenderSentMoney;
+  bool borrowerSentMoney;
+  bool isBorrowerPenalised;
+  bool isLenderPenalised;
+  DateTime? borrowerSentMoneyAt;
+  DateTime? lenderSentMoneyAt;
   TransactionStatus({
     required this.approvedStatus,
     required this.lenderSentMoney,
     required this.borrowerSentMoney,
     required this.isBorrowerPenalised,
     required this.isLenderPenalised,
+    required this.borrowerSentMoneyAt,
+    required this.lenderSentMoneyAt,
   });
   factory TransactionStatus.fromJson(Map<String, dynamic> json) =>
       _$TransactionStatusFromJson(json);

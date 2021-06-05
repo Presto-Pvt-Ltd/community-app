@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/models/user/notification_data_model.dart';
+import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
@@ -72,8 +73,9 @@ class HomeViewModel extends IndexTrackingViewModel {
                         .then((value) {
                       locator<LimitsDataHandler>()
                           .getLimitsData(
-                              typeOfLimit: LimitDocument.transactionLimits,
-                              fromLocalDatabase: false)
+                        typeOfLimit: LimitDocument.transactionLimits,
+                        fromLocalDatabase: false,
+                      )
                           .then((limitMap) {
                         locator<LimitsDataProvider>().transactionLimits =
                             TransactionLimits.fromJson(limitMap);
@@ -139,6 +141,8 @@ class HomeViewModel extends IndexTrackingViewModel {
                           _transactionsDataProvider.loadData(
                             transactionIds: _userDataProvider
                                 .transactionData!.transactionIds,
+                            activeTransactions: _userDataProvider
+                                .transactionData!.activeTransactions,
                           );
                         }
                         setBusy(false);

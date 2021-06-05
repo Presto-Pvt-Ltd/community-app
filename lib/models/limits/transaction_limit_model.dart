@@ -18,6 +18,7 @@ class TransactionLimits {
   final int levelCounter;
   final int downCounter;
   final int keepTransactionActiveForMinutes;
+  final int maxActiveTransactionsPerBorrowerForFreeVersion;
 
   TransactionLimits({
     required this.borrowLowerLimit,
@@ -27,6 +28,7 @@ class TransactionLimits {
     required this.keepTransactionActiveForHours,
     required this.levelCounter,
     required this.downCounter,
+    required this.maxActiveTransactionsPerBorrowerForFreeVersion,
   });
   factory TransactionLimits.fromJson(Map<String, dynamic> json) =>
       _$TransactionLimitsFromJson(json);

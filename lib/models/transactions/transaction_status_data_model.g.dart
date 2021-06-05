@@ -13,6 +13,12 @@ TransactionStatus _$TransactionStatusFromJson(Map<String, dynamic> json) {
     borrowerSentMoney: json['borrowerSentMoney'] as bool,
     isBorrowerPenalised: json['isBorrowerPenalised'] as bool,
     isLenderPenalised: json['isLenderPenalised'] as bool,
+    borrowerSentMoneyAt: json['borrowerSentMoneyAt'] == null
+        ? null
+        : DateTime.parse(json['borrowerSentMoneyAt'] as String),
+    lenderSentMoneyAt: json['lenderSentMoneyAt'] == null
+        ? null
+        : DateTime.parse(json['lenderSentMoneyAt'] as String),
   );
 }
 
@@ -23,4 +29,6 @@ Map<String, dynamic> _$TransactionStatusToJson(TransactionStatus instance) =>
       'borrowerSentMoney': instance.borrowerSentMoney,
       'isBorrowerPenalised': instance.isBorrowerPenalised,
       'isLenderPenalised': instance.isLenderPenalised,
+      'borrowerSentMoneyAt': instance.borrowerSentMoneyAt?.toIso8601String(),
+      'lenderSentMoneyAt': instance.lenderSentMoneyAt?.toIso8601String(),
     };

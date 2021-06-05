@@ -73,32 +73,34 @@ class LendView extends StatelessWidget {
                                     itemCount: model.notifications.length,
                                     itemBuilder: (context, index) {
                                       return notificationCard(
-                                        // paymentOptions: model
-                                        //     .notifications[index]
-                                        //     .paymentMethods,
-                                        amount: model
-                                            .notifications[index].amount
-                                            .toString(),
-                                        score: model
-                                            .notifications[index].borrowerRating
-                                            .toString(),
-                                        height: height,
-                                        width: width,
-                                        handShakeCallBack: () {
-                                          print("Trying handshake");
-                                        },
-                                        onTap: () {
-                                          model
-                                              .navigationService
-                                              .navigateTo(
-                                              Routes.notificationView,
-                                              arguments: NotificationViewArguments(
-                                                  notification: model.notifications[index]
-                                              )
-                                          );
-                                          print('Mujhe Dabaya Gaya Hai');
-                                        }
-                                      );
+                                          // paymentOptions: model
+                                          //     .notifications[index]
+                                          //     .paymentMethods,
+                                          amount: model
+                                              .notifications[index].amount
+                                              .toString(),
+                                          score: model.notifications[index]
+                                              .borrowerRating
+                                              .toString(),
+                                          height: height,
+                                          width: width,
+                                          handShakeCallBack: () {
+                                            // TODO: make the transaction function of type Future<bool> and then run handshake
+                                            model.initiateTransaction(
+                                              model.notifications[index],
+                                            );
+                                            print("Trying handshake");
+                                          },
+                                          onTap: () {
+                                            model.navigationService.navigateTo(
+                                                Routes.notificationView,
+                                                arguments:
+                                                    NotificationViewArguments(
+                                                        notification:
+                                                            model.notifications[
+                                                                index]));
+                                            print('Mujhe Dabaya Gaya Hai');
+                                          });
                                     },
                                   ),
                                 ),

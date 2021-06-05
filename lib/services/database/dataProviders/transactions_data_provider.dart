@@ -32,6 +32,12 @@ class TransactionsDataProvider {
   /// lender list
   List<String>? lenders;
 
+  void dispose() {
+    userTransactions = null;
+    notificationTokens = null;
+    lenders = null;
+  }
+
   /// transaction id generator
   final Random _random = Random.secure();
   String createRandomString([int length = 12]) {
@@ -39,7 +45,10 @@ class TransactionsDataProvider {
     return base64Url.encode(values);
   }
 
-  void loadData({required List<String> transactionIds}) async {
+  void loadData({
+    required List<String> transactionIds,
+    required List<String> activeTransactions,
+  }) async {
     try {
       log.v("Checking whether there are any transactions");
       if (transactionIds.length == 0) {
@@ -112,6 +121,7 @@ class TransactionsDataProvider {
                         TransactionStatus.fromJson(transactionFetched[3]),
                   ),
                 );
+
                 if (userTransactions!.length == transactionIds.length) {
                   log.v("Got final transactions from cloud storage");
                   _transactionsDataHandler.updateTransactionListInHive(
@@ -124,6 +134,66 @@ class TransactionsDataProvider {
         } else {
           log.v("Got final transactions from local storage");
           userTransactions = customTransactionList;
+
+          /// Get all the active transactions again
+          if (activeTransactions.length != 0) {
+            log.v("Getting active transactions from cloud storage");
+
+            /// Start downloading new transactions
+            List<List<Future<Map<String, dynamic>>>> futures = [];
+
+            /// for each transaction there are multiple sub collections
+            /// store futures of those sub collections in a list
+            /// which in itself is stored in list [futures] of all new transactions
+            transactionIds.forEach((transactionId) {
+              futures.add(TransactionDocument.values.map((typeOfDocument) {
+                return _transactionsDataHandler.getTransactionData(
+                  typeOfDocument: typeOfDocument,
+                  transactionId: transactionId,
+                  fromLocalStorage: false,
+                );
+              }).toList());
+              print(futures.toString());
+            });
+            log.v(
+              "New TransactionIDs are : $transactionIds",
+            );
+
+            /// for each [singleTransaction] wait for all of it's futures
+            /// then add in new [CustomTransaction] to [userTransactions]
+            futures.forEach((singleTransaction) {
+              log.v("for transaction: ${singleTransaction.toString()}");
+              Future.wait(singleTransaction).then((transactionFetched) {
+                log.v(
+                  "Waited for future to complete, got transaction : $transactionFetched",
+                );
+                CustomTransaction freshTransaction = CustomTransaction(
+                  genericInformation:
+                      GenericInformation.fromJson(transactionFetched[0]),
+                  lenderInformation:
+                      LenderInformation.fromJson(transactionFetched[1]),
+                  borrowerInformation:
+                      BorrowerInformation.fromJson(transactionFetched[2]),
+                  transactionStatus:
+                      TransactionStatus.fromJson(transactionFetched[3]),
+                );
+                for (int i = 0; i < userTransactions!.length; i++) {
+                  if (userTransactions![i].genericInformation.transactionId ==
+                      freshTransaction.genericInformation.transactionId) {
+                    userTransactions![i] = freshTransaction;
+                  }
+                }
+                if (freshTransaction.genericInformation.transactionId ==
+                    activeTransactions.last) {
+                  /// When last transaction is fetched
+                  log.v("Got final transactions from cloud storage");
+                  _transactionsDataHandler.updateTransactionListInHive(
+                    list: jsonEncode(userTransactions),
+                  );
+                }
+              });
+            });
+          }
         }
       }
     } catch (e) {
@@ -133,7 +203,10 @@ class TransactionsDataProvider {
         Duration(seconds: 2),
         () {
           if (e.toString() == "Reading from your storage")
-            loadData(transactionIds: transactionIds);
+            loadData(
+              transactionIds: transactionIds,
+              activeTransactions: activeTransactions,
+            );
         },
       );
     }

@@ -31,6 +31,7 @@ class RazorpayService {
     _razorpay.clear(); // Removes all listeners
   }
 
+  /// [amount] must be in rupees
   Future<void> createOrderInServer({required double amount}) async {
     amount = amount * 100;
     var uname = 'rzp_live_czsnnKwmX3ZSff';

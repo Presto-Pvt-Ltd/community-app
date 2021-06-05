@@ -6,6 +6,7 @@ Widget mixedCard({
   required double width,
   required bool isBorrowed,
   required int amount,
+  required String? lenderName,
   required Function onTap,
 }) {
   Color cardColor;
@@ -30,9 +31,12 @@ Widget mixedCard({
   // textColor = isBorrowed ? Colors.red[800] : Colors.green[800];
 
   return GestureDetector(
-    onTap: (){ onTap();},
+    onTap: () {
+      onTap();
+    },
     child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: width * 0.05, vertical: width * 0.02),
+      padding: EdgeInsets.symmetric(
+          horizontal: width * 0.05, vertical: width * 0.02),
       child: Container(
         height: height * 0.135,
         child: Card(
@@ -46,18 +50,23 @@ Widget mixedCard({
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      '₹ $amount',
-                      style: TextStyle(
-                        fontSize: width * 0.07,
-                        // color: textColor,
-                      ),
+                    '₹ $amount',
+                    style: TextStyle(
+                      fontSize: width * 0.07,
+                      // color: textColor,
                     ),
+                  ),
                   Text(
-                    'Lender Name',
-                      style: TextStyle(
-                        fontSize: width * 0.05
-                      )
-                  )
+                    lenderName == null
+                        ? "Searching for lender"
+                        : 'Lender: $lenderName',
+                    style: TextStyle(
+                      fontSize: width * 0.05,
+                      color: lenderName == null
+                          ? Colors.orangeAccent
+                          : Colors.black,
+                    ),
+                  ),
                 ],
               ),
             ),

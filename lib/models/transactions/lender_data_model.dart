@@ -5,11 +5,11 @@ part 'lender_data_model.g.dart';
 /// [lenderReferralCode] is borrowers referral code.
 @JsonSerializable()
 class LenderInformation {
-  final DateTime? lenderSentMoneyAt;
-  final String? lenderReferralCode;
+  String? lenderReferralCode;
+  String? lenderName;
   LenderInformation({
-    this.lenderSentMoneyAt,
     required this.lenderReferralCode,
+    required this.lenderName,
   });
   factory LenderInformation.fromJson(Map<String, dynamic> json) =>
       _$LenderInformationFromJson(json);

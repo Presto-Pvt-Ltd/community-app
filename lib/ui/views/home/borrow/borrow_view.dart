@@ -33,12 +33,14 @@ class BorrowView extends StatelessWidget {
               print('end');
             },
             child: Scaffold(
-              body: SingleChildScrollView(
-                child: !model.gotData || model.isBusy
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Column(
+              body: model.isBusy
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -190,6 +192,7 @@ class BorrowView extends StatelessWidget {
                             height: height / 20,
                           ),
                           BusyButton(
+                            busy: model.inProcess,
                             textColor: Colors.white,
                             height: height / 10,
                             width: width / 3,
@@ -208,12 +211,12 @@ class BorrowView extends StatelessWidget {
                             //busy: model.isBusy || model.borrowingLimits == null,
                             onPressed: () {
                               model.amount = 100;
-                              model.initiatePayment();
+                              model.initiateBorrowRequest();
                             },
                           ),
                         ],
                       ),
-              ),
+                    ),
             ),
           ),
         );

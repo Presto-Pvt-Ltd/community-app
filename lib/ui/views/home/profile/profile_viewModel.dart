@@ -6,6 +6,7 @@ import 'package:presto/models/user/platform_data_model.dart';
 import 'package:presto/models/user/platform_ratings_data.dart';
 import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/authentication.dart';
+import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:stacked/stacked.dart';
@@ -57,9 +58,17 @@ class ProfileViewModel extends BaseViewModel {
 
   void signOut() {
     locator<HiveDatabaseService>()
-        .deleteBox(uid: locator<AuthenticationService>().uid!);
-    locator<AuthenticationService>().auth.signOut();
-    locator<NavigationService>().clearStackAndShow(Routes.loginView);
+        .deleteBox(uid: locator<AuthenticationService>().uid!)
+        .then((value) {
+      locator<UserDataProvider>().dispose();
+      locator<TransactionsDataProvider>().dispose();
+      if (value) {
+        locator<AuthenticationService>().auth.signOut();
+        locator<NavigationService>().clearStackAndShow(Routes.loginView);
+      } else {
+        log.wtf("What just happened");
+      }
+    });
   }
 
   // TODO: when user clicks on my referees button fetch platform data from firestore and update it on local storage as well as providers

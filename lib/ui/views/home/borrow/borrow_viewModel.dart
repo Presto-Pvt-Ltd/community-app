@@ -1,9 +1,8 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/constants/T.dart';
 import 'package:presto/models/enums.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
@@ -18,7 +17,6 @@ import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
-import 'package:presto/services/razorpay.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -31,65 +29,99 @@ class BorrowViewModel extends BaseViewModel {
   TransactionLimits? transactionLimits;
 
   late void Function(bool) callback;
-  bool gotData = false;
 
   double amount = 0;
 
   void onModelReady(void Function(bool) callback) {
     log.v("Borrow View Model initiated");
     this.callback = callback;
-
-    _limitsDataHandler
-        .getLimitsData(
-      typeOfLimit: LimitDocument.transactionLimits,
-      fromLocalDatabase: false,
-    )
-        .then((mapData) {
-      transactionLimits = TransactionLimits.fromJson(mapData);
-      gotData = true;
-      notifyListeners();
+    setBusy(true);
+    if (locator<LimitsDataProvider>().transactionLimits == null) {
+      _limitsDataHandler
+          .getLimitsData(
+        typeOfLimit: LimitDocument.transactionLimits,
+        fromLocalDatabase: false,
+      )
+          .then((mapData) {
+        transactionLimits = TransactionLimits.fromJson(mapData);
+        notifyListeners();
+        setBusy(false);
+      });
+    } else
       setBusy(false);
-    });
   }
 
-  void initiatePayment() {
+  bool inProcess = false;
+  void initiateBorrowRequest() {
+    inProcess = true;
+    notifyListeners();
+
     /// Confirm transaction intent
     /// initiate transaction
     /// ask for user preference in payment method
     /// then create new transaction document in firebase and hive
     /// update provider
     /// send notifications and display some sort of timer
+    if (locator<UserDataProvider>()
+            .transactionData!
+            .activeTransactions
+            .length ==
+        locator<LimitsDataProvider>()
+            .transactionLimits!
+            .maxActiveTransactionsPerBorrowerForFreeVersion) {
+      log.w("already in process");
+      locator<DialogService>().showDialog(
+        title: "Limit Exceeded",
+        description:
+            "One can keep up-to ${locator<LimitsDataProvider>().transactionLimits!.maxActiveTransactionsPerBorrowerForFreeVersion} pending transactions. Please pay-back before borrowing previous requests first.",
+      );
+      return;
+    }
     DateTime currentTime = DateTime.now();
+    log.w("Current time: $currentTime");
+    log.w(
+        "borrowingRequestInProcess: ${locator<UserDataProvider>().transactionData!.borrowingRequestInProcess}");
+    log.w(
+        "last borrowing request placed at: ${locator<UserDataProvider>().transactionData!.lastBorrowingRequestPlacedAt}");
     if (locator<UserDataProvider>()
         .transactionData!
         .borrowingRequestInProcess) {
-      DateTime lastRequestTime = locator<UserDataProvider>()
+      DateTime? lastRequestTime = locator<UserDataProvider>()
           .transactionData!
-          .lastBorrowingRequestPlacedAt!;
-      int differenceInMinutes =
-          currentTime.difference(lastRequestTime).inMinutes;
-      log.wtf(lastRequestTime);
-      log.wtf(currentTime);
-      if (differenceInMinutes <
-          locator<LimitsDataProvider>()
-              .transactionLimits!
-              .keepTransactionActiveForHours) {
-        log.wtf(locator<LimitsDataProvider>()
-            .transactionLimits!
-            .keepTransactionActiveForHours
-            .toString());
+          .lastBorrowingRequestPlacedAt;
+      int? differenceInMinutes = lastRequestTime != null
+          ? currentTime.difference(lastRequestTime).inMinutes
+          : null;
+      log.v("Last Request time: $lastRequestTime");
+      log.v("Current Time: $currentTime");
+      if (lastRequestTime != null &&
+          differenceInMinutes! <
+              locator<LimitsDataProvider>()
+                  .transactionLimits!
+                  .keepTransactionActiveForHours) {
+        // log.wtf(locator<LimitsDataProvider>()
+        //     .transactionLimits!
+        //     .keepTransactionActiveForHours
+        //     .toString());
         DateTime completionTime = lastRequestTime.add(
           Duration(
-              hours: locator<LimitsDataProvider>()
-                  .transactionLimits!
-                  .keepTransactionActiveForHours),
+            hours: locator<LimitsDataProvider>()
+                .transactionLimits!
+                .keepTransactionActiveForHours,
+            minutes: locator<LimitsDataProvider>()
+                .transactionLimits!
+                .keepTransactionActiveForMinutes,
+          ),
         );
-        int remainingMinutes =
-            completionTime.difference(lastRequestTime).inMinutes;
+        int remainingMinutes = completionTime.difference(currentTime).inMinutes;
+        int remainingHours = completionTime.difference(currentTime).inHours;
+        log.v("Last request completes at $completionTime");
+        log.v("Remaining hours ${(remainingMinutes / 60).floor()}");
+        log.v("Remaining minutes $remainingMinutes");
         locator<DialogService>().showDialog(
           title: "Warning",
           description:
-              "Your previous borrowing request is in process. Please wait for ${(remainingMinutes / 60).floor()} hrs ${(remainingMinutes % 60).floor()} min",
+              "Your previous borrowing request is in process. Please wait for $remainingHours hrs ${(remainingMinutes % 60)} min",
         );
         return;
       } else {
@@ -99,7 +131,7 @@ class BorrowViewModel extends BaseViewModel {
             .lastBorrowingRequestPlacedAt = currentTime;
         locator<UserDataProvider>().transactionData!.borrowingRequestInProcess =
             false;
-        locator<ProfileDataHandler>().setProfileData(
+        locator<ProfileDataHandler>().updateProfileData(
           data: locator<UserDataProvider>().transactionData!.toJson(),
           typeOfDocument: ProfileDocument.userTransactionsData,
           userId: locator<UserDataProvider>().platformData!.referralCode,
@@ -139,11 +171,20 @@ class BorrowViewModel extends BaseViewModel {
                 initiationAt: currentTime,
               ),
               borrowerInformation: BorrowerInformation(
+                borrowerCreditScore: (locator<UserDataProvider>()
+                            .platformRatingsData!
+                            .communityScore +
+                        locator<UserDataProvider>()
+                            .platformRatingsData!
+                            .personalScore) /
+                    2,
                 borrowerReferralCode:
                     locator<UserDataProvider>().platformData!.referralCode,
-                borrowerSentMoneyAt: null,
+                borrowerName: locator<UserDataProvider>().personalData!.name,
               ),
               transactionStatus: TransactionStatus(
+                borrowerSentMoneyAt: null,
+                lenderSentMoneyAt: null,
                 approvedStatus: false,
                 lenderSentMoney: false,
                 borrowerSentMoney: false,
@@ -152,7 +193,7 @@ class BorrowViewModel extends BaseViewModel {
               ),
               lenderInformation: LenderInformation(
                 lenderReferralCode: null,
-                lenderSentMoneyAt: null,
+                lenderName: null,
               ),
             ),
           )
@@ -189,6 +230,8 @@ class BorrowViewModel extends BaseViewModel {
                 sendPushNotification(
                   locator<TransactionsDataProvider>().notificationTokens,
                 );
+                inProcess = false;
+                notifyListeners();
                 // locator<RazorpayService>().createOrderInServer();
               } on FirebaseFunctionsException catch (e) {
                 log.e("${e.toString()} \n ${e.runtimeType}");
@@ -197,6 +240,9 @@ class BorrowViewModel extends BaseViewModel {
               }
             });
           });
+        } else {
+          inProcess = false;
+          notifyListeners();
         }
       });
   }

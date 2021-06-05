@@ -321,7 +321,8 @@ class RegisterViewModel extends FormViewModel {
                     personalScore: 5,
                     prestoCoins: 0,
                   );
-                  locator<UserDataProvider>().platformRatings = platformRatings;
+                  locator<UserDataProvider>().platformRatingsData =
+                      platformRatings;
                   TransactionData transactionData = TransactionData(
                     paymentMethodsUsed: <String, dynamic>{
                       paymentMethodsToString(PaymentMethods.creditCard): 0,

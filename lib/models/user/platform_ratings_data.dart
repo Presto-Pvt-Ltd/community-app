@@ -3,9 +3,9 @@ part 'platform_ratings_data.g.dart';
 
 @JsonSerializable()
 class PlatformRatings {
-  final double communityScore;
-  final double personalScore;
-  final double prestoCoins;
+  double communityScore;
+  double personalScore;
+  double prestoCoins;
   PlatformRatings({
     required this.communityScore,
     required this.personalScore,
