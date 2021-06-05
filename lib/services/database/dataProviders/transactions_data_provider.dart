@@ -134,6 +134,7 @@ class TransactionsDataProvider {
         } else {
           log.v("Got final transactions from local storage");
           userTransactions = customTransactionList;
+          log.wtf("length : ${userTransactions?.length}");
 
           /// Get all the active transactions again
           if (activeTransactions.length != 0) {
@@ -183,6 +184,7 @@ class TransactionsDataProvider {
                     userTransactions![i] = freshTransaction;
                   }
                 }
+                log.wtf("length : ${userTransactions?.length}");
                 if (freshTransaction.genericInformation.transactionId ==
                     activeTransactions.last) {
                   /// When last transaction is fetched

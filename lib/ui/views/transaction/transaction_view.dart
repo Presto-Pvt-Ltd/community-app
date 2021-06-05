@@ -11,11 +11,9 @@ import '../../shared/colors.dart';
 class TransactionView extends StatelessWidget {
   final CustomTransaction customTransaction;
   final bool isBorrowed;
-  const TransactionView({
-    Key? key,
-    required this.customTransaction,
-    required this.isBorrowed
-  }) : super(key: key);
+  const TransactionView(
+      {Key? key, required this.customTransaction, required this.isBorrowed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +25,9 @@ class TransactionView extends StatelessWidget {
     for (int i = 0; i < paymentMethods.length; i++) {
       paymentMethodsString = paymentMethodsToString(paymentMethods[i]);
     }
-    bool isTransactionIncomplete = customTransaction.transactionStatus.borrowerSentMoneyAt == null;
-    String buttonText = isTransactionIncomplete ? 'Payback':'Already Paid';
+    bool isTransactionIncomplete =
+        customTransaction.transactionStatus.borrowerSentMoneyAt == null;
+    String buttonText = isTransactionIncomplete ? 'Payback' : 'Already Paid';
     return ViewModelBuilder<TransactionViewModel>.reactive(
       viewModelBuilder: () => TransactionViewModel(),
       disposeViewModel: false,
@@ -131,23 +130,29 @@ class TransactionView extends StatelessWidget {
                       SizedBox(
                         height: height / 10,
                       ),
-                      isBorrowed&&customTransaction.lenderInformation!.lenderName !=
-                          null?
-                      BusyButton(
-                        height: height / 10,
-                        width: width / 2.5,
-                        title: buttonText,
-                        decoration: BoxDecoration(
-                          color: isTransactionIncomplete ? primaryColor : Colors.grey,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(width / 15),
-                          ),
-                        ),
-                        onPressed: () {
-                          isTransactionIncomplete ? model.initiateTransaction() : null;
-                        },
-                        textColor: Colors.white,
-                      ): Container()
+                      isBorrowed &&
+                              customTransaction.lenderInformation!.lenderName !=
+                                  null
+                          ? BusyButton(
+                              height: height / 10,
+                              width: width / 2.5,
+                              title: buttonText,
+                              decoration: BoxDecoration(
+                                color: isTransactionIncomplete
+                                    ? primaryColor
+                                    : Colors.grey,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(width / 15),
+                                ),
+                              ),
+                              onPressed: () {
+                                isTransactionIncomplete
+                                    ? model.initiateTransaction()
+                                    : null;
+                              },
+                              textColor: Colors.white,
+                            )
+                          : Container()
                     ],
                   ),
                 ),

@@ -129,6 +129,14 @@ class LendViewModel extends StreamViewModel {
         toLocalStorage: false,
       );
 
+      /// update transaction in firestore
+      locator<TransactionsDataHandler>().updateTransaction(
+        data: newTransaction.lenderInformation!.toJson(),
+        typeOfDocument: TransactionDocument.lenderInformation,
+        transactionId: newTransaction.genericInformation.transactionId,
+        toLocalStorage: false,
+      );
+
       /// update lender's user info in firestore and hive
       locator<UserDataProvider>()
           .transactionData!

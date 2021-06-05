@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
@@ -76,6 +78,8 @@ class AllTransactionsView extends StatelessWidget {
                                           itemCount:
                                               model.activeTransactions.length,
                                           itemBuilder: (context, index) {
+                                            print(jsonEncode(model
+                                                .activeTransactions[index]));
                                             return mixedCard(
                                               height: height,
                                               width: width,
@@ -102,13 +106,14 @@ class AllTransactionsView extends StatelessWidget {
                                                       TransactionViewArguments(
                                                     customTransaction: model
                                                         .transactions[index],
-                                                        isBorrowed: model
-                                                            .activeTransactions[index]
+                                                    isBorrowed: model
+                                                            .activeTransactions[
+                                                                index]
                                                             .borrowerInformation
                                                             .borrowerReferralCode ==
-                                                            locator<UserDataProvider>()
-                                                                .platformData!
-                                                                .referralCode,
+                                                        locator<UserDataProvider>()
+                                                            .platformData!
+                                                            .referralCode,
                                                   ),
                                                 );
                                                 print("Mujhe dabaya gaya hai");
@@ -174,13 +179,13 @@ class AllTransactionsView extends StatelessWidget {
                                                       TransactionViewArguments(
                                                     customTransaction: model
                                                         .transactions[index],
-                                                        isBorrowed: model
+                                                    isBorrowed: model
                                                             .transactions[index]
                                                             .borrowerInformation
                                                             .borrowerReferralCode ==
-                                                            locator<UserDataProvider>()
-                                                                .platformData!
-                                                                .referralCode,
+                                                        locator<UserDataProvider>()
+                                                            .platformData!
+                                                            .referralCode,
                                                   ),
                                                 );
                                                 print("Mujhe dabaya gaya hai");
