@@ -104,19 +104,6 @@ class TransactionsDataHandler {
     }
   }
 
-  Future<bool> updateTransactionListInHive({
-    required String? list,
-  }) {
-    return hiveDatabaseService.setDataInHive(
-      data: list,
-      key: 'transactionList',
-    );
-  }
-
-  List<CustomTransaction> getTransactionListFromHive() {
-    return hiveDatabaseService.getListFromHive(key: 'transactionList');
-  }
-
   /// Get's appropriate collection reference.
   /// [transactionId] denotes the document Id in [transaction] collection.
   /// [typeOfDocument] denotes the name of Sub-Collection you want to access.

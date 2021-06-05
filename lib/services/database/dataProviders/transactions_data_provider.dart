@@ -54,15 +54,7 @@ class TransactionsDataProvider {
         log.v("transactions don't exist");
         userTransactions = <CustomTransaction>[];
       } else {
-        log.v("Trying to load data from local storage");
-
-        /// Get CustomTransactionListFrom local storage
-        List<CustomTransaction> customTransactionList =
-            _transactionsDataHandler.getTransactionListFromHive();
-        userTransactions = customTransactionList;
-        log.v("Got local transactions. no: ${customTransactionList.length}");
-
-        /// Sync the local storage
+        userTransactions = <CustomTransaction>[];
         log.v("There are new transactions on cloud storage");
 
         /// Start downloading new transactions
@@ -93,40 +85,19 @@ class TransactionsDataProvider {
             log.v(
               "Waited for future to complete, got transaction : $transactionFetched",
             );
-            if (userTransactions == null)
-              userTransactions = [
-                CustomTransaction(
-                  genericInformation:
-                      GenericInformation.fromJson(transactionFetched[0]),
-                  lenderInformation:
-                      LenderInformation.fromJson(transactionFetched[1]),
-                  borrowerInformation:
-                      BorrowerInformation.fromJson(transactionFetched[2]),
-                  transactionStatus:
-                      TransactionStatus.fromJson(transactionFetched[3]),
-                ),
-              ];
-            else {
-              userTransactions!.add(
-                CustomTransaction(
-                  genericInformation:
-                      GenericInformation.fromJson(transactionFetched[0]),
-                  lenderInformation:
-                      LenderInformation.fromJson(transactionFetched[1]),
-                  borrowerInformation:
-                      BorrowerInformation.fromJson(transactionFetched[2]),
-                  transactionStatus:
-                      TransactionStatus.fromJson(transactionFetched[3]),
-                ),
-              );
 
-              if (userTransactions!.length == transactionIds.length) {
-                log.v("Got final transactions from cloud storage");
-                _transactionsDataHandler.updateTransactionListInHive(
-                  list: jsonEncode(userTransactions),
-                );
-              }
-            }
+            userTransactions!.add(
+              CustomTransaction(
+                genericInformation:
+                    GenericInformation.fromJson(transactionFetched[0]),
+                lenderInformation:
+                    LenderInformation.fromJson(transactionFetched[1]),
+                borrowerInformation:
+                    BorrowerInformation.fromJson(transactionFetched[2]),
+                transactionStatus:
+                    TransactionStatus.fromJson(transactionFetched[3]),
+              ),
+            );
           });
         });
       }
@@ -153,12 +124,6 @@ class TransactionsDataProvider {
         ? userTransactions = [transaction]
         : userTransactions!.add(transaction);
     log.v("Updated custom transactionList here");
-
-    ///Hive update transaction list
-    await _transactionsDataHandler.updateTransactionListInHive(
-      list: jsonEncode(userTransactions),
-    );
-    log.v("Updated custom transaction list in hive");
 
     ///Firebase create new [transaction] in transactions Collection
     log.v("Creating transaction in firebase");

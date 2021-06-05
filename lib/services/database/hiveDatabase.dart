@@ -36,17 +36,6 @@ class HiveDatabaseService {
       return throw Exception("Reading from your storage");
   }
 
-  List<CustomTransaction> getListFromHive({required String key}) {
-    if (isBoxOpened) {
-      String encoded =
-          box.get(key, defaultValue: jsonEncode(<CustomTransaction>[]));
-      List decoded = jsonDecode(encoded);
-
-      return decoded.map((e) => CustomTransaction.fromJson(e)).toList();
-    } else
-      return throw Exception("Reading from your storage");
-  }
-
   Map<String, dynamic> getMapDataFromHive({required String key}) {
     // box.keys.forEach((e) {
     //   //log.wtf(box.get(e));

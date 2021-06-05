@@ -78,12 +78,6 @@ class TransactionViewModel extends BaseViewModel {
           toLocalStorage: false,
         );
 
-        /// Update transaction list in Hive
-
-        locator<TransactionsDataHandler>().updateTransactionListInHive(
-          list: jsonEncode(userTransactionsFromProvider),
-        );
-
         /// update borrower's user info in firestore and hive
         locator<ProfileDataHandler>().updateProfileData(
           data: locator<UserDataProvider>().transactionData!.toJson(),

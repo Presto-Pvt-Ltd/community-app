@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -18,7 +16,6 @@ import 'package:presto/services/database/dataProviders/limits_data_provider.dart
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
-import 'package:presto/services/razorpay.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -80,11 +77,6 @@ class NotificationViewModel extends BaseViewModel {
           : locator<TransactionsDataProvider>()
               .userTransactions!
               .add(newTransaction);
-
-      /// Update transaction list in hive
-      locator<TransactionsDataHandler>().updateTransactionListInHive(
-        list: jsonEncode(locator<TransactionsDataProvider>().userTransactions),
-      );
 
       /// update transaction in firestore
       locator<TransactionsDataHandler>().updateTransaction(

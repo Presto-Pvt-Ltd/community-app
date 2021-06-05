@@ -117,11 +117,6 @@ class LendViewModel extends StreamViewModel {
               .userTransactions!
               .add(newTransaction);
 
-      /// Update transaction list in hive
-      locator<TransactionsDataHandler>().updateTransactionListInHive(
-        list: jsonEncode(locator<TransactionsDataProvider>().userTransactions),
-      );
-
       /// update transaction in firestore
       locator<TransactionsDataHandler>().updateTransaction(
         data: newTransaction.transactionStatus.toJson(),
