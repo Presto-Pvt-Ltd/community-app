@@ -6,12 +6,15 @@ import 'package:presto/ui/widgets/ListToken.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:stacked/stacked.dart';
 import '../../../models/enums.dart';
+import '../../shared/colors.dart';
 
 class TransactionView extends StatelessWidget {
   final CustomTransaction customTransaction;
+  final bool isBorrowed;
   const TransactionView({
     Key? key,
     required this.customTransaction,
+    required this.isBorrowed
   }) : super(key: key);
 
   @override
@@ -24,6 +27,8 @@ class TransactionView extends StatelessWidget {
     for (int i = 0; i < paymentMethods.length; i++) {
       paymentMethodsString = paymentMethodsToString(paymentMethods[i]);
     }
+    bool isTransactionIncomplete = customTransaction.transactionStatus.borrowerSentMoneyAt == null;
+    String buttonText = isTransactionIncomplete ? 'Payback':'Already Paid';
     return ViewModelBuilder<TransactionViewModel>.reactive(
       viewModelBuilder: () => TransactionViewModel(),
       disposeViewModel: false,
@@ -82,8 +87,7 @@ class TransactionView extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            customTransaction.genericInformation.completionAt ==
-                                    null
+                            isTransactionIncomplete
                                 ? 'In Progress'
                                 : 'Completed',
                             style: TextStyle(
@@ -127,21 +131,23 @@ class TransactionView extends StatelessWidget {
                       SizedBox(
                         height: height / 10,
                       ),
+                      isBorrowed&&customTransaction.lenderInformation!.lenderName !=
+                          null?
                       BusyButton(
                         height: height / 10,
-                        width: width / 3,
-                        title: 'Payback',
+                        width: width / 2.5,
+                        title: buttonText,
                         decoration: BoxDecoration(
-                          color: primaryColor,
+                          color: isTransactionIncomplete ? primaryColor : Colors.grey,
                           borderRadius: BorderRadius.all(
                             Radius.circular(width / 15),
                           ),
                         ),
                         onPressed: () {
-                          model.initiateTransaction();
+                          isTransactionIncomplete ? model.initiateTransaction() : null;
                         },
                         textColor: Colors.white,
-                      )
+                      ): Container()
                     ],
                   ),
                 ),

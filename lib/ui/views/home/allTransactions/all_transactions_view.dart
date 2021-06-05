@@ -102,6 +102,13 @@ class AllTransactionsView extends StatelessWidget {
                                                       TransactionViewArguments(
                                                     customTransaction: model
                                                         .transactions[index],
+                                                        isBorrowed: model
+                                                            .activeTransactions[index]
+                                                            .borrowerInformation
+                                                            .borrowerReferralCode ==
+                                                            locator<UserDataProvider>()
+                                                                .platformData!
+                                                                .referralCode,
                                                   ),
                                                 );
                                                 print("Mujhe dabaya gaya hai");
@@ -167,6 +174,13 @@ class AllTransactionsView extends StatelessWidget {
                                                       TransactionViewArguments(
                                                     customTransaction: model
                                                         .transactions[index],
+                                                        isBorrowed: model
+                                                            .transactions[index]
+                                                            .borrowerInformation
+                                                            .borrowerReferralCode ==
+                                                            locator<UserDataProvider>()
+                                                                .platformData!
+                                                                .referralCode,
                                                   ),
                                                 );
                                                 print("Mujhe dabaya gaya hai");
