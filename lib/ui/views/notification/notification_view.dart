@@ -29,115 +29,123 @@ class NotificationView extends StatelessWidget {
       initialiseSpecialViewModelsOnce: true,
       builder: (context, model, child) => SafeArea(
         child: Scaffold(
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: height / 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: width / 6.5,
-                      child: Image.asset('assets/images/PrestoLogo.png')),
-                  SizedBox(
-                    width: width / 50,
+          body: model.isBusy
+              ? Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Creditworthy Score: ${notification.borrowerRating}',
-                        style: TextStyle(
-                          fontSize: height / 45,
-                        ),
-                      ),
-                      Text(
-                        'Mode of payment: $paymentMethodsString',
-                        style: TextStyle(
-                          fontSize: height / 45,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              SizedBox(
-                height: height / 15,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: width / 25),
-                child: Text(
-                  //'Amount Requested : ${widget.notification.amount}',
-                  'Amount Requested : ${notification.amount}',
-                  style: TextStyle(
-                      fontSize: height / 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(
-                width: width / 2,
-                child: Divider(
-                  color: primaryColor,
-                  thickness: height / 100,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: width / 20, top: width / 19),
-                child: Container(
-                  width: width / 2,
-                  child: Text(
-                    'A fellow RVCE\'ian is calling...',
-                    style: TextStyle(
-                      fontSize: height / 27,
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: height / 20,
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: height / 4,
-              ),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      model.initiateTransaction();
-                      print("Notification yes card button dabaya gaya hai");
-                    },
-                    child: Container(
-                      width: width / 2,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: width / 6.5,
+                            child: Image.asset('assets/images/PrestoLogo.png')),
+                        SizedBox(
+                          width: width / 50,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Creditworthy Score: ${notification.borrowerRating}',
+                              style: TextStyle(
+                                fontSize: height / 45,
+                              ),
+                            ),
+                            Text(
+                              'Mode of payment: $paymentMethodsString',
+                              style: TextStyle(
+                                fontSize: height / 45,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    SizedBox(
                       height: height / 15,
-                      color: Colors.green,
-                      child: Center(
-                        child: Text(
-                          'Yes',
-                          style: TextStyle(
-                              color: Colors.white, fontSize: height / 45),
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: width / 25),
+                      child: Text(
+                        //'Amount Requested : ${widget.notification.amount}',
+                        'Amount Requested : ${notification.amount}',
+                        style: TextStyle(
+                            fontSize: height / 20, fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    child: Container(
+                    SizedBox(
                       width: width / 2,
-                      height: height / 15,
-                      color: Colors.red,
-                      child: Center(
+                      child: Divider(
+                        color: primaryColor,
+                        thickness: height / 100,
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: width / 20, top: width / 19),
+                      child: Container(
+                        width: width / 2,
                         child: Text(
-                          'No',
+                          'A fellow RVCE\'ian is calling...',
                           style: TextStyle(
-                              color: Colors.white, fontSize: height / 45),
+                            fontSize: height / 27,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
-            ],
-          ),
+                    SizedBox(
+                      height: height / 4,
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            model.initiateTransaction();
+                            print(
+                                "Notification yes card button dabaya gaya hai");
+                          },
+                          child: Container(
+                            width: width / 2,
+                            height: height / 15,
+                            color: Colors.green,
+                            child: Center(
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: height / 45),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          child: Container(
+                            width: width / 2,
+                            height: height / 15,
+                            color: Colors.red,
+                            child: Center(
+                              child: Text(
+                                'No',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: height / 45),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
         ),
       ),
     );

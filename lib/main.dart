@@ -7,14 +7,16 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/ui/shared/colors.dart';
-import 'package:presto/ui/views/transaction/transaction_view.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/app.locator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+bool fromBackground = false;
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   FlutterRingtonePlayer.playNotification();
+  fromBackground = true;
   print('Handling a background message ${message.messageId}');
 }
 

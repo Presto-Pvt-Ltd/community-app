@@ -93,12 +93,13 @@ class LendView extends StatelessWidget {
                                           },
                                           onTap: () {
                                             model.navigationService.navigateTo(
-                                                Routes.notificationView,
-                                                arguments:
-                                                    NotificationViewArguments(
-                                                        notification:
-                                                            model.notifications[
-                                                                index]));
+                                              Routes.notificationView,
+                                              arguments:
+                                                  NotificationViewArguments(
+                                                notification:
+                                                    model.notifications[index],
+                                              ),
+                                            );
                                             print('Mujhe Dabaya Gaya Hai');
                                           });
                                     },

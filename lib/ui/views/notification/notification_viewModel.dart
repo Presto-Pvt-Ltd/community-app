@@ -20,6 +20,7 @@ import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/razorpay.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class NotificationViewModel extends BaseViewModel {
   final log = getLogger("NotificationViewModel");
@@ -176,7 +177,11 @@ class NotificationViewModel extends BaseViewModel {
               .doc(newTransaction.borrowerInformation.borrowerReferralCode),
         );
         setBusy(false);
-
+        locator<NavigationService>().back();
+        locator<DialogService>().showDialog(
+          title: "Success",
+          description: "Lend Successful!!",
+        );
         log.w("handshake finished");
       });
     });

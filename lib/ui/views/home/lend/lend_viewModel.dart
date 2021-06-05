@@ -213,6 +213,10 @@ class LendViewModel extends StreamViewModel {
               .collection("notifications")
               .doc(newTransaction.borrowerInformation.borrowerReferralCode),
         );
+        locator<DialogService>().showDialog(
+          title: "Success",
+          description: "Payback Successful!!",
+        );
         setBusy(false);
       });
     });
