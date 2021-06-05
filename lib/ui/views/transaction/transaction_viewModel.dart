@@ -116,6 +116,12 @@ class TransactionViewModel extends BaseViewModel {
               toLocalDatabase: false,
             );
             setBusy(false);
+            locator<NavigationService>().back();
+            locator<DialogService>().showDialog(
+              title: "Success",
+              description: "Payback Successful!!",
+            );
+            log.w("Borrower paid back");
           } else {
             locator<LimitsDataHandler>()
                 .getLimitsData(
