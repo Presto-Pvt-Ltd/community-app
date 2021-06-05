@@ -9,27 +9,7 @@ Widget mixedCard({
   required String? lenderName,
   required Function onTap,
 }) {
-  Color cardColor;
-  Color textColor;
-  String displayText;
-  String paymentModes = '';
-  // transaction.transactionMethods.forEach((element) {
-  //   paymentModes = paymentModes + options[element] + ', ';
-  // });
-  // String date = transaction.initiationDate.toDate().day.toString() +
-  //     '/' +
-  //     transaction.initiationDate.toDate().month.toString() +
-  //     '/' +
-  //     transaction.initiationDate.toDate().year.toString();
-  // print("Getting initial data ----------------");
-  // if (transaction.approvedStatus) {
-  //   displayText =
-  //   !isBorrowed ? transaction.borrowerName : transaction.lenderName;
-  // } else {
-  //   displayText = "Failed";
-  // }
-  // textColor = isBorrowed ? Colors.red[800] : Colors.green[800];
-
+  Color? textColor = isBorrowed ? Colors.red[800] : Colors.green[800];
   return GestureDetector(
     onTap: () {
       onTap();
@@ -53,7 +33,7 @@ Widget mixedCard({
                     '₹ $amount',
                     style: TextStyle(
                       fontSize: width * 0.07,
-                      // color: textColor,
+                      color: textColor,
                     ),
                   ),
                   Text(
@@ -64,7 +44,7 @@ Widget mixedCard({
                       fontSize: width * 0.05,
                       color: lenderName == null
                           ? Colors.orangeAccent
-                          : Colors.black,
+                          : textColor,
                     ),
                   ),
                 ],

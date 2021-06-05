@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked/stacked.dart';
-import '../../../models/enums.dart';
 import '../../../models/enums.dart';
 import 'notification_viewModel.dart';
 
@@ -36,7 +34,6 @@ class NotificationView extends StatelessWidget {
                   ),
                 )
               : Column(
-                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -62,10 +59,14 @@ class NotificationView extends StatelessWidget {
                                 fontSize: height / 45,
                               ),
                             ),
-                            Text(
-                              'Mode of payment: $paymentMethodsString',
-                              style: TextStyle(
-                                fontSize: height / 45,
+                            Container(
+                              height: height / 10,
+                              width: width / 2,
+                              child: Text(
+                                'Mode of payment: $paymentMethodsString',
+                                style: TextStyle(
+                                  fontSize: height / 45,
+                                ),
                               ),
                             ),
                           ],
@@ -108,6 +109,7 @@ class NotificationView extends StatelessWidget {
                       height: height / 4,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
                           onTap: () {
@@ -116,12 +118,15 @@ class NotificationView extends StatelessWidget {
                                 "Notification yes card button dabaya gaya hai");
                           },
                           child: Container(
-                            width: width / 2,
-                            height: height / 15,
-                            color: Colors.green,
+                            width: width / 3.5,
+                            height: height / 12,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.horizontal(left: Radius.circular(width / 15))
+                            ),
                             child: Center(
                               child: Text(
-                                'Yes',
+                                'Accept',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: height / 45),
                               ),
@@ -130,12 +135,15 @@ class NotificationView extends StatelessWidget {
                         ),
                         GestureDetector(
                           child: Container(
-                            width: width / 2,
-                            height: height / 15,
-                            color: Colors.red,
+                            width: width / 3.5,
+                            height: height / 12,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.horizontal(right: Radius.circular(width / 15))
+                            ),
                             child: Center(
                               child: Text(
-                                'No',
+                                'Decline',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: height / 45),
                               ),
