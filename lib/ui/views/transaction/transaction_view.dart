@@ -131,7 +131,8 @@ class TransactionView extends StatelessWidget {
                       SizedBox(
                         height: height / 10,
                       ),
-                      isBorrowed?
+                      isBorrowed&&customTransaction.lenderInformation!.lenderName !=
+                          null?
                       BusyButton(
                         height: height / 10,
                         width: width / 2.5,

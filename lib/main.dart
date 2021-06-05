@@ -109,9 +109,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: primarySwatch,
         primaryColor: primaryColor,
       ),
-      home: RefereesView(),
-      // navigatorKey: StackedService.navigatorKey,
-      // onGenerateRoute: StackedRouter().onGenerateRoute,
+      navigatorKey: StackedService.navigatorKey,
+      onGenerateRoute: StackedRouter().onGenerateRoute,
     );
   }
 }
