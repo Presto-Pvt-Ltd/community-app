@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/transactions/borrower_data_model.dart';
@@ -64,111 +63,39 @@ class TransactionsDataProvider {
         log.v("Got local transactions. no: ${customTransactionList.length}");
 
         /// Sync the local storage
-        if (customTransactionList.length != transactionIds.length) {
-          log.v("There are new transactions on cloud storage");
+        log.v("There are new transactions on cloud storage");
 
-          /// Start downloading new transactions
-          List<List<Future<Map<String, dynamic>>>> futures = [];
+        /// Start downloading new transactions
+        List<List<Future<Map<String, dynamic>>>> futures = [];
 
-          /// for each transaction there are multiple subcollections
-          /// store futures of those sub collections in a list
-          /// which in itself is stored in list [futures] of all new transactions
-          transactionIds.forEach((transactionId) {
-            futures.add(TransactionDocument.values.map((typeOfDocument) {
-              return _transactionsDataHandler.getTransactionData(
-                typeOfDocument: typeOfDocument,
-                transactionId: transactionId,
-                fromLocalStorage: false,
-              );
-            }).toList());
-            print(futures.toString());
-          });
-          log.v(
-            "New TransactionIDs are : $transactionIds",
-          );
-
-          /// for each [singleTransaction] wait for all of it's futures
-          /// then add in new [CustomTransaction] to [userTransactions]
-          futures.forEach((singleTransaction) {
-            log.v("for transaction: ${singleTransaction.toString()}");
-            Future.wait(singleTransaction).then((transactionFetched) {
-              log.v(
-                "Waited for future to complete, got transaction : $transactionFetched",
-              );
-              if (userTransactions == null)
-                userTransactions = [
-                  CustomTransaction(
-                    genericInformation:
-                        GenericInformation.fromJson(transactionFetched[0]),
-                    lenderInformation:
-                        LenderInformation.fromJson(transactionFetched[1]),
-                    borrowerInformation:
-                        BorrowerInformation.fromJson(transactionFetched[2]),
-                    transactionStatus:
-                        TransactionStatus.fromJson(transactionFetched[3]),
-                  ),
-                ];
-              else {
-                userTransactions!.add(
-                  CustomTransaction(
-                    genericInformation:
-                        GenericInformation.fromJson(transactionFetched[0]),
-                    lenderInformation:
-                        LenderInformation.fromJson(transactionFetched[1]),
-                    borrowerInformation:
-                        BorrowerInformation.fromJson(transactionFetched[2]),
-                    transactionStatus:
-                        TransactionStatus.fromJson(transactionFetched[3]),
-                  ),
-                );
-
-                if (userTransactions!.length == transactionIds.length) {
-                  log.v("Got final transactions from cloud storage");
-                  _transactionsDataHandler.updateTransactionListInHive(
-                    list: jsonEncode(userTransactions),
-                  );
-                }
-              }
-            });
-          });
-        } else {
-          log.v("Got final transactions from local storage");
-          userTransactions = customTransactionList;
-          log.wtf("length : ${userTransactions?.length}");
-
-          /// Get all the active transactions again
-          if (activeTransactions.length != 0) {
-            log.v("Getting active transactions from cloud storage");
-
-            /// Start downloading new transactions
-            List<List<Future<Map<String, dynamic>>>> futures = [];
-
-            /// for each transaction there are multiple sub collections
-            /// store futures of those sub collections in a list
-            /// which in itself is stored in list [futures] of all new transactions
-            transactionIds.forEach((transactionId) {
-              futures.add(TransactionDocument.values.map((typeOfDocument) {
-                return _transactionsDataHandler.getTransactionData(
-                  typeOfDocument: typeOfDocument,
-                  transactionId: transactionId,
-                  fromLocalStorage: false,
-                );
-              }).toList());
-              print(futures.toString());
-            });
-            log.v(
-              "New TransactionIDs are : $transactionIds",
+        /// for each transaction there are multiple subcollections
+        /// store futures of those sub collections in a list
+        /// which in itself is stored in list [futures] of all new transactions
+        transactionIds.forEach((transactionId) {
+          futures.add(TransactionDocument.values.map((typeOfDocument) {
+            return _transactionsDataHandler.getTransactionData(
+              typeOfDocument: typeOfDocument,
+              transactionId: transactionId,
+              fromLocalStorage: false,
             );
+          }).toList());
+          print(futures.toString());
+        });
+        log.v(
+          "New TransactionIDs are : $transactionIds",
+        );
 
-            /// for each [singleTransaction] wait for all of it's futures
-            /// then add in new [CustomTransaction] to [userTransactions]
-            futures.forEach((singleTransaction) {
-              log.v("for transaction: ${singleTransaction.toString()}");
-              Future.wait(singleTransaction).then((transactionFetched) {
-                log.v(
-                  "Waited for future to complete, got transaction : $transactionFetched",
-                );
-                CustomTransaction freshTransaction = CustomTransaction(
+        /// for each [singleTransaction] wait for all of it's futures
+        /// then add in new [CustomTransaction] to [userTransactions]
+        futures.forEach((singleTransaction) {
+          log.v("for transaction: ${singleTransaction.toString()}");
+          Future.wait(singleTransaction).then((transactionFetched) {
+            log.v(
+              "Waited for future to complete, got transaction : $transactionFetched",
+            );
+            if (userTransactions == null)
+              userTransactions = [
+                CustomTransaction(
                   genericInformation:
                       GenericInformation.fromJson(transactionFetched[0]),
                   lenderInformation:
@@ -177,26 +104,31 @@ class TransactionsDataProvider {
                       BorrowerInformation.fromJson(transactionFetched[2]),
                   transactionStatus:
                       TransactionStatus.fromJson(transactionFetched[3]),
+                ),
+              ];
+            else {
+              userTransactions!.add(
+                CustomTransaction(
+                  genericInformation:
+                      GenericInformation.fromJson(transactionFetched[0]),
+                  lenderInformation:
+                      LenderInformation.fromJson(transactionFetched[1]),
+                  borrowerInformation:
+                      BorrowerInformation.fromJson(transactionFetched[2]),
+                  transactionStatus:
+                      TransactionStatus.fromJson(transactionFetched[3]),
+                ),
+              );
+
+              if (userTransactions!.length == transactionIds.length) {
+                log.v("Got final transactions from cloud storage");
+                _transactionsDataHandler.updateTransactionListInHive(
+                  list: jsonEncode(userTransactions),
                 );
-                for (int i = 0; i < userTransactions!.length; i++) {
-                  if (userTransactions![i].genericInformation.transactionId ==
-                      freshTransaction.genericInformation.transactionId) {
-                    userTransactions![i] = freshTransaction;
-                  }
-                }
-                log.wtf("length : ${userTransactions?.length}");
-                if (freshTransaction.genericInformation.transactionId ==
-                    activeTransactions.last) {
-                  /// When last transaction is fetched
-                  log.v("Got final transactions from cloud storage");
-                  _transactionsDataHandler.updateTransactionListInHive(
-                    list: jsonEncode(userTransactions),
-                  );
-                }
-              });
-            });
-          }
-        }
+              }
+            }
+          });
+        });
       }
     } catch (e) {
       log.e("There was error here");
