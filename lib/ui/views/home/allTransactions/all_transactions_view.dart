@@ -18,8 +18,6 @@ class AllTransactionsView extends StatelessWidget {
       onModelReady: (model) => model.onModelReady(slideChangeView),
       viewModelBuilder: () => AllTransactionsViewModel(),
       disposeViewModel: false,
-      // Indicate that we only want to initialise a specialty viewModel once
-      initialiseSpecialViewModelsOnce: true,
       builder: (context, model, child) {
         print(model.transactions);
         return GestureDetector(
@@ -50,7 +48,7 @@ class AllTransactionsView extends StatelessWidget {
                             Align(
                               alignment: Alignment.topCenter,
                               child: Text(
-                                "Recent Transactions",
+                                "Active Transactions",
                                 style: TextStyle(
                                   fontSize: height * 0.045,
                                   color: Colors.black,
@@ -67,32 +65,35 @@ class AllTransactionsView extends StatelessWidget {
                               children: [
                                 Container(
                                   height: height * 0.3,
-                                  child: model.transactions.length == 0
+                                  child: model.activeTransactions.length == 0
                                       ? Text(
-                                          "No Transactions to Display",
+                                          "No Active Transactions to Display",
                                           style: TextStyle(
                                               fontSize: height * 0.022,
                                               color: Colors.black),
                                         )
                                       : ListView.builder(
-                                          itemCount: model.transactions.length,
+                                          itemCount:
+                                              model.activeTransactions.length,
                                           itemBuilder: (context, index) {
                                             return mixedCard(
                                               height: height,
                                               width: width,
                                               lenderName: model
-                                                  .transactions[index]
+                                                  .activeTransactions[index]
                                                   .lenderInformation!
                                                   .lenderName,
                                               isBorrowed: model
-                                                      .transactions[index]
+                                                      .activeTransactions[index]
                                                       .borrowerInformation
                                                       .borrowerReferralCode ==
                                                   locator<UserDataProvider>()
                                                       .platformData!
                                                       .referralCode,
-                                              amount: model.transactions[index]
-                                                  .genericInformation.amount,
+                                              amount: model
+                                                  .activeTransactions[index]
+                                                  .genericInformation
+                                                  .amount,
                                               onTap: () {
                                                 model.navigationService
                                                     .navigateTo(
