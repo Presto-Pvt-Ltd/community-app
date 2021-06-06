@@ -53,36 +53,83 @@ class TransactionsDataProvider {
         userTransactions = <CustomTransaction>[];
         log.v("There are new transactions on cloud storage");
 
-        /// Start downloading new transactions
-        List<Future<Map<String, dynamic>>> futures = [];
+        /// First fetch dead transactions from local storage
+        _transactionsDataHandler.getTransactionListInHive().then((value) {
+          if (value.length != transactionIds.length) {
+            /// Fetch all transaction from firestore
+            /// Start downloading new transactions
+            List<Future<Map<String, dynamic>>> futures = [];
+
+            /// Fetch all transactions online
+            transactionIds.forEach((transactionId) {
+              futures.add(_transactionsDataHandler.getTransactionData(
+                transactionId: transactionId,
+                fromLocalStorage: false,
+              ));
+              print(futures.toString());
+            });
+            log.v(
+              "New TransactionIDs are : $transactionIds",
+            );
+
+            /// for each [singleTransaction] wait for all of it's futures
+            /// then add in new [CustomTransaction] to [userTransactions]
+            Future.wait(futures).then((transactionsFetched) {
+              transactionsFetched.forEach((transactionFetched) {
+                log.v(
+                  "Waited for future to complete, got transaction : $transactionFetched",
+                );
+                userTransactions!.add(
+                  CustomTransaction.fromJson(transactionFetched),
+                );
+              });
+              _transactionsDataHandler
+                  .updateTransactionListInHive(userTransactions!);
+            });
+          } else {
+            /// fetch active transaction only
+            /// Start downloading new transactions
+            List<Future<Map<String, dynamic>>> futures = [];
+
+            /// Fetch all transactions online
+            activeTransactions.forEach((transactionId) {
+              futures.add(_transactionsDataHandler.getTransactionData(
+                transactionId: transactionId,
+                fromLocalStorage: false,
+              ));
+
+              print(futures.toString());
+            });
+            log.v(
+              "New TransactionIDs are : $transactionIds",
+            );
+
+            /// for each [singleTransaction] wait for all of it's futures
+            /// then add in new [CustomTransaction] to [userTransactions]
+            Future.wait(futures).then((transactionsFetched) {
+              transactionsFetched.forEach((transactionFetched) {
+                log.v(
+                  "Waited for future to complete, got transaction : $transactionFetched",
+                );
+                CustomTransaction transaction =
+                    CustomTransaction.fromJson(transactionFetched);
+                int index = userTransactions!.indexWhere((element) =>
+                    element.genericInformation.transactionId ==
+                    transaction.genericInformation.transactionId);
+                userTransactions![index] = transaction;
+              });
+              _transactionsDataHandler
+                  .updateTransactionListInHive(userTransactions!);
+            });
+          }
+        });
+
+        /// Then over write active transactions
 
         /// for each transaction there are multiple subcollections
         /// store futures of those sub collections in a list
         /// which in itself is stored in list [futures] of all new transactions
-        transactionIds.forEach((transactionId) {
-          futures.add(_transactionsDataHandler.getTransactionData(
-            transactionId: transactionId,
-            fromLocalStorage: false,
-          ));
 
-          print(futures.toString());
-        });
-        log.v(
-          "New TransactionIDs are : $transactionIds",
-        );
-
-        /// for each [singleTransaction] wait for all of it's futures
-        /// then add in new [CustomTransaction] to [userTransactions]
-        Future.wait(futures).then((transactionsFetched) {
-          transactionsFetched.forEach((transactionFetched) {
-            log.v(
-              "Waited for future to complete, got transaction : $transactionFetched",
-            );
-            userTransactions!.add(
-              CustomTransaction.fromJson(transactionFetched),
-            );
-          });
-        });
       }
     } catch (e) {
       log.e("There was error here");

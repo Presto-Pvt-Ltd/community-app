@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -16,7 +18,7 @@ enum TransactionDocument {
 
 class TransactionsDataHandler {
   final FirestoreService _firestoreService = locator<FirestoreService>();
-  final HiveDatabaseService hiveDatabaseService =
+  final HiveDatabaseService _hiveDatabaseService =
       locator<HiveDatabaseService>();
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
@@ -95,6 +97,33 @@ class TransactionsDataHandler {
       log.e("There was error here");
       _errorHandlingService.handleError(error: e);
       return false;
+    }
+  }
+
+  Future<bool> updateTransactionListInHive(
+      List<CustomTransaction> transactionList) async {
+    return _hiveDatabaseService.setDataInHive(
+      data: jsonEncode(transactionList),
+      key: "transactions",
+    );
+  }
+
+  Future<List<CustomTransaction>> getTransactionListInHive() async {
+    var tempList = _hiveDatabaseService.getTransactionListFromHive(
+      key: "transactions",
+    );
+    if (tempList.runtimeType != List) {
+      tempList = [];
+    }
+    if (tempList.length != 0) {
+      List<Map<String, dynamic>> list = tempList.map((element) {
+        return Map<String, dynamic>.from(element);
+      }).toList();
+      print(list);
+
+      return list.map((e) => CustomTransaction.fromJson(e)).toList();
+    } else {
+      return <CustomTransaction>[];
     }
   }
 
