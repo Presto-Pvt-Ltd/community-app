@@ -75,6 +75,8 @@ class BorrowViewModel extends BaseViewModel {
         description:
             "One can keep up-to ${locator<LimitsDataProvider>().transactionLimits!.maxActiveTransactionsPerBorrowerForFreeVersion} pending transactions. Please pay-back before borrowing previous requests first.",
       );
+      inProcess = false;
+      notifyListeners();
       return;
     }
     DateTime currentTime = DateTime.now();
@@ -123,6 +125,8 @@ class BorrowViewModel extends BaseViewModel {
           description:
               "Your previous borrowing request is in process. Please wait for $remainingHours hrs ${(remainingMinutes % 60)} min",
         );
+        inProcess = false;
+        notifyListeners();
         return;
       } else {
         /// Updates local data base to inform last transaction is dead

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presto/ui/shared/colors.dart';
 
 // ignore: must_be_immutable
 class BusyButton extends StatefulWidget {
@@ -48,6 +49,9 @@ class _BusyButtonState extends State<BusyButton> {
               ),
             ),
           )
-        : Center(child: CircularProgressIndicator());
+        : Center(
+            child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+          ));
   }
 }

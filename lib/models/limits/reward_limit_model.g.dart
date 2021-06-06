@@ -10,7 +10,8 @@ RewardsLimit _$RewardsLimitFromJson(Map<String, dynamic> json) {
   return RewardsLimit(
     penaliseCreditScore: (json['penaliseCreditScore'] as num).toDouble(),
     rewardCreditScore: (json['rewardCreditScore'] as num).toDouble(),
-    rewardPrestoCoins: (json['rewardPrestoCoins'] as num).toDouble(),
+    rewardPrestoCoinsPercent:
+        (json['rewardPrestoCoinsPercent'] as num).toDouble(),
   );
 }
 
@@ -18,5 +19,5 @@ Map<String, dynamic> _$RewardsLimitToJson(RewardsLimit instance) =>
     <String, dynamic>{
       'penaliseCreditScore': instance.penaliseCreditScore,
       'rewardCreditScore': instance.rewardCreditScore,
-      'rewardPrestoCoins': instance.rewardPrestoCoins,
+      'rewardPrestoCoinsPercent': instance.rewardPrestoCoinsPercent,
     };

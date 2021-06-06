@@ -81,6 +81,11 @@ class NotificationViewModel extends BaseViewModel {
         toLocalStorage: false,
       );
 
+      /// update custom transaction list in hive
+      locator<TransactionsDataHandler>().updateTransactionListInHive(
+        locator<TransactionsDataProvider>().userTransactions!,
+      );
+
       /// update lender's user info in firestore and hive
       locator<UserDataProvider>()
           .transactionData!
@@ -125,7 +130,11 @@ class NotificationViewModel extends BaseViewModel {
         /// Reward lender
         if (locator<LimitsDataProvider>().rewardsLimit != null) {
           locator<UserDataProvider>().platformRatingsData!.prestoCoins +=
-              locator<LimitsDataProvider>().rewardsLimit!.rewardPrestoCoins;
+              (locator<LimitsDataProvider>()
+                          .rewardsLimit!
+                          .rewardPrestoCoinsPercent *
+                      (newTransaction.genericInformation.amount / 100))
+                  .toInt();
           locator<ProfileDataHandler>().updateProfileData(
             data: locator<UserDataProvider>().platformRatingsData!.toJson(),
             typeOfDocument: ProfileDocument.userPlatformRatings,
@@ -148,7 +157,11 @@ class NotificationViewModel extends BaseViewModel {
             locator<LimitsDataProvider>().rewardsLimit =
                 RewardsLimit.fromJson(value);
             locator<UserDataProvider>().platformRatingsData!.prestoCoins +=
-                locator<LimitsDataProvider>().rewardsLimit!.rewardPrestoCoins;
+                (locator<LimitsDataProvider>()
+                            .rewardsLimit!
+                            .rewardPrestoCoinsPercent *
+                        (newTransaction.genericInformation.amount / 100))
+                    .toInt();
             locator<ProfileDataHandler>().updateProfileData(
               data: locator<UserDataProvider>().platformRatingsData!.toJson(),
               typeOfDocument: ProfileDocument.userPlatformRatings,
