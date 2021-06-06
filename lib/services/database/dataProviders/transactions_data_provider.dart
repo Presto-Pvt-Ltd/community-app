@@ -7,6 +7,7 @@ import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';
+import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/error/error.dart';
 
@@ -79,6 +80,10 @@ class TransactionsDataProvider {
                 log.v(
                   "Waited for future to complete, got transaction : $transactionFetched",
                 );
+                penaliseUser(
+                  customTransaction:
+                      CustomTransaction.fromJson(transactionFetched),
+                );
                 userTransactions!.add(
                   CustomTransaction.fromJson(transactionFetched),
                 );
@@ -110,6 +115,10 @@ class TransactionsDataProvider {
               transactionsFetched.forEach((transactionFetched) {
                 log.v(
                   "Waited for future to complete, got transaction : $transactionFetched",
+                );
+                penaliseUser(
+                  customTransaction:
+                      CustomTransaction.fromJson(transactionFetched),
                 );
                 CustomTransaction transaction =
                     CustomTransaction.fromJson(transactionFetched);
@@ -195,5 +204,17 @@ class TransactionsDataProvider {
       toLocalDatabase: false,
     );
     log.v("Updated user transaction data in firestore");
+  }
+
+  void penaliseUser({required CustomTransaction customTransaction}) {
+    if (!customTransaction.transactionStatus.borrowerSentMoney) {
+      Duration difference = customTransaction.genericInformation.initiationAt
+          .difference(DateTime.now());
+      if (difference.inHours >=
+          (locator<LimitsDataProvider>()
+                  .transactionLimits!
+                  .transactionDefaultsAfterDays *
+              24)) {}
+    }
   }
 }

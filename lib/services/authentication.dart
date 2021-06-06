@@ -75,4 +75,13 @@ class AuthenticationService {
       return false;
     });
   }
+
+  Future<bool> sendResetPasswordLink({required String email}) async {
+    try {
+      return _auth.sendPasswordResetEmail(email: email).then((value) => true);
+    } catch (e) {
+      _errorHandlingService.handleError(error: e);
+      return false;
+    }
+  }
 }
