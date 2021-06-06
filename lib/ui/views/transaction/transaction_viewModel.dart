@@ -56,8 +56,9 @@ class TransactionViewModel extends BaseViewModel {
 
         /// update transaction in firestore
         locator<TransactionsDataHandler>().updateTransaction(
-          data: transaction.transactionStatus.toJson(),
-          typeOfDocument: TransactionDocument.transactionStatus,
+          data: {
+            "transactionStatus": transaction.transactionStatus.toJson(),
+          },
           transactionId: transaction.genericInformation.transactionId,
           toLocalStorage: false,
         );
@@ -68,14 +69,6 @@ class TransactionViewModel extends BaseViewModel {
           typeOfDocument: ProfileDocument.userTransactionsData,
           userId: locator<UserDataProvider>().platformData!.referralCode,
           toLocalDatabase: true,
-        );
-
-        /// update transaction in firestore
-        locator<TransactionsDataHandler>().updateTransaction(
-          data: transaction.transactionStatus.toJson(),
-          typeOfDocument: TransactionDocument.transactionStatus,
-          transactionId: transaction.genericInformation.transactionId,
-          toLocalStorage: false,
         );
 
         /// update borrower's user info in firestore and hive

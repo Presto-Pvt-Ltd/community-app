@@ -23,8 +23,8 @@ CustomTransaction _$CustomTransactionFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$CustomTransactionToJson(CustomTransaction instance) =>
     <String, dynamic>{
-      'genericInformation': instance.genericInformation,
-      'borrowerInformation': instance.borrowerInformation,
-      'lenderInformation': instance.lenderInformation,
-      'transactionStatus': instance.transactionStatus,
+      'genericInformation': instance.genericInformation.toJson(),
+      'borrowerInformation': instance.borrowerInformation.toJson(),
+      'lenderInformation': instance.lenderInformation!.toJson(),
+      'transactionStatus': instance.transactionStatus.toJson(),
     };

@@ -43,21 +43,13 @@ class NotificationViewModel extends BaseViewModel {
     /// Fetch transaction
     List<Future<Map<String, dynamic>>> futures =
         <Future<Map<String, dynamic>>>[];
-    futures.addAll(TransactionDocument.values.map((typeOfDocument) {
-      return locator<TransactionsDataHandler>().getTransactionData(
-        typeOfDocument: typeOfDocument,
-        transactionId: notification.transactionId,
-        fromLocalStorage: false,
-      );
-    }).toList());
+    futures.add(locator<TransactionsDataHandler>().getTransactionData(
+      transactionId: notification.transactionId,
+      fromLocalStorage: false,
+    ));
     Future.wait(futures).then((transactionFetched) {
-      CustomTransaction newTransaction = CustomTransaction(
-        genericInformation: GenericInformation.fromJson(transactionFetched[0]),
-        lenderInformation: LenderInformation.fromJson(transactionFetched[1]),
-        borrowerInformation:
-            BorrowerInformation.fromJson(transactionFetched[2]),
-        transactionStatus: TransactionStatus.fromJson(transactionFetched[3]),
-      );
+      CustomTransaction newTransaction =
+          CustomTransaction.fromJson(transactionFetched[0]);
 
       /// add lender's info and update transaction status
       newTransaction.lenderInformation = LenderInformation(
@@ -79,9 +71,12 @@ class NotificationViewModel extends BaseViewModel {
               .add(newTransaction);
 
       /// update transaction in firestore
+
       locator<TransactionsDataHandler>().updateTransaction(
-        data: newTransaction.transactionStatus.toJson(),
-        typeOfDocument: TransactionDocument.transactionStatus,
+        data: {
+          "transactionStatus": newTransaction.transactionStatus.toJson(),
+          "lenderInformation": newTransaction.lenderInformation!.toJson(),
+        },
         transactionId: newTransaction.genericInformation.transactionId,
         toLocalStorage: false,
       );

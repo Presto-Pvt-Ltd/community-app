@@ -4,11 +4,7 @@ import 'dart:math';
 
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/models/transactions/borrower_data_model.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
-import 'package:presto/models/transactions/generic_data_model.dart';
-import 'package:presto/models/transactions/lender_data_model.dart';
-import 'package:presto/models/transactions/transaction_status_data_model.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
@@ -58,19 +54,17 @@ class TransactionsDataProvider {
         log.v("There are new transactions on cloud storage");
 
         /// Start downloading new transactions
-        List<List<Future<Map<String, dynamic>>>> futures = [];
+        List<Future<Map<String, dynamic>>> futures = [];
 
         /// for each transaction there are multiple subcollections
         /// store futures of those sub collections in a list
         /// which in itself is stored in list [futures] of all new transactions
         transactionIds.forEach((transactionId) {
-          futures.add(TransactionDocument.values.map((typeOfDocument) {
-            return _transactionsDataHandler.getTransactionData(
-              typeOfDocument: typeOfDocument,
-              transactionId: transactionId,
-              fromLocalStorage: false,
-            );
-          }).toList());
+          futures.add(_transactionsDataHandler.getTransactionData(
+            transactionId: transactionId,
+            fromLocalStorage: false,
+          ));
+
           print(futures.toString());
         });
         log.v(
@@ -79,24 +73,13 @@ class TransactionsDataProvider {
 
         /// for each [singleTransaction] wait for all of it's futures
         /// then add in new [CustomTransaction] to [userTransactions]
-        futures.forEach((singleTransaction) {
-          log.v("for transaction: ${singleTransaction.toString()}");
-          Future.wait(singleTransaction).then((transactionFetched) {
+        Future.wait(futures).then((transactionsFetched) {
+          transactionsFetched.forEach((transactionFetched) {
             log.v(
               "Waited for future to complete, got transaction : $transactionFetched",
             );
-
             userTransactions!.add(
-              CustomTransaction(
-                genericInformation:
-                    GenericInformation.fromJson(transactionFetched[0]),
-                lenderInformation:
-                    LenderInformation.fromJson(transactionFetched[1]),
-                borrowerInformation:
-                    BorrowerInformation.fromJson(transactionFetched[2]),
-                transactionStatus:
-                    TransactionStatus.fromJson(transactionFetched[3]),
-              ),
+              CustomTransaction.fromJson(transactionFetched),
             );
           });
         });
@@ -128,30 +111,11 @@ class TransactionsDataProvider {
     ///Firebase create new [transaction] in transactions Collection
     log.v("Creating transaction in firebase");
     await _transactionsDataHandler.createTransaction(
-      data: transaction.borrowerInformation.toJson(),
-      typeOfDocument: TransactionDocument.borrowerInformation,
+      data: transaction.toJson(),
       transactionId: transaction.genericInformation.transactionId,
       toLocalStorage: false,
     );
 
-    await _transactionsDataHandler.createTransaction(
-      data: transaction.genericInformation.toJson(),
-      typeOfDocument: TransactionDocument.genericInformation,
-      transactionId: transaction.genericInformation.transactionId,
-      toLocalStorage: false,
-    );
-    await _transactionsDataHandler.createTransaction(
-      data: transaction.transactionStatus.toJson(),
-      typeOfDocument: TransactionDocument.transactionStatus,
-      transactionId: transaction.genericInformation.transactionId,
-      toLocalStorage: false,
-    );
-    await _transactionsDataHandler.createTransaction(
-      data: transaction.lenderInformation!.toJson(),
-      typeOfDocument: TransactionDocument.lenderInformation,
-      transactionId: transaction.genericInformation.transactionId,
-      toLocalStorage: false,
-    );
     log.v("Created transaction in firebase");
 
     /// Update User document

@@ -24,7 +24,6 @@ class TransactionsDataHandler {
 
   /// Fetches TransactionData for transaction with [transactionId] and [typeOfDocument]
   Future<Map<String, dynamic>> getTransactionData({
-    required TransactionDocument typeOfDocument,
     required String transactionId,
     required bool fromLocalStorage,
   }) async {
@@ -34,11 +33,10 @@ class TransactionsDataHandler {
         return throw Exception("NOt Applicable");
       } else {
         log.v("Getting data from cloud database");
-        final String docId = _getDocId(typeOfDocument);
-        final CollectionReference collectionReference =
-            _getTransactionReference(transactionId, docId);
         return await _firestoreService.getData(
-          document: collectionReference.doc(docId),
+          document: FirebaseFirestore.instance
+              .collection("transactions")
+              .doc(transactionId),
         );
       }
     } catch (e) {
@@ -51,7 +49,6 @@ class TransactionsDataHandler {
   /// Updates [data] for transaction with [transactionId] and [typeOfDocument]
   Future<bool> updateTransaction({
     required Map<String, dynamic> data,
-    required TransactionDocument typeOfDocument,
     required String transactionId,
     required bool toLocalStorage,
   }) async {
@@ -61,12 +58,11 @@ class TransactionsDataHandler {
         return throw Exception("NOt Applicable");
       } else {
         log.v("Updating data in cloud database");
-        final String docId = _getDocId(typeOfDocument);
-        final CollectionReference collectionReference =
-            _getTransactionReference(transactionId, docId);
         return await _firestoreService.updateData(
           data: data,
-          document: collectionReference.doc(docId),
+          document: FirebaseFirestore.instance
+              .collection("transactions")
+              .doc(transactionId),
         );
       }
     } catch (e) {
@@ -79,7 +75,6 @@ class TransactionsDataHandler {
   /// Sets [data] for transaction with [transactionId] and [typeOfDocument]
   Future<bool> createTransaction({
     required Map<String, dynamic> data,
-    required TransactionDocument typeOfDocument,
     required String transactionId,
     required bool toLocalStorage,
   }) async {
@@ -89,12 +84,11 @@ class TransactionsDataHandler {
         return throw Exception("NOt Applicable");
       } else {
         log.v("Creating data in cloud database");
-        final String docId = _getDocId(typeOfDocument);
-        final CollectionReference collectionReference =
-            _getTransactionReference(transactionId, docId);
         return await _firestoreService.setData(
           data: data,
-          document: collectionReference.doc(docId),
+          document: FirebaseFirestore.instance
+              .collection("transactions")
+              .doc(transactionId),
         );
       }
     } catch (e) {
@@ -120,7 +114,7 @@ class TransactionsDataHandler {
   }
 
   /// Get's document Id for given [typeOfDocument]
-  String _getDocId(TransactionDocument typeOfDocument) {
+  String getTransactionDocEnumToString(TransactionDocument typeOfDocument) {
     switch (typeOfDocument) {
       case TransactionDocument.borrowerInformation:
         return "borrowerInformation";
