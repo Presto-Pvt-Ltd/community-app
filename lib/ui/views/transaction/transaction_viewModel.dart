@@ -71,13 +71,6 @@ class TransactionViewModel extends BaseViewModel {
           toLocalDatabase: true,
         );
 
-        /// update borrower's user info in firestore and hive
-        locator<ProfileDataHandler>().updateProfileData(
-          data: locator<UserDataProvider>().transactionData!.toJson(),
-          typeOfDocument: ProfileDocument.userTransactionsData,
-          userId: locator<UserDataProvider>().platformData!.referralCode,
-          toLocalDatabase: true,
-        );
         locator<ProfileDataHandler>()
             .updateProfileData(
           data: locator<UserDataProvider>().transactionData!.toJson(),
@@ -86,6 +79,24 @@ class TransactionViewModel extends BaseViewModel {
           toLocalDatabase: false,
         )
             .then((value) {
+          locator<ProfileDataHandler>()
+              .getProfileData(
+            typeOfData: ProfileDocument.userTransactionsData,
+            userId: transaction.lenderInformation!.lenderReferralCode!,
+            fromLocalDatabase: false,
+          )
+              .then((value) {
+            TransactionData data = TransactionData.fromJson(value);
+            data.activeTransactions
+                .remove(transaction.genericInformation.transactionId);
+            locator<ProfileDataHandler>().updateProfileData(
+              data: locator<UserDataProvider>().transactionData!.toJson(),
+              typeOfDocument: ProfileDocument.userTransactionsData,
+              userId: transaction.lenderInformation!.lenderReferralCode!,
+              toLocalDatabase: false,
+            );
+          });
+
           /// Reward borrower
           if (locator<LimitsDataProvider>().rewardsLimit != null) {
             locator<UserDataProvider>().platformRatingsData!.personalScore +=

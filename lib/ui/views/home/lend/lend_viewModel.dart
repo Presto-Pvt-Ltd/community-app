@@ -125,6 +125,10 @@ class LendViewModel extends StreamViewModel {
           .transactionData!
           .transactionIds
           .add(newTransaction.genericInformation.transactionId);
+      locator<UserDataProvider>()
+          .transactionData!
+          .activeTransactions
+          .add(newTransaction.genericInformation.transactionId);
       locator<ProfileDataHandler>().updateProfileData(
         data: locator<UserDataProvider>().transactionData!.toJson(),
         typeOfDocument: ProfileDocument.userTransactionsData,
