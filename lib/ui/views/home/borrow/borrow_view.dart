@@ -67,7 +67,7 @@ class BorrowView extends StatelessWidget {
                                   height: height / 22,
                                 ),
                                 Text(
-                                  "₹ ${model.amount}",
+                                  "₹ ${model.amount.toInt().toString()}",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: height / 15),
@@ -93,17 +93,17 @@ class BorrowView extends StatelessWidget {
                               children: <Widget>[
                                 AmountButton(
                                   text: "+50",
-                                  onTap: (){}
+                                  onTap: () => model.increaseAmount(50)
                                   // onTap: () => model.increaseAmount(50.0),
                                 ),
                                 AmountButton(
                                   text: "+100",
-                                  onTap: () => null,
+                                  onTap: () => model.increaseAmount(100),
                                   // onTap: () => model.increaseAmount(100.0),
                                 ),
                                 AmountButton(
                                   text: "+150",
-                                  onTap: () => null,
+                                  onTap: () => model.increaseAmount(150),
                                   // onTap: () => model.increaseAmount(150.0),
                                 )
                               ],
@@ -116,17 +116,17 @@ class BorrowView extends StatelessWidget {
                               children: <Widget>[
                                 AmountButton(
                                   text: "-50",
-                                  onTap: () => null,
+                                  onTap: () => model.decreaseAmount(50),
                                   // onTap: () => model.decreaseAmount(50.0),
                                 ),
                                 AmountButton(
                                   text: "-100",
-                                  onTap: () => null,
+                                  onTap: () => model.decreaseAmount(100),
                                   // onTap: () => model.decreaseAmount(100.0),
                                 ),
                                 AmountButton(
                                   text: "-150",
-                                  onTap: () => null,
+                                  onTap: () => model.decreaseAmount(150),
                                   // onTap: () => model.decreaseAmount(150.0),
                                 )
                               ],
@@ -162,24 +162,21 @@ class BorrowView extends StatelessWidget {
                                         overlayRadius: height / 40),
                                   ),
                                   child: Slider(
-                                    value: 20.0,
-                                    max: 1000.0,
-                                    min: 10.0,
-                                    // value: model.amount ?? 0.0,
-                                    // max: model.borrowingLimits != null
-                                    //     ? model.borrowingLimits["borrowUpperLimit"]
-                                    //     : 0.0,
-                                    // min: model.borrowingLimits != null
-                                    //     ? model.borrowingLimits["borrowLowerLimit"]
-                                    //     : 0.0,
+                                    value: model.amount,
+                                    max: model.transactionLimits != null
+                                        ? model.transactionLimits!.borrowUpperLimit.toDouble()
+                                        : 0.0,
+                                    min: model.transactionLimits != null
+                                        ? model.transactionLimits!.borrowLowerLimit.toDouble()
+                                        : 0.0,
                                     onChanged: (double newValue) {
                                       print("Changing the value");
-                                      //model.setAmount(newValue);
+                                      model.setAmount(newValue);
                                     },
                                   ),
                                 ),
                                 Text(
-                                  "₹ 20",
+                                  "₹ ${model.amount.toInt().toString()}",
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: height / 25,
