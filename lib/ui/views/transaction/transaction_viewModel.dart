@@ -96,41 +96,19 @@ class TransactionViewModel extends BaseViewModel {
               toLocalDatabase: false,
             );
           });
-
-          /// Reward borrower
-          if (locator<LimitsDataProvider>().rewardsLimit != null) {
-            locator<UserDataProvider>().platformRatingsData!.personalScore +=
-                locator<LimitsDataProvider>().rewardsLimit!.rewardCreditScore;
-            locator<ProfileDataHandler>().updateProfileData(
-              data: locator<UserDataProvider>().platformRatingsData!.toJson(),
-              typeOfDocument: ProfileDocument.userPlatformRatings,
-              userId: locator<UserDataProvider>().platformData!.referralCode,
-              toLocalDatabase: true,
-            );
-            locator<ProfileDataHandler>().updateProfileData(
-              data: locator<UserDataProvider>().platformRatingsData!.toJson(),
-              typeOfDocument: ProfileDocument.userPlatformRatings,
-              userId: locator<UserDataProvider>().platformData!.referralCode,
-              toLocalDatabase: false,
-            );
-            setBusy(false);
-            locator<NavigationService>().back();
-            locator<DialogService>().showDialog(
-              title: "Success",
-              description: "Payback Successful!!",
-            );
-            log.w("Borrower paid back");
-          } else {
-            locator<LimitsDataHandler>()
-                .getLimitsData(
-              typeOfLimit: LimitDocument.rewardsLimits,
-              fromLocalDatabase: false,
-            )
-                .then((value) {
-              locator<LimitsDataProvider>().rewardsLimit =
-                  RewardsLimit.fromJson(value);
+          if (locator<UserDataProvider>().platformRatingsData!.personalScore <
+              5) {
+            /// Reward borrower
+            if (locator<LimitsDataProvider>().rewardsLimit != null) {
               locator<UserDataProvider>().platformRatingsData!.personalScore +=
                   locator<LimitsDataProvider>().rewardsLimit!.rewardCreditScore;
+              if (locator<UserDataProvider>()
+                      .platformRatingsData!
+                      .personalScore >
+                  5) {
+                locator<UserDataProvider>().platformRatingsData!.personalScore =
+                    5;
+              }
               locator<ProfileDataHandler>().updateProfileData(
                 data: locator<UserDataProvider>().platformRatingsData!.toJson(),
                 typeOfDocument: ProfileDocument.userPlatformRatings,
@@ -150,7 +128,54 @@ class TransactionViewModel extends BaseViewModel {
                 description: "Payback Successful!!",
               );
               log.w("Borrower paid back");
-            });
+            } else {
+              locator<LimitsDataHandler>()
+                  .getLimitsData(
+                typeOfLimit: LimitDocument.rewardsLimits,
+                fromLocalDatabase: false,
+              )
+                  .then((value) {
+                locator<LimitsDataProvider>().rewardsLimit =
+                    RewardsLimit.fromJson(value);
+                locator<UserDataProvider>()
+                        .platformRatingsData!
+                        .personalScore +=
+                    locator<LimitsDataProvider>()
+                        .rewardsLimit!
+                        .rewardCreditScore;
+                if (locator<UserDataProvider>()
+                        .platformRatingsData!
+                        .personalScore >
+                    5) {
+                  locator<UserDataProvider>()
+                      .platformRatingsData!
+                      .personalScore = 5;
+                }
+                locator<ProfileDataHandler>().updateProfileData(
+                  data:
+                      locator<UserDataProvider>().platformRatingsData!.toJson(),
+                  typeOfDocument: ProfileDocument.userPlatformRatings,
+                  userId:
+                      locator<UserDataProvider>().platformData!.referralCode,
+                  toLocalDatabase: true,
+                );
+                locator<ProfileDataHandler>().updateProfileData(
+                  data:
+                      locator<UserDataProvider>().platformRatingsData!.toJson(),
+                  typeOfDocument: ProfileDocument.userPlatformRatings,
+                  userId:
+                      locator<UserDataProvider>().platformData!.referralCode,
+                  toLocalDatabase: false,
+                );
+                setBusy(false);
+                locator<NavigationService>().back();
+                locator<DialogService>().showDialog(
+                  title: "Success",
+                  description: "Payback Successful!!",
+                );
+                log.w("Borrower paid back");
+              });
+            }
           }
         });
         break;

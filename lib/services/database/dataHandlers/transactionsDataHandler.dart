@@ -127,20 +127,20 @@ class TransactionsDataHandler {
     }
   }
 
-  /// Get's appropriate collection reference.
-  /// [transactionId] denotes the document Id in [transaction] collection.
-  /// [typeOfDocument] denotes the name of Sub-Collection you want to access.
-  CollectionReference _getTransactionReference(
-    String transactionId,
-    String docId,
-  ) {
-    log.v(
-        "Getting appropriate collection reference for $transactionId and $docId");
-    return FirebaseFirestore.instance
-        .collection("transactions")
-        .doc(transactionId)
-        .collection(docId);
-  }
+  // /// Get's appropriate collection reference.
+  // /// [transactionId] denotes the document Id in [transaction] collection.
+  // /// [typeOfDocument] denotes the name of Sub-Collection you want to access.
+  // CollectionReference _getTransactionReference(
+  //   String transactionId,
+  //   String docId,
+  // ) {
+  //   log.v(
+  //       "Getting appropriate collection reference for $transactionId and $docId");
+  //   return FirebaseFirestore.instance
+  //       .collection("transactions")
+  //       .doc(transactionId)
+  //       .collection(docId);
+  // }
 
   /// Get's document Id for given [typeOfDocument]
   String getTransactionDocEnumToString(TransactionDocument typeOfDocument) {
