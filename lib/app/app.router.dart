@@ -12,6 +12,7 @@ import 'package:stacked/stacked.dart';
 import '../models/notification/notification_data_model.dart';
 import '../models/transactions/custom_transaction_data_model.dart';
 import '../ui/views/dummyView/dummy_view.dart';
+import '../ui/views/forgotPassword/forgotPassword_view.dart';
 import '../ui/views/home/home_view.dart';
 import '../ui/views/login/login_view.dart';
 import '../ui/views/no-internet/no-internet_view.dart';
@@ -33,6 +34,7 @@ class Routes {
   static const String notificationView = '/notification-view';
   static const String transactionView = '/transaction-view';
   static const String refereesView = '/referees-view';
+  static const String forgetPasswordView = '/forget-password-view';
   static const all = <String>{
     startUpView,
     dummyView,
@@ -44,6 +46,7 @@ class Routes {
     notificationView,
     transactionView,
     refereesView,
+    forgetPasswordView,
   };
 }
 
@@ -61,6 +64,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.notificationView, page: NotificationView),
     RouteDef(Routes.transactionView, page: TransactionView),
     RouteDef(Routes.refereesView, page: RefereesView),
+    RouteDef(Routes.forgetPasswordView, page: ForgetPasswordView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -148,6 +152,12 @@ class StackedRouter extends RouterBase {
     RefereesView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const RefereesView(),
+        settings: data,
+      );
+    },
+    ForgetPasswordView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const ForgetPasswordView(),
         settings: data,
       );
     },

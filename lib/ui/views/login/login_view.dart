@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:presto/app/app.locator.dart';
+import 'package:presto/app/app.router.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:presto/ui/widgets/inputTextField.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'login_viewModel.dart';
 
 class LoginView extends StatelessWidget {
@@ -100,7 +103,8 @@ class LoginView extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              //Add Forgot Password Page
+                              locator<NavigationService>()
+                                  .navigateTo(Routes.forgetPasswordView);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
