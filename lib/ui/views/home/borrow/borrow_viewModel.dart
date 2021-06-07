@@ -30,7 +30,26 @@ class BorrowViewModel extends BaseViewModel {
 
   late void Function(bool) callback;
 
-  double amount = 0;
+  double amount = 100;
+
+  void setAmount(double value){
+    amount = value;
+    notifyListeners();
+  }
+
+  void increaseAmount(double value){
+    if(amount + value <= transactionLimits!.borrowUpperLimit){
+      amount = amount + value;
+      notifyListeners();
+    }
+  }
+
+  void decreaseAmount(double value){
+    if(amount - value >= transactionLimits!.borrowLowerLimit){
+      amount = amount - value;
+      notifyListeners();
+    }
+  }
 
   void onModelReady(void Function(bool) callback) {
     log.v("Borrow View Model initiated");

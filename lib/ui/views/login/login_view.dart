@@ -106,7 +106,7 @@ class LoginView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 Text(
-                                  "Forget Password?",
+                                  "Forgot Password?",
                                   style: TextStyle(
                                     fontSize: height / 48,
                                     color: neonGreen,
