@@ -167,7 +167,7 @@ class BorrowView extends StatelessWidget {
                                         ? model
                                             .transactionLimits!.borrowUpperLimit
                                             .toDouble()
-                                        : 1.0,
+                                        : 1000.0,
                                     min: model.transactionLimits != null
                                         ? model
                                             .transactionLimits!.borrowLowerLimit

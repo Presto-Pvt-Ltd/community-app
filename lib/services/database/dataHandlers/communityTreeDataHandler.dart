@@ -28,6 +28,7 @@ class CommunityTreeDataHandler {
           .doc('1')
           .set({
         managerReferralID: {
+          "Parent": [],
           "Members": [],
           "Token": [],
         }
@@ -61,20 +62,27 @@ class CommunityTreeDataHandler {
           "community name $communityName Parent $parentReferralID User $userReferralID");
       await FirebaseFirestore.instance
           .collection(communityName)
-          .where('Members', arrayContains: parentReferralID)
+          .where("Parent", arrayContains: parentReferralID)
           .get()
           .then((value) async {
         if (value.docs.length != 0) {
           level = int.parse(value.docs.first.id);
-          log.v('level- $level');
+          log.v('level- $level length-${value.docs.length}');
           await FirebaseFirestore.instance
               .collection(communityName)
-              .doc((level + 1).toString())
+              .doc((level).toString())
               .get()
               .then((snap) {
             if (snap.exists) {
-              list = snap['Members'].map<String>((s) => s as String).toList();
-              tokens = snap['Token'].map<String>((s) => s as String).toList();
+              log.wtf(snap.data());
+              list = snap
+                  .data()![parentReferralID]['Members']
+                  .map<String>((s) => s as String)
+                  .toList();
+              tokens = snap
+                  .data()![parentReferralID]['Token']
+                  .map<String>((s) => s as String)
+                  .toList();
               list.add(userReferralID);
               tokens.add(token);
             } else {
@@ -84,8 +92,41 @@ class CommunityTreeDataHandler {
             FirebaseFirestore.instance
                 .collection(communityName)
                 .doc((level + 1).toString())
+                .get()
+                .then((value) {
+              if (!value.exists) {
+                FirebaseFirestore.instance
+                    .collection(communityName)
+                    .doc((level + 1).toString())
+                    .set({
+                  userReferralID: {
+                    "Parent": [userReferralID],
+                    "Members": [],
+                    "Token": []
+                  }
+                });
+              } else {
+                FirebaseFirestore.instance
+                    .collection(communityName)
+                    .doc((level + 1).toString())
+                    .update({
+                  userReferralID: {
+                    "Parent": [userReferralID],
+                    "Members": [],
+                    "Token": []
+                  }
+                });
+              }
+            });
+            FirebaseFirestore.instance
+                .collection(communityName)
+                .doc((level).toString())
                 .update({
-              parentReferralID: {"Members": list, "Token": tokens}
+              parentReferralID: {
+                "Parent": [parentReferralID],
+                "Members": list,
+                "Token": tokens
+              }
             });
           });
         }
