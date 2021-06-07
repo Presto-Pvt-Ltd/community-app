@@ -67,7 +67,7 @@ class BorrowView extends StatelessWidget {
                                   height: height / 22,
                                 ),
                                 Text(
-                                  "₹ 20.0",
+                                  "₹ ${model.amount}",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: height / 15),
@@ -93,7 +93,7 @@ class BorrowView extends StatelessWidget {
                               children: <Widget>[
                                 AmountButton(
                                   text: "+50",
-                                  onTap: () => null,
+                                  onTap: (){}
                                   // onTap: () => model.increaseAmount(50.0),
                                 ),
                                 AmountButton(

@@ -30,7 +30,11 @@ class BorrowViewModel extends BaseViewModel {
 
   late void Function(bool) callback;
 
-  double amount = 0;
+  var amount = 100;
+
+  void increaseAmount(double value){
+    //if(amount + value > transactionLimits.borrowUpperLimit){}
+  }
 
   void onModelReady(void Function(bool) callback) {
     log.v("Borrow View Model initiated");
