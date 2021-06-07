@@ -66,9 +66,51 @@ class UserDataProvider {
   Future<bool> loadData({
     required String referralCode,
     required ProfileDocument typeOfDocument,
+    bool dataIsLive = false,
   }) async {
     try {
       log.v("Trying to get data from local storage");
+      if (dataIsLive) {
+        return await _profileDataHandler
+            .getProfileData(
+          typeOfData: typeOfDocument,
+          userId: referralCode,
+          fromLocalDatabase: false,
+        )
+            .then((onlineDataMap) {
+          if (onlineDataMap == {} ||
+              onlineDataMap.isEmpty ||
+              onlineDataMap == <String, dynamic>{}) {
+            return locator<HiveDatabaseService>()
+                .deleteBox(uid: locator<AuthenticationService>().uid!)
+                .then((value) {
+              return locator<AuthenticationService>()
+                  .deleteUser()
+                  .then((value) {
+                locator<NavigationService>()
+                    .clearStackAndShow(Routes.startUpView);
+                return false;
+              });
+            });
+          } else {
+            log.v(
+                "Retrieved from online storage: $onlineDataMap \n${onlineDataMap.runtimeType}");
+
+            /// after fetching from online storage update local storage
+            _profileDataHandler.updateProfileData(
+              data: onlineDataMap,
+              typeOfDocument: typeOfDocument,
+              userId: referralCode,
+              toLocalDatabase: true,
+            );
+            setData(
+              dataMap: onlineDataMap,
+              typeOfDocument: typeOfDocument,
+            );
+            return true;
+          }
+        });
+      }
 
       /// Fetch data from local storage
       return await _profileDataHandler
@@ -121,24 +163,10 @@ class UserDataProvider {
                 userId: referralCode,
                 toLocalDatabase: true,
               );
-              switch (typeOfDocument) {
-                case ProfileDocument.userPersonalData:
-                  _personalData = PersonalData.fromJson(onlineDataMap);
-                  break;
-                case ProfileDocument.userTransactionsData:
-                  _transactionData = TransactionData.fromJson(onlineDataMap);
-                  break;
-                case ProfileDocument.userNotificationToken:
-                  _token = NotificationToken.fromJson(onlineDataMap);
-                  break;
-                case ProfileDocument.userPlatformData:
-                  _platformData = PlatformData.fromJson(onlineDataMap);
-                  break;
-                case ProfileDocument.userPlatformRatings:
-                  _platformRatingsData =
-                      PlatformRatings.fromJson(onlineDataMap);
-                  break;
-              }
+              setData(
+                dataMap: onlineDataMap,
+                typeOfDocument: typeOfDocument,
+              );
               return true;
             }
           });
@@ -146,25 +174,11 @@ class UserDataProvider {
           /// if [dataMap] is not empty fill the data
           log.v(
               "Local Storage is not empty : $dataMap \n${dataMap.runtimeType}");
-          try {} catch (e) {}
-          switch (typeOfDocument) {
-            case ProfileDocument.userPersonalData:
-              _personalData = PersonalData.fromJson(dataMap);
-              break;
-            case ProfileDocument.userTransactionsData:
-              _transactionData = TransactionData.fromJson(dataMap);
-              break;
+          setData(
+            dataMap: dataMap,
+            typeOfDocument: typeOfDocument,
+          );
 
-            case ProfileDocument.userNotificationToken:
-              _token = NotificationToken.fromJson(dataMap);
-              break;
-            case ProfileDocument.userPlatformData:
-              _platformData = PlatformData.fromJson(dataMap);
-              break;
-            case ProfileDocument.userPlatformRatings:
-              _platformRatingsData = PlatformRatings.fromJson(dataMap);
-              break;
-          }
           return true;
         }
       });
@@ -186,6 +200,29 @@ class UserDataProvider {
           }
         },
       );
+    }
+  }
+
+  void setData(
+      {required ProfileDocument typeOfDocument,
+      required Map<String, dynamic> dataMap}) {
+    switch (typeOfDocument) {
+      case ProfileDocument.userPersonalData:
+        _personalData = PersonalData.fromJson(dataMap);
+        break;
+      case ProfileDocument.userTransactionsData:
+        _transactionData = TransactionData.fromJson(dataMap);
+        break;
+
+      case ProfileDocument.userNotificationToken:
+        _token = NotificationToken.fromJson(dataMap);
+        break;
+      case ProfileDocument.userPlatformData:
+        _platformData = PlatformData.fromJson(dataMap);
+        break;
+      case ProfileDocument.userPlatformRatings:
+        _platformRatingsData = PlatformRatings.fromJson(dataMap);
+        break;
     }
   }
 }

@@ -125,6 +125,19 @@ class TransactionsDataProvider {
                 int index = userTransactions!.indexWhere((element) =>
                     element.genericInformation.transactionId ==
                     transaction.genericInformation.transactionId);
+                if (transaction.transactionStatus.borrowerSentMoney) {
+                  locator<UserDataProvider>()
+                      .transactionData!
+                      .activeTransactions
+                      .remove(transaction.genericInformation.transactionId);
+                  locator<ProfileDataHandler>().updateProfileData(
+                    data: locator<UserDataProvider>().transactionData!.toJson(),
+                    typeOfDocument: ProfileDocument.userTransactionsData,
+                    userId:
+                        locator<UserDataProvider>().platformData!.referralCode,
+                    toLocalDatabase: true,
+                  );
+                }
                 userTransactions![index] = transaction;
               });
               _transactionsDataHandler
