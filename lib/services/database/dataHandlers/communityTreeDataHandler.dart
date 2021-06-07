@@ -17,10 +17,21 @@ class CommunityTreeDataHandler {
   }) async {
     try {
       log.v("Creating community");
-      Map<String, List<String>> tempMap = {
-        "Members": [managerReferralID].toList(),
-        "Token": [token].toList(),
+      Map<String, Map<String, List<String>>> tempMap = {
+        "CM": {
+          "Members": [managerReferralID].toList(),
+          "Token": [token].toList(),
+        }
       };
+      await FirebaseFirestore.instance
+          .collection(communityName.trim())
+          .doc('1')
+          .set({
+        managerReferralID: {
+          "Members": [],
+          "Token": [],
+        }
+      });
       return await FirebaseFirestore.instance
           .collection(communityName.trim())
           .doc('0')
@@ -73,7 +84,9 @@ class CommunityTreeDataHandler {
             FirebaseFirestore.instance
                 .collection(communityName)
                 .doc((level + 1).toString())
-                .set({"Members": list, "Token": tokens});
+                .update({
+              parentReferralID: {"Members": list, "Token": tokens}
+            });
           });
         }
       });
@@ -85,7 +98,7 @@ class CommunityTreeDataHandler {
 
   /// [tokens] is the final result.
   Future<void> getLenderNotificationTokens({
-    required currentReferralId,
+    required parentReferralId,
     required int levelCounter,
     required String communityName,
     required int downCounter,
@@ -98,7 +111,7 @@ class CommunityTreeDataHandler {
     try {
       return await FirebaseFirestore.instance
           .collection(communityName)
-          .where('Members', arrayContains: currentReferralId)
+          .where('Members', arrayContains: parentReferralId)
           .get()
           .then((value) async {
         if (value.docs.length != 0) {

@@ -92,10 +92,10 @@ class BorrowView extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
                                 AmountButton(
-                                  text: "+50",
-                                  onTap: () => model.increaseAmount(50)
-                                  // onTap: () => model.increaseAmount(50.0),
-                                ),
+                                    text: "+50",
+                                    onTap: () => model.increaseAmount(50)
+                                    // onTap: () => model.increaseAmount(50.0),
+                                    ),
                                 AmountButton(
                                   text: "+100",
                                   onTap: () => model.increaseAmount(100),
@@ -164,10 +164,14 @@ class BorrowView extends StatelessWidget {
                                   child: Slider(
                                     value: model.amount,
                                     max: model.transactionLimits != null
-                                        ? model.transactionLimits!.borrowUpperLimit.toDouble()
-                                        : 0.0,
+                                        ? model
+                                            .transactionLimits!.borrowUpperLimit
+                                            .toDouble()
+                                        : 1.0,
                                     min: model.transactionLimits != null
-                                        ? model.transactionLimits!.borrowLowerLimit.toDouble()
+                                        ? model
+                                            .transactionLimits!.borrowLowerLimit
+                                            .toDouble()
                                         : 0.0,
                                     onChanged: (double newValue) {
                                       print("Changing the value");

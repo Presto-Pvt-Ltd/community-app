@@ -87,7 +87,7 @@ class HomeViewModel extends IndexTrackingViewModel {
                             TransactionLimits.fromJson(limitMap);
                         locator<CommunityTreeDataHandler>()
                             .getLenderNotificationTokens(
-                          currentReferralId:
+                          parentReferralId:
                               _userDataProvider.platformData!.referredBy,
                           levelCounter: locator<LimitsDataProvider>()
                               .transactionLimits!
