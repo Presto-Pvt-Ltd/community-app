@@ -19,6 +19,7 @@ class CommunityTreeDataHandler {
       log.v("Creating community");
       Map<String, Map<String, List<String>>> tempMap = {
         "CM": {
+          "Parent": ["None"],
           "Members": [managerReferralID].toList(),
           "Token": [token].toList(),
         }
@@ -28,7 +29,7 @@ class CommunityTreeDataHandler {
           .doc('1')
           .set({
         managerReferralID: {
-          "Parent": [],
+          "Parent": [managerReferralID],
           "Members": [],
           "Token": [],
         }
@@ -62,7 +63,7 @@ class CommunityTreeDataHandler {
           "community name $communityName Parent $parentReferralID User $userReferralID");
       await FirebaseFirestore.instance
           .collection(communityName)
-          .where("Parent", arrayContains: parentReferralID)
+          .where("$parentReferralID.Parent", arrayContains: parentReferralID)
           .get()
           .then((value) async {
         if (value.docs.length != 0) {
@@ -152,7 +153,7 @@ class CommunityTreeDataHandler {
     try {
       return await FirebaseFirestore.instance
           .collection(communityName)
-          .where('Members', arrayContains: parentReferralId)
+          .where("$parentReferralId.Parent", arrayContains: parentReferralId)
           .get()
           .then((value) async {
         if (value.docs.length != 0) {
