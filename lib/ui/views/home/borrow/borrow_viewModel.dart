@@ -32,20 +32,20 @@ class BorrowViewModel extends BaseViewModel {
 
   double amount = 100;
 
-  void setAmount(double value){
+  void setAmount(double value) {
     amount = value;
     notifyListeners();
   }
 
-  void increaseAmount(double value){
-    if(amount + value <= transactionLimits!.borrowUpperLimit){
+  void increaseAmount(double value) {
+    if (amount + value <= transactionLimits!.borrowUpperLimit) {
       amount = amount + value;
       notifyListeners();
     }
   }
 
-  void decreaseAmount(double value){
-    if(amount - value >= transactionLimits!.borrowLowerLimit){
+  void decreaseAmount(double value) {
+    if (amount - value >= transactionLimits!.borrowLowerLimit) {
       amount = amount - value;
       notifyListeners();
     }

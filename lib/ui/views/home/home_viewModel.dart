@@ -87,8 +87,8 @@ class HomeViewModel extends IndexTrackingViewModel {
                             TransactionLimits.fromJson(limitMap);
                         locator<CommunityTreeDataHandler>()
                             .getLenderNotificationTokens(
-                          parentReferralId:
-                              _userDataProvider.platformData!.referredBy,
+                          currentReferralId:
+                              _userDataProvider.platformData!.referralCode,
                           levelCounter: locator<LimitsDataProvider>()
                               .transactionLimits!
                               .levelCounter,
@@ -97,6 +97,8 @@ class HomeViewModel extends IndexTrackingViewModel {
                           downCounter: locator<LimitsDataProvider>()
                               .transactionLimits!
                               .downCounter,
+                          parentReferralID:
+                              _userDataProvider.platformData!.referredBy,
                         );
                       });
                       if (value) {
@@ -104,14 +106,14 @@ class HomeViewModel extends IndexTrackingViewModel {
                           if (value !=
                                   _userDataProvider.token!.notificationToken &&
                               value != null) {
-                            locator<CommunityTreeDataHandler>()
-                                .updateNotificationTokenInTree(
-                              currentReferralId:
-                                  _userDataProvider.platformData!.referralCode,
-                              communityName:
-                                  _userDataProvider.platformData!.community,
-                              newToken: value,
-                            );
+                            // locator<CommunityTreeDataHandler>()
+                            //     .updateNotificationTokenInTree(
+                            //   currentReferralId:
+                            //       _userDataProvider.platformData!.referralCode,
+                            //   communityName:
+                            //       _userDataProvider.platformData!.community,
+                            //   newToken: value,
+                            // );
                             locator<ProfileDataHandler>().updateProfileData(
                               data: NotificationToken(notificationToken: value)
                                   .toJson(),

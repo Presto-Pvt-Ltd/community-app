@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/error/error.dart';
 
@@ -9,6 +10,7 @@ class CommunityTreeDataHandler {
 
   final ErrorHandlingService _errorHandlingService =
       locator<ErrorHandlingService>();
+  final ProfileDataHandler _profileDataHandler = locator<ProfileDataHandler>();
 
   Future<bool> createNewCommunity({
     required String managerReferralID,
@@ -19,6 +21,7 @@ class CommunityTreeDataHandler {
       log.v("Creating community");
       Map<String, Map<String, List<String>>> tempMap = {
         "CM": {
+          "GrandParent": ["None"],
           "Parent": ["None"],
           "Members": [managerReferralID].toList(),
           "Token": [token].toList(),
@@ -29,6 +32,7 @@ class CommunityTreeDataHandler {
           .doc('1')
           .set({
         managerReferralID: {
+          "GrandParent": ["None"],
           "Parent": [managerReferralID],
           "Members": [],
           "Token": [],
@@ -101,6 +105,7 @@ class CommunityTreeDataHandler {
                     .doc((level + 1).toString())
                     .set({
                   userReferralID: {
+                    "GrandParent": [parentReferralID],
                     "Parent": [userReferralID],
                     "Members": [],
                     "Token": []
@@ -112,6 +117,7 @@ class CommunityTreeDataHandler {
                     .doc((level + 1).toString())
                     .update({
                   userReferralID: {
+                    "GrandParent": [parentReferralID],
                     "Parent": [userReferralID],
                     "Members": [],
                     "Token": []
@@ -119,15 +125,25 @@ class CommunityTreeDataHandler {
                 });
               }
             });
-            FirebaseFirestore.instance
-                .collection(communityName)
-                .doc((level).toString())
-                .update({
-              parentReferralID: {
-                "Parent": [parentReferralID],
-                "Members": list,
-                "Token": tokens
-              }
+            String grandParent = '';
+            _profileDataHandler
+                .getProfileData(
+                    typeOfData: ProfileDocument.userPlatformData,
+                    userId: parentReferralID,
+                    fromLocalDatabase: false)
+                .then((value) {
+              grandParent = value['referredBy'].toString();
+              FirebaseFirestore.instance
+                  .collection(communityName)
+                  .doc((level).toString())
+                  .update({
+                parentReferralID: {
+                  "GrandParent": [grandParent],
+                  "Parent": [parentReferralID],
+                  "Members": list,
+                  "Token": tokens
+                }
+              });
             });
           });
         }
@@ -140,7 +156,8 @@ class CommunityTreeDataHandler {
 
   /// [tokens] is the final result.
   Future<void> getLenderNotificationTokens({
-    required parentReferralId,
+    required String currentReferralId,
+    required String parentReferralID,
     required int levelCounter,
     required String communityName,
     required int downCounter,
@@ -149,17 +166,18 @@ class CommunityTreeDataHandler {
     int levelDown = 0;
     List<String>? tokens = [];
     List<String>? lenders = [];
-    log.v("Getting Lender Notifications");
+    log.v(
+        "Getting Lender Notifications current-$currentReferralId parent- $parentReferralID");
     try {
       return await FirebaseFirestore.instance
           .collection(communityName)
-          .where("$parentReferralId.Parent", arrayContains: parentReferralId)
+          .where("$parentReferralID.Members", arrayContains: currentReferralId)
           .get()
           .then((value) async {
         if (value.docs.length != 0) {
           level = int.parse(value.docs.first.id);
           levelDown = level;
-          for (int i = 0; i <= levelCounter - 1; i++) {
+          for (int i = 0; i <= levelCounter; i++) {
             if (level == -1) {
               locator<TransactionsDataProvider>().notificationTokens = tokens;
               locator<TransactionsDataProvider>().lenders = lenders;
@@ -171,16 +189,22 @@ class CommunityTreeDataHandler {
                 .get()
                 .then((snapshot) {
               if (snapshot.exists) {
-                if (snapshot.data()!.containsKey('Token'))
-                  tokens.addAll(snapshot
-                      .data()!['Token']
-                      .map<String>((s) => s as String)
-                      .toList());
-                if (snapshot.data()!.containsKey('Members'))
-                  lenders.addAll(snapshot
-                      .data()!['Members']
-                      .map<String>((s) => s as String)
-                      .toList());
+                tokens.addAll(snapshot
+                    .data()![parentReferralID]['Token']
+                    .map<String>((s) => s as String)
+                    .toList());
+                lenders.addAll(snapshot
+                    .data()![parentReferralID]['Members']
+                    .map<String>((s) => s as String)
+                    .toList());
+                if (i == levelCounter)
+                  parentReferralID = snapshot
+                      .data()![parentReferralID]['Parent'][0]
+                      .toString();
+                else
+                  parentReferralID = snapshot
+                      .data()![parentReferralID]['GrandParent'][0]
+                      .toString();
               }
               if (i == 0) {
                 FirebaseFirestore.instance
@@ -200,12 +224,24 @@ class CommunityTreeDataHandler {
                   }
                 });
               }
+              if (i == levelCounter) {
+                String tempToken = "";
+                _profileDataHandler
+                    .getProfileData(
+                        typeOfData: ProfileDocument.userNotificationToken,
+                        userId: parentReferralID,
+                        fromLocalDatabase: false)
+                    .then((value) {
+                  tempToken = value['notificationToken'];
+                  lenders.add(parentReferralID);
+                  tokens.add(tempToken);
+                  locator<TransactionsDataProvider>().notificationTokens =
+                      tokens;
+                  locator<TransactionsDataProvider>().lenders = lenders;
+                });
+              }
             });
             level--;
-            if (i == levelCounter) {
-              locator<TransactionsDataProvider>().notificationTokens = tokens;
-              locator<TransactionsDataProvider>().lenders = lenders;
-            }
           }
           for (int i = 0; i < downCounter; i++) {
             levelDown++;
@@ -215,19 +251,16 @@ class CommunityTreeDataHandler {
                 .get()
                 .then((snapshot) {
               if (snapshot.exists) {
-                if (snapshot.data()!.containsKey('Token'))
-                  tokens.addAll(snapshot
-                      .data()!['Token']
-                      .map<String>((s) => s as String)
-                      .toList());
-                if (snapshot.data()!.containsKey('Members'))
-                  lenders.addAll(snapshot
-                      .data()!['Members']
-                      .map<String>((s) => s as String)
-                      .toList());
+                tokens.addAll(snapshot
+                    .data()![currentReferralId]['Token']
+                    .map<String>((s) => s as String)
+                    .toList());
+                lenders.addAll(snapshot
+                    .data()![currentReferralId]['Members']
+                    .map<String>((s) => s as String)
+                    .toList());
               }
             });
-            levelDown++;
             if (i == downCounter - 1) {
               locator<TransactionsDataProvider>().notificationTokens = tokens;
               locator<TransactionsDataProvider>().lenders = lenders;
