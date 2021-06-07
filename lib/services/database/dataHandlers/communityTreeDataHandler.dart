@@ -154,7 +154,7 @@ class CommunityTreeDataHandler {
     }
   }
 
-  /// [tokens] is the final result.
+  /// [tokens] is the final result. Never Put downCounter more than 1. Only 1 and 0 acceptable.
   Future<void> getLenderNotificationTokens({
     required String currentReferralId,
     required String parentReferralID,
@@ -278,33 +278,43 @@ class CommunityTreeDataHandler {
     required String currentReferralId,
     required String communityName,
     required String newToken,
+    required String parentReferralId,
   }) async {
     log.v('Updating token in tree');
     int level = 0;
     int index = 0;
+    String parent = '';
+    String grandParent = '';
     List<String>? refId = [];
     List<String>? tokens = [];
     await FirebaseFirestore.instance
         .collection(communityName)
-        .where('Members', arrayContains: currentReferralId)
+        .where("$parentReferralId.Members", arrayContains: currentReferralId)
         .get()
         .then((value) async {
       if (value.docs.length != 0) {
+        log.wtf(value.docs.first.data());
         level = int.parse(value.docs.first.id);
         refId = value.docs.first
-            .data()['Members']
+            .data()[parentReferralId]['Members']
             .map<String>((s) => s as String)
             .toList();
         tokens = value.docs.first
-            .data()['Token']
+            .data()[parentReferralId]['Token']
             .map<String>((s) => s as String)
             .toList();
         index = refId!.indexOf(currentReferralId);
         tokens![index] = newToken;
+        parent = value.docs.first
+            .data()[parentReferralId]['Parent'][0].toString();
+        grandParent = value.docs.first
+            .data()[parentReferralId]['GrandParent'][0].toString();
         FirebaseFirestore.instance
             .collection(communityName)
             .doc(level.toString())
-            .set({'Members': refId, 'Token': tokens}).then((value) {
+            .update({
+          parentReferralId: {'GrandParent': grandParent,'Parent': parent,'Members': refId,'Token': tokens}
+        }).then((value) {
           log.v('token updated in Firestore tree');
         });
       }

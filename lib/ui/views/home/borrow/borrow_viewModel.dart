@@ -176,7 +176,6 @@ class BorrowViewModel extends BaseViewModel {
           ///create transaction and update databases
           var transactionId =
               locator<TransactionsDataProvider>().createRandomString();
-
           locator<TransactionsDataProvider>().lenders!.remove(
                 locator<UserDataProvider>().platformData!.referralCode,
               );

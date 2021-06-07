@@ -106,14 +106,16 @@ class HomeViewModel extends IndexTrackingViewModel {
                           if (value !=
                                   _userDataProvider.token!.notificationToken &&
                               value != null) {
-                            // locator<CommunityTreeDataHandler>()
-                            //     .updateNotificationTokenInTree(
-                            //   currentReferralId:
-                            //       _userDataProvider.platformData!.referralCode,
-                            //   communityName:
-                            //       _userDataProvider.platformData!.community,
-                            //   newToken: value,
-                            // );
+                            locator<CommunityTreeDataHandler>()
+                                .updateNotificationTokenInTree(
+                              parentReferralId:
+                                  _userDataProvider.platformData!.referredBy,
+                              currentReferralId:
+                                  _userDataProvider.platformData!.referralCode,
+                              communityName:
+                                  _userDataProvider.platformData!.community,
+                              newToken: value,
+                            );
                             locator<ProfileDataHandler>().updateProfileData(
                               data: NotificationToken(notificationToken: value)
                                   .toJson(),
@@ -134,7 +136,7 @@ class HomeViewModel extends IndexTrackingViewModel {
                             );
                             _userDataProvider.token =
                                 NotificationToken(notificationToken: value);
-                            log.v("Update Notification token in tree");
+                            log.v("Update Notification token everywhere done");
                           }
                         });
                         isCM =
