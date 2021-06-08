@@ -79,6 +79,14 @@ class AllTransactionsView extends StatelessWidget {
                                               model.activeTransactions.length,
                                           itemBuilder: (context, index) {
                                             return mixedCard(
+                                              key: Key(
+                                                model
+                                                        .activeTransactions[
+                                                            index]
+                                                        .genericInformation
+                                                        .transactionId +
+                                                    "Active",
+                                              ),
                                               height: height,
                                               width: width,
                                               lenderName: model
@@ -154,6 +162,12 @@ class AllTransactionsView extends StatelessWidget {
                                           itemCount: model.transactions.length,
                                           itemBuilder: (context, index) {
                                             return mixedCard(
+                                              key: Key(
+                                                model
+                                                    .activeTransactions[index]
+                                                    .genericInformation
+                                                    .transactionId,
+                                              ),
                                               height: height,
                                               width: width,
                                               lenderName: model

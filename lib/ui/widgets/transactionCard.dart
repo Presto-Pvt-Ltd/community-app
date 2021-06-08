@@ -8,6 +8,7 @@ Widget mixedCard({
   required int amount,
   required String? lenderName,
   required Function onTap,
+  required Key key,
 }) {
   Color? textColor = isBorrowed ? Colors.red[800] : Colors.green[800];
   return GestureDetector(
@@ -20,6 +21,7 @@ Widget mixedCard({
       child: Container(
         height: height * 0.135,
         child: Card(
+          key: key,
           elevation: 5,
           child: Align(
             alignment: Alignment.centerLeft,
@@ -42,9 +44,8 @@ Widget mixedCard({
                         : 'Lender: $lenderName',
                     style: TextStyle(
                       fontSize: width * 0.05,
-                      color: lenderName == null
-                          ? Colors.orangeAccent
-                          : textColor,
+                      color:
+                          lenderName == null ? Colors.orangeAccent : textColor,
                     ),
                   ),
                 ],
