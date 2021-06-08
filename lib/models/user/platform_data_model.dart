@@ -5,10 +5,10 @@ part 'platform_data_model.g.dart';
 class PlatformData {
   final String referralCode;
   final String referredBy;
-  final List<String> referredTo;
+  List<String> referredTo;
   final bool isCommunityManager;
   final String community;
-  final bool disabled;
+  bool disabled;
 
   PlatformData({
     required this.referralCode,

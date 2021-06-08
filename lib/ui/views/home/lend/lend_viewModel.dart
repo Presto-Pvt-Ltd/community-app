@@ -161,7 +161,15 @@ class LendViewModel extends StreamViewModel {
         );
 
         /// Reward lender
-        if (locator<LimitsDataProvider>().rewardsLimit != null) {
+
+        locator<LimitsDataHandler>()
+            .getLimitsData(
+          typeOfLimit: LimitDocument.rewardsLimits,
+          fromLocalDatabase: false,
+        )
+            .then((value) {
+          locator<LimitsDataProvider>().rewardsLimit =
+              RewardsLimit.fromJson(value);
           locator<UserDataProvider>().platformRatingsData!.prestoCoins +=
               (locator<LimitsDataProvider>()
                           .rewardsLimit!
@@ -180,35 +188,8 @@ class LendViewModel extends StreamViewModel {
             userId: locator<UserDataProvider>().platformData!.referralCode,
             toLocalDatabase: false,
           );
-        } else {
-          locator<LimitsDataHandler>()
-              .getLimitsData(
-            typeOfLimit: LimitDocument.rewardsLimits,
-            fromLocalDatabase: false,
-          )
-              .then((value) {
-            locator<LimitsDataProvider>().rewardsLimit =
-                RewardsLimit.fromJson(value);
-            locator<UserDataProvider>().platformRatingsData!.prestoCoins +=
-                (locator<LimitsDataProvider>()
-                            .rewardsLimit!
-                            .rewardPrestoCoinsPercent *
-                        (newTransaction.genericInformation.amount / 100))
-                    .toInt();
-            locator<ProfileDataHandler>().updateProfileData(
-              data: locator<UserDataProvider>().platformRatingsData!.toJson(),
-              typeOfDocument: ProfileDocument.userPlatformRatings,
-              userId: locator<UserDataProvider>().platformData!.referralCode,
-              toLocalDatabase: true,
-            );
-            locator<ProfileDataHandler>().updateProfileData(
-              data: locator<UserDataProvider>().platformRatingsData!.toJson(),
-              typeOfDocument: ProfileDocument.userPlatformRatings,
-              userId: locator<UserDataProvider>().platformData!.referralCode,
-              toLocalDatabase: false,
-            );
-          });
-        }
+        });
+
         log.w("handshake finished");
         FirestoreService().deleteData(
           document: FirebaseFirestore.instance

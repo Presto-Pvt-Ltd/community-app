@@ -78,8 +78,6 @@ class AllTransactionsView extends StatelessWidget {
                                           itemCount:
                                               model.activeTransactions.length,
                                           itemBuilder: (context, index) {
-                                            print(jsonEncode(model
-                                                .activeTransactions[index]));
                                             return mixedCard(
                                               height: height,
                                               width: width,

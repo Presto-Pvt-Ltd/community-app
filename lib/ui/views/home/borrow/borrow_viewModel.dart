@@ -54,20 +54,6 @@ class BorrowViewModel extends BaseViewModel {
   void onModelReady(void Function(bool) callback) {
     log.v("Borrow View Model initiated");
     this.callback = callback;
-    setBusy(true);
-    if (locator<LimitsDataProvider>().transactionLimits == null) {
-      _limitsDataHandler
-          .getLimitsData(
-        typeOfLimit: LimitDocument.transactionLimits,
-        fromLocalDatabase: false,
-      )
-          .then((mapData) {
-        transactionLimits = TransactionLimits.fromJson(mapData);
-        notifyListeners();
-        setBusy(false);
-      });
-    } else
-      setBusy(false);
   }
 
   bool inProcess = false;
@@ -75,12 +61,24 @@ class BorrowViewModel extends BaseViewModel {
     inProcess = true;
     notifyListeners();
 
+    /// Check if data is ready
     if (locator<TransactionsDataProvider>().lenders == null ||
         locator<TransactionsDataProvider>().notificationTokens == null) {
       log.w("data not ready");
       locator<DialogService>().showDialog(
         title: "Wait a moment ",
         description: "Fetching information. Please try again in few seconds",
+      );
+      inProcess = false;
+      notifyListeners();
+      return;
+    }
+    if (locator<UserDataProvider>().platformData!.disabled) {
+      log.w("User Disabled");
+      locator<DialogService>().showDialog(
+        title: "Have some dignity",
+        description:
+            "You have not completed your previous transaction within time limit. Pay previous balances and contact Presto for more information.",
       );
       inProcess = false;
       notifyListeners();
@@ -112,10 +110,10 @@ class BorrowViewModel extends BaseViewModel {
     }
 
     DateTime currentTime = DateTime.now();
-    log.w("Current time: $currentTime");
-    log.w(
+    log.v("Current time: $currentTime");
+    log.v(
         "borrowingRequestInProcess: ${locator<UserDataProvider>().transactionData!.borrowingRequestInProcess}");
-    log.w(
+    log.v(
         "last borrowing request placed at: ${locator<UserDataProvider>().transactionData!.lastBorrowingRequestPlacedAt}");
     if (locator<UserDataProvider>()
         .transactionData!
@@ -126,11 +124,11 @@ class BorrowViewModel extends BaseViewModel {
       int? differenceInMinutes = lastRequestTime != null
           ? currentTime.difference(lastRequestTime).inMinutes
           : null;
-      log.wtf("Last Request time: $lastRequestTime");
-      log.wtf("Current Time: $currentTime");
-      log.wtf(
+      log.v("Last Request time: $lastRequestTime");
+      log.v("Current Time: $currentTime");
+      log.v(
           "Valid or not: ${differenceInMinutes! < locator<LimitsDataProvider>().transactionLimits!.keepTransactionActiveForHours}");
-      log.wtf(
+      log.v(
           "Transaction Alive time: ${locator<LimitsDataProvider>().transactionLimits!.keepTransactionActiveForHours}");
       if (lastRequestTime != null &&
           differenceInMinutes <
