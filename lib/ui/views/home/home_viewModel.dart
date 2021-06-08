@@ -2,7 +2,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/models/user/notification_data_model.dart';
-import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
@@ -44,7 +43,6 @@ class HomeViewModel extends IndexTrackingViewModel {
         .openBox(uid: locator<AuthenticationService>().uid!)
         .then((value) {
       /// Getting initial data:
-
       setIndex(index);
       try {
         referralCode = _authenticationService.referralCode!;
@@ -85,78 +83,101 @@ class HomeViewModel extends IndexTrackingViewModel {
                           .then((limitMap) {
                         locator<LimitsDataProvider>().transactionLimits =
                             TransactionLimits.fromJson(limitMap);
-                        locator<CommunityTreeDataHandler>()
-                            .getLenderNotificationTokens(
-                          currentReferralId:
-                              _userDataProvider.platformData!.referralCode,
-                          levelCounter: locator<LimitsDataProvider>()
-                              .transactionLimits!
-                              .levelCounter,
-                          communityName:
-                              _userDataProvider.platformData!.community,
-                          downCounter: locator<LimitsDataProvider>()
-                              .transactionLimits!
-                              .downCounter,
-                          parentReferralID:
-                              _userDataProvider.platformData!.referredBy,
-                        );
-                      });
-                      if (value) {
-                        FirebaseMessaging.instance.getToken().then((value) {
-                          if (value !=
-                                  _userDataProvider.token!.notificationToken &&
-                              value != null) {
-                            locator<CommunityTreeDataHandler>()
-                                .updateNotificationTokenInTree(
-                              parentReferralId:
-                                  _userDataProvider.platformData!.referredBy,
-                              currentReferralId:
-                                  _userDataProvider.platformData!.referralCode,
-                              communityName:
-                                  _userDataProvider.platformData!.community,
-                              newToken: value,
-                            );
-                            locator<ProfileDataHandler>().updateProfileData(
-                              data: NotificationToken(notificationToken: value)
-                                  .toJson(),
-                              typeOfDocument:
-                                  ProfileDocument.userNotificationToken,
-                              userId:
-                                  _userDataProvider.platformData!.referralCode,
-                              toLocalDatabase: false,
-                            );
-                            locator<ProfileDataHandler>().updateProfileData(
-                              data: NotificationToken(notificationToken: value)
-                                  .toJson(),
-                              typeOfDocument:
-                                  ProfileDocument.userNotificationToken,
-                              userId:
-                                  _userDataProvider.platformData!.referralCode,
-                              toLocalDatabase: true,
-                            );
-                            _userDataProvider.token =
-                                NotificationToken(notificationToken: value);
-                            log.v("Update Notification token everywhere done");
-                          }
-                        });
-                        isCM =
-                            _userDataProvider.platformData!.isCommunityManager;
-                        _userDataProvider.loadData(
-                          referralCode: referralCode,
-                          typeOfDocument: ProfileDocument.userPlatformRatings,
-                        );
-                        if (_userDataProvider
-                                .transactionData!.transactionIds.length !=
-                            0) {
-                          _transactionsDataProvider.loadData(
-                            transactionIds: _userDataProvider
-                                .transactionData!.transactionIds,
-                            activeTransactions: _userDataProvider
-                                .transactionData!.activeTransactions,
+                        if (value) {
+                          FirebaseMessaging.instance.getToken().then((value) {
+                            if (value !=
+                                    _userDataProvider
+                                        .token!.notificationToken &&
+                                value != null) {
+                              locator<CommunityTreeDataHandler>()
+                                  .updateNotificationTokenInTree(
+                                parentReferralId:
+                                    _userDataProvider.platformData!.referredBy,
+                                currentReferralId: _userDataProvider
+                                    .platformData!.referralCode,
+                                communityName:
+                                    _userDataProvider.platformData!.community,
+                                newToken: value,
+                              )
+                                  .then((value) {
+                                locator<CommunityTreeDataHandler>()
+                                    .getLenderNotificationTokens(
+                                  currentReferralId: _userDataProvider
+                                      .platformData!.referralCode,
+                                  levelCounter: locator<LimitsDataProvider>()
+                                      .transactionLimits!
+                                      .levelCounter,
+                                  communityName:
+                                      _userDataProvider.platformData!.community,
+                                  downCounter: locator<LimitsDataProvider>()
+                                      .transactionLimits!
+                                      .downCounter,
+                                  parentReferralID: _userDataProvider
+                                      .platformData!.referredBy,
+                                );
+                              });
+                              locator<ProfileDataHandler>().updateProfileData(
+                                data:
+                                    NotificationToken(notificationToken: value)
+                                        .toJson(),
+                                typeOfDocument:
+                                    ProfileDocument.userNotificationToken,
+                                userId: _userDataProvider
+                                    .platformData!.referralCode,
+                                toLocalDatabase: false,
+                              );
+                              locator<ProfileDataHandler>().updateProfileData(
+                                data:
+                                    NotificationToken(notificationToken: value)
+                                        .toJson(),
+                                typeOfDocument:
+                                    ProfileDocument.userNotificationToken,
+                                userId: _userDataProvider
+                                    .platformData!.referralCode,
+                                toLocalDatabase: true,
+                              );
+                              _userDataProvider.token =
+                                  NotificationToken(notificationToken: value);
+                              log.v(
+                                  "Update Notification token everywhere done");
+                            } else {
+                              locator<CommunityTreeDataHandler>()
+                                  .getLenderNotificationTokens(
+                                currentReferralId: _userDataProvider
+                                    .platformData!.referralCode,
+                                levelCounter: locator<LimitsDataProvider>()
+                                    .transactionLimits!
+                                    .levelCounter,
+                                communityName:
+                                    _userDataProvider.platformData!.community,
+                                downCounter: locator<LimitsDataProvider>()
+                                    .transactionLimits!
+                                    .downCounter,
+                                parentReferralID:
+                                    _userDataProvider.platformData!.referredBy,
+                              );
+                            }
+                          });
+                          isCM = _userDataProvider
+                              .platformData!.isCommunityManager;
+                          _userDataProvider.loadData(
+                            referralCode: referralCode,
+                            typeOfDocument: ProfileDocument.userPlatformRatings,
+                            dataIsLive: true,
                           );
+                          if (_userDataProvider
+                                  .transactionData!.transactionIds.length !=
+                              0) {
+                            _transactionsDataProvider.loadData(
+                              transactionIds: _userDataProvider
+                                  .transactionData!.transactionIds,
+                              activeTransactions: _userDataProvider
+                                  .transactionData!.activeTransactions,
+                            );
+                          }
+                          setBusy(false);
                         }
-                        setBusy(false);
-                      }
+                      });
                     });
                   }
                 });

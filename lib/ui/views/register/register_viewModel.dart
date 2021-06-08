@@ -305,6 +305,7 @@ class RegisterViewModel extends FormViewModel {
                   );
                   locator<UserDataProvider>().personalData = personalData;
                   PlatformData platformData = PlatformData(
+                    disabled: false,
                     community: isRegistrationAsCommunityManager
                         ? referralCodeOrCommunityName!
                         : parentCommunity!,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/ListToken.dart';
 import 'package:stacked/stacked.dart';
-import 'package:share/share.dart';
 import 'profile_viewModel.dart';
 
 class ProfileView extends StatelessWidget {
