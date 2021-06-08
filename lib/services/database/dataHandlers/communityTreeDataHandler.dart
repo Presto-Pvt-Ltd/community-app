@@ -196,6 +196,11 @@ class CommunityTreeDataHandler {
                 log.wtf(
                   snapshot.data()![parentReferralID]["Token"].runtimeType,
                 );
+                if (snapshot
+                    .data()![parentReferralID]['GrandParent'][0]
+                    .contains("None")) {
+                  return;
+                }
                 tokens.addAll(snapshot
                     .data()![parentReferralID]['Token']
                     .map<String>((s) => s as String)
