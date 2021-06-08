@@ -80,12 +80,7 @@ class AllTransactionsView extends StatelessWidget {
                                           itemBuilder: (context, index) {
                                             return mixedCard(
                                               key: Key(
-                                                model
-                                                        .activeTransactions[
-                                                            index]
-                                                        .genericInformation
-                                                        .transactionId +
-                                                    "Active",
+                                                "Active$index",
                                               ),
                                               height: height,
                                               width: width,
