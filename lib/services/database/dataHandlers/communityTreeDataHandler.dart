@@ -21,9 +21,9 @@ class CommunityTreeDataHandler {
       log.v("Creating community");
       Map<String, Map<String, List<String>>> tempMap = {
         "CM": {
-          "GrandParent": ["None"],
-          "Parent": ["None"],
-          "Members": [managerReferralID].toList(),
+          "GrandParent": [managerReferralID],
+          "Parent": [managerReferralID],
+          "Members": <String>[],
           "Token": [token].toList(),
         }
       };
@@ -32,11 +32,18 @@ class CommunityTreeDataHandler {
           .doc('1')
           .set({
         managerReferralID: {
-          "GrandParent": ["None"],
+          "GrandParent": [managerReferralID],
           "Parent": [managerReferralID],
           "Members": [],
           "Token": [],
         }
+      });
+      await FirebaseFirestore.instance
+          .collection(communityName.trim())
+          .doc('Trusted')
+          .set({
+        "Members": [managerReferralID],
+        "Token": [token],
       });
       return await FirebaseFirestore.instance
           .collection(communityName.trim())
@@ -189,34 +196,29 @@ class CommunityTreeDataHandler {
                 .get()
                 .then((snapshot) {
               if (snapshot.exists) {
-                log.wtf(snapshot.data());
-                log.wtf(parentReferralID);
-                log.wtf(snapshot.data()![parentReferralID]);
-                log.wtf(snapshot.data()![parentReferralID]["Token"]);
-                log.wtf(
+                log.v(
                   snapshot.data()![parentReferralID]["Token"].runtimeType,
                 );
-                if (snapshot
-                    .data()![parentReferralID]['GrandParent'][0]
-                    .contains("None")) {
-                  return;
+                if (!snapshot.data()!.containsKey("CM")) {
+                  log.wtf(snapshot.data());
+                  tokens.addAll(snapshot
+                      .data()![parentReferralID]['Token']
+                      .map<String>((s) => s as String)
+                      .toList());
+                  lenders.addAll(snapshot
+                      .data()![parentReferralID]['Members']
+                      .map<String>((s) => s as String)
+                      .toList());
+                  // if (i == levelCounter)
+                  //   parentReferralID = snapshot
+                  //       .data()![parentReferralID]['Parent'][0]
+                  //       .toString();
+                  // else
+
                 }
-                tokens.addAll(snapshot
-                    .data()![parentReferralID]['Token']
-                    .map<String>((s) => s as String)
-                    .toList());
-                lenders.addAll(snapshot
-                    .data()![parentReferralID]['Members']
-                    .map<String>((s) => s as String)
-                    .toList());
-                if (i == levelCounter)
-                  parentReferralID = snapshot
-                      .data()![parentReferralID]['Parent'][0]
-                      .toString();
-                else
-                  parentReferralID = snapshot
-                      .data()![parentReferralID]['GrandParent'][0]
-                      .toString();
+                parentReferralID = snapshot
+                    .data()![parentReferralID]['GrandParent'][0]
+                    .toString();
               }
               if (i == 0) {
                 FirebaseFirestore.instance
@@ -240,9 +242,10 @@ class CommunityTreeDataHandler {
                 String tempToken = "";
                 _profileDataHandler
                     .getProfileData(
-                        typeOfData: ProfileDocument.userNotificationToken,
-                        userId: parentReferralID,
-                        fromLocalDatabase: false)
+                  typeOfData: ProfileDocument.userNotificationToken,
+                  userId: parentReferralID,
+                  fromLocalDatabase: false,
+                )
                     .then((value) {
                   tempToken = value['notificationToken'];
                   lenders.add(parentReferralID);

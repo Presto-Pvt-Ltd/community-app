@@ -75,6 +75,18 @@ class BorrowViewModel extends BaseViewModel {
     inProcess = true;
     notifyListeners();
 
+    if (locator<TransactionsDataProvider>().lenders == null ||
+        locator<TransactionsDataProvider>().notificationTokens == null) {
+      log.w("data not ready");
+      locator<DialogService>().showDialog(
+        title: "Wait a moment ",
+        description: "Fetching information. Please try again in few seconds",
+      );
+      inProcess = false;
+      notifyListeners();
+      return;
+    }
+
     /// Confirm transaction intent
     /// initiate transaction
     /// ask for user preference in payment method
@@ -88,7 +100,7 @@ class BorrowViewModel extends BaseViewModel {
         locator<LimitsDataProvider>()
             .transactionLimits!
             .maxActiveTransactionsPerBorrowerForFreeVersion) {
-      log.w("already in process");
+      log.w("already in a borrowing request placed and accepted");
       locator<DialogService>().showDialog(
         title: "Limit Exceeded",
         description:
@@ -98,6 +110,7 @@ class BorrowViewModel extends BaseViewModel {
       notifyListeners();
       return;
     }
+
     DateTime currentTime = DateTime.now();
     log.w("Current time: $currentTime");
     log.w(
@@ -113,13 +126,18 @@ class BorrowViewModel extends BaseViewModel {
       int? differenceInMinutes = lastRequestTime != null
           ? currentTime.difference(lastRequestTime).inMinutes
           : null;
-      log.v("Last Request time: $lastRequestTime");
-      log.v("Current Time: $currentTime");
+      log.wtf("Last Request time: $lastRequestTime");
+      log.wtf("Current Time: $currentTime");
+      log.wtf(
+          "Valid or not: ${differenceInMinutes! < locator<LimitsDataProvider>().transactionLimits!.keepTransactionActiveForHours}");
+      log.wtf(
+          "Transaction Alive time: ${locator<LimitsDataProvider>().transactionLimits!.keepTransactionActiveForHours}");
       if (lastRequestTime != null &&
-          differenceInMinutes! <
-              locator<LimitsDataProvider>()
-                  .transactionLimits!
-                  .keepTransactionActiveForHours) {
+          differenceInMinutes <
+              (locator<LimitsDataProvider>()
+                      .transactionLimits!
+                      .keepTransactionActiveForHours *
+                  60)) {
         // log.wtf(locator<LimitsDataProvider>()
         //     .transactionLimits!
         //     .keepTransactionActiveForHours
@@ -176,12 +194,15 @@ class BorrowViewModel extends BaseViewModel {
           ///create transaction and update databases
           var transactionId =
               locator<TransactionsDataProvider>().createRandomString();
-          locator<TransactionsDataProvider>().lenders!.remove(
-                locator<UserDataProvider>().platformData!.referralCode,
-              );
-          locator<TransactionsDataProvider>().notificationTokens!.remove(
-                locator<UserDataProvider>().token!.notificationToken,
-              );
+
+          if (locator<TransactionsDataProvider>().lenders != null)
+            locator<TransactionsDataProvider>().lenders!.remove(
+                  locator<UserDataProvider>().platformData!.referralCode,
+                );
+          if (locator<TransactionsDataProvider>().notificationTokens != null)
+            locator<TransactionsDataProvider>().notificationTokens!.remove(
+                  locator<UserDataProvider>().token!.notificationToken,
+                );
           locator<TransactionsDataProvider>()
               .createTransaction(
             transaction: CustomTransaction(
@@ -250,7 +271,10 @@ class BorrowViewModel extends BaseViewModel {
                 print(
                     "\n\nSending Push Notification to ${locator<TransactionsDataProvider>().notificationTokens}\n\n");
                 sendPushNotification(
-                  locator<TransactionsDataProvider>().notificationTokens,
+                  locator<TransactionsDataProvider>()
+                      .notificationTokens!
+                      .toSet()
+                      .toList(),
                 );
                 inProcess = false;
                 notifyListeners();
