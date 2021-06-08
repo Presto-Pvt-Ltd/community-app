@@ -163,6 +163,7 @@ class HomeViewModel extends IndexTrackingViewModel {
                           _userDataProvider.loadData(
                             referralCode: referralCode,
                             typeOfDocument: ProfileDocument.userPlatformRatings,
+                            dataIsLive: true,
                           );
                           if (_userDataProvider
                                   .transactionData!.transactionIds.length !=

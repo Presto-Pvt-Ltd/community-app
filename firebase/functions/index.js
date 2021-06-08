@@ -133,19 +133,20 @@ async function updateParentData(parentId, changeInChild, isReward) {
     console.log(
       "Objects for platform Ratings Data: " + parentPlatformRatingsData
     );
+    var newChangeInChild;
     if (isReward) {
       parentPlatformRatingsData.communityScore =
         parentPlatformRatingsData.communityScore +
         changeInChild / totalReferees;
-      changeInChild = changeInChild / totalReferees;
+      newChangeInChild = changeInChild / totalReferees;
     } else {
       parentPlatformRatingsData.communityScore =
         parentPlatformRatingsData.communityScore -
         changeInChild / totalReferees;
-      changeInChild = changeInChild / totalReferees;
+      newChangeInChild = changeInChild / totalReferees;
     }
     console.log("Doc changed: " + parentId);
-    console.log("Changed By value: " + changeInChild);
+    console.log("Changed By value: " + newChangeInChild);
     var grandParentId = parentPlatformData.referredBy;
     // Update parent data
     db.collection("users")
@@ -156,7 +157,7 @@ async function updateParentData(parentId, changeInChild, isReward) {
         communityScore: parentPlatformRatingsData.communityScore,
       });
     if (grandParentId != "CM") {
-      updateParentData(grandParentId, changeInChild, isReward);
+      updateParentData(grandParentId, newChangeInChild, isReward);
     }
   } catch (e) {
     console.log(e);
@@ -186,20 +187,21 @@ function updateParentDataWithoutAsync(parentId, changeInChild, isReward) {
             console.log(
               "Objects for platform Ratings Data: " + parentPlatformRatingsData
             );
-            // Update community score
+            // Update community score.
+            var newChangeInChild;
             if (isReward) {
               parentPlatformRatingsData.communityScore =
                 parentPlatformRatingsData.communityScore +
                 changeInChild / totalReferees;
-              changeInChild = changeInChild / totalReferees;
+              newChangeInChild = changeInChild / totalReferees;
             } else {
               parentPlatformRatingsData.communityScore =
                 parentPlatformRatingsData.communityScore -
                 changeInChild / totalReferees;
-              changeInChild = changeInChild / totalReferees;
+              newChangeInChild = changeInChild / totalReferees;
             }
             console.log("Doc changed: " + parentId);
-            console.log("Changed By value: " + changeInChild);
+            console.log("Changed By value: " + newChangeInChild);
             // updating grandparent
             var grandParentId = parentPlatformData.referredBy;
             // Update parent data
@@ -211,7 +213,7 @@ function updateParentDataWithoutAsync(parentId, changeInChild, isReward) {
                 communityScore: parentPlatformRatingsData.communityScore,
               });
             if (grandParentId != "CM") {
-              updateParentData(grandParentId, changeInChild, isReward);
+              updateParentData(grandParentId, newChangeInChild, isReward);
             }
           });
       });

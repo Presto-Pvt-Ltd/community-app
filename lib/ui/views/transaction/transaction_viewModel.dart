@@ -130,7 +130,14 @@ class TransactionViewModel extends BaseViewModel {
               FirebaseFunctions functions = FirebaseFunctions.instance;
               Function updateCommunityScores =
                   functions.httpsCallable('updateCommunityScores');
-              log.v("Updating Community scores");
+              log.v("Updating Community scores \n ${jsonEncode({
+                    "isReward": true,
+                    "changeInChild": locator<LimitsDataProvider>()
+                        .rewardsLimit!
+                        .rewardCreditScore,
+                    "parentId":
+                        locator<UserDataProvider>().platformData!.referredBy
+                  })}");
               updateCommunityScores(
                 jsonEncode({
                   "isReward": true,
@@ -196,6 +203,14 @@ class TransactionViewModel extends BaseViewModel {
                 log.w("Borrower paid back");
               });
             }
+          } else {
+            log.v("Didn't update personal score");
+            setBusy(false);
+            locator<NavigationService>().back();
+            locator<DialogService>().showDialog(
+              title: "Success",
+              description: "Payback Successful!!",
+            );
           }
         });
         break;

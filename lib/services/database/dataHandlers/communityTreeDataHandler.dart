@@ -190,10 +190,12 @@ class CommunityTreeDataHandler {
                 .then((snapshot) {
               if (snapshot.exists) {
                 log.wtf(snapshot.data());
+                log.wtf(parentReferralID);
                 log.wtf(snapshot.data()![parentReferralID]);
                 log.wtf(snapshot.data()![parentReferralID]["Token"]);
                 log.wtf(
-                    snapshot.data()![parentReferralID]["Token"].runtimeType);
+                  snapshot.data()![parentReferralID]["Token"].runtimeType,
+                );
                 tokens.addAll(snapshot
                     .data()![parentReferralID]['Token']
                     .map<String>((s) => s as String)
