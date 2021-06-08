@@ -189,6 +189,11 @@ class CommunityTreeDataHandler {
                 .get()
                 .then((snapshot) {
               if (snapshot.exists) {
+                log.wtf(snapshot.data());
+                log.wtf(snapshot.data()![parentReferralID]);
+                log.wtf(snapshot.data()![parentReferralID]["Token"]);
+                log.wtf(
+                    snapshot.data()![parentReferralID]["Token"].runtimeType);
                 tokens.addAll(snapshot
                     .data()![parentReferralID]['Token']
                     .map<String>((s) => s as String)
@@ -305,15 +310,21 @@ class CommunityTreeDataHandler {
             .toList();
         index = refId!.indexOf(currentReferralId);
         tokens![index] = newToken;
-        parent = value.docs.first
-            .data()[parentReferralId]['Parent'][0].toString();
+        parent =
+            value.docs.first.data()[parentReferralId]['Parent'][0].toString();
         grandParent = value.docs.first
-            .data()[parentReferralId]['GrandParent'][0].toString();
+            .data()[parentReferralId]['GrandParent'][0]
+            .toString();
         FirebaseFirestore.instance
             .collection(communityName)
             .doc(level.toString())
             .update({
-          parentReferralId: {'GrandParent': grandParent,'Parent': parent,'Members': refId,'Token': tokens}
+          parentReferralId: {
+            'GrandParent': [grandParent],
+            'Parent': [parent],
+            'Members': refId,
+            'Token': tokens
+          }
         }).then((value) {
           log.v('token updated in Firestore tree');
         });
