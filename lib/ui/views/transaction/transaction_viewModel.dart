@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/reward_limit_model.dart';
@@ -120,6 +121,25 @@ class TransactionViewModel extends BaseViewModel {
                 typeOfDocument: ProfileDocument.userPlatformRatings,
                 userId: locator<UserDataProvider>().platformData!.referralCode,
                 toLocalDatabase: false,
+              );
+
+              /// 1) updateCommunityScores
+              /// 2) updateCommunityScoresWithoutAsync
+              /// argument: jsonEncode({ "isReward" : true, "changeInChild" : locator<LimitsDataProvider>().rewardsLimit!.rewardCreditScore,  "parentId" :locator<UserDataProvider>().platformData!.referredBy})
+
+              FirebaseFunctions functions = FirebaseFunctions.instance;
+              Function updateCommunityScores =
+                  functions.httpsCallable('updateCommunityScores');
+              log.v("Updating Community scores");
+              updateCommunityScores(
+                jsonEncode({
+                  "isReward": true,
+                  "changeInChild": locator<LimitsDataProvider>()
+                      .rewardsLimit!
+                      .rewardCreditScore,
+                  "parentId":
+                      locator<UserDataProvider>().platformData!.referredBy
+                }),
               );
               setBusy(false);
               locator<NavigationService>().back();

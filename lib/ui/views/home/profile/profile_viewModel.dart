@@ -30,6 +30,7 @@ class ProfileViewModel extends BaseViewModel {
       );
   PlatformData platformData = locator<UserDataProvider>().platformData ??
       PlatformData(
+        disabled: false,
         referralCode: "...",
         referredBy: "...",
         referredTo: <String>[],

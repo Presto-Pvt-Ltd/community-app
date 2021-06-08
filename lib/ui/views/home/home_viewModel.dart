@@ -2,7 +2,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/models/user/notification_data_model.dart';
-import 'package:presto/models/user/transaction_data_model.dart';
 import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
