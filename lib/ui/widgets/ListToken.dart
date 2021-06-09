@@ -5,7 +5,11 @@ class ListToken extends StatelessWidget {
   final icon;
   final String trailName;
 
-  ListToken({required this.name, this.icon, required this.trailName});
+  ListToken({
+    required this.name,
+    this.icon,
+    required this.trailName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,54 +20,55 @@ class ListToken extends StatelessWidget {
           top: 15.0, bottom: 15.0, left: 45.0, right: 45.0),
       child: GestureDetector(
           child: Container(
-            child: Column(
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
                   children: <Widget>[
-                    Column(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(
-                              icon,
-                              color: Colors.black,
-                            ),
-                            SizedBox(
-                              width: 10.0,
-                            ),
-                            Text(
-                              name,
-                              style: TextStyle(fontSize: height/55, color: Colors.black),
-                            ),
-                          ],
+                        Icon(
+                          icon,
+                          color: Colors.black,
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Text(
+                          name,
+                          style: TextStyle(
+                              fontSize: height / 55, color: Colors.black),
                         ),
                       ],
                     ),
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          trailName,
-                          style: TextStyle(
-                            fontSize: height/45,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    )
                   ],
                 ),
-                SizedBox(
-                  height: 5.0,
-                  width: double.infinity,
-                  child: Divider(
-                    color: Colors.black,
-                  ),
-                ),
+                Column(
+                  children: <Widget>[
+                    SelectableText(
+                      trailName,
+                      style: TextStyle(
+                        fontSize: height / 45,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
-          )),
+            SizedBox(
+              height: 5.0,
+              width: double.infinity,
+              child: Divider(
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+      )),
     );
   }
 }

@@ -50,7 +50,9 @@ exports.sendPushNotification = functions.https.onCall((data, context) => {
 exports.sendCompletionNotification = functions.https.onCall((data, context) => {
   try {
     var object = JSON.parse(data);
-    console.log("Sending notification to" + object.token);
+    console.log("Sending notification to token: " + object.token);
+    console.log("Sending notification to title: " + object.title);
+    console.log("Sending notification to body: " + object.body);
     admin
       .messaging()
       .send({
