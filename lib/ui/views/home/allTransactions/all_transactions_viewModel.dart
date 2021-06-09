@@ -253,6 +253,7 @@ class AllTransactionsViewModel extends BaseViewModel {
         }
         if (active.contains(transaction.genericInformation.transactionId)) {
           activeTransactions.add(transaction);
+          notifyListeners();
         }
       });
   }

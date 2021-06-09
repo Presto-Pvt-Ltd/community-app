@@ -113,7 +113,7 @@ class TransactionView extends StatelessWidget {
                         name: 'Creditworthy Score',
                         trailName: customTransaction
                             .borrowerInformation.borrowerCreditScore
-                            .toString(),
+                            .toStringAsPrecision(3),
                       ),
                       SizedBox(
                         height: height / 10,
