@@ -18,6 +18,7 @@ TransactionLimits _$TransactionLimitsFromJson(Map<String, dynamic> json) {
     downCounter: json['downCounter'] as int,
     maxActiveTransactionsPerBorrowerForFreeVersion:
         json['maxActiveTransactionsPerBorrowerForFreeVersion'] as int,
+    mediatorTokens: json['mediatorTokens'] as List<String>?,
   );
 }
 
@@ -33,4 +34,5 @@ Map<String, dynamic> _$TransactionLimitsToJson(TransactionLimits instance) =>
           instance.keepTransactionActiveForMinutes,
       'maxActiveTransactionsPerBorrowerForFreeVersion':
           instance.maxActiveTransactionsPerBorrowerForFreeVersion,
+      'mediatorTokens': instance.mediatorTokens,
     };

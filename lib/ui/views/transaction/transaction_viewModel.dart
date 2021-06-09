@@ -12,6 +12,7 @@ import 'package:presto/services/database/dataHandlers/transactionsDataHandler.da
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/services/razorpay.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -25,14 +26,17 @@ class TransactionViewModel extends BaseViewModel {
 
   Future<void> initiateTransaction() async {
     setBusy(true);
-    // TODO: make the razorpay function Future<bool> and the proceed with handshake
-    await payBackComplete(
-      transaction,
-      borrowerRazorpayPaymentId: "the",
+    RazorpayService _razorpayService =
+        RazorpayService(callback: (String paymentId) async {
+      await payBackComplete(
+        transaction,
+        borrowerRazorpayPaymentId: paymentId,
+      );
+    });
+    await _razorpayService.createOrderInServer(
+      amount: transaction.genericInformation.amount.toDouble(),
+      transactionId: transaction.genericInformation.transactionId,
     );
-    // await locator<RazorpayService>().createOrderInServer(
-    //   amount: notification.amount.toDouble(),
-    // );
   }
 
   Future<void> payBackComplete(

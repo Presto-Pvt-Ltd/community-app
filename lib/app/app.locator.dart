@@ -40,5 +40,4 @@ void setupLocator() {
   locator.registerLazySingleton(() => UserDataProvider());
   locator.registerLazySingleton(() => TransactionsDataProvider());
   locator.registerLazySingleton(() => LimitsDataProvider());
-  locator.registerLazySingleton(() => RazorpayService());
 }

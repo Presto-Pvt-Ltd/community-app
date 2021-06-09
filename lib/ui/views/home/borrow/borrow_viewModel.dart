@@ -286,7 +286,6 @@ class BorrowViewModel extends BaseViewModel {
                 );
                 inProcess = false;
                 notifyListeners();
-                // locator<RazorpayService>().createOrderInServer();
               } on FirebaseFunctionsException catch (e) {
                 log.e("${e.toString()} \n ${e.runtimeType}");
               } catch (e) {

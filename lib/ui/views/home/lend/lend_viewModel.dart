@@ -16,6 +16,7 @@ import 'package:presto/services/database/dataProviders/limits_data_provider.dart
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
+import 'package:presto/services/razorpay.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -64,14 +65,17 @@ class LendViewModel extends StreamViewModel {
   }
 
   Future<void> initiateTransaction(CustomNotification notification) async {
-    // TODO: make the transaction function of type Future<bool> and then run handshake
     setBusy(true);
-    // await locator<RazorpayService>().createOrderInServer(
-    //   amount: notification.amount.toDouble(),
-    // );
-    await handshake(
-      notification,
-      razorpayTransactionId: "helo",
+    RazorpayService _razorpayService =
+        RazorpayService(callback: (String paymentId) async {
+      await handshake(
+        notification,
+        razorpayTransactionId: paymentId,
+      );
+    });
+    await _razorpayService.createOrderInServer(
+      amount: notification.amount.toDouble(),
+      transactionId: notification.transactionId,
     );
   }
 
