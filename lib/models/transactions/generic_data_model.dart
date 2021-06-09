@@ -13,13 +13,11 @@ class GenericInformation {
   final String transactionId;
   final int amount;
   final DateTime initiationAt;
-  final List<PaymentMethods> transactionMethodsRequestedByBorrower;
   final double interestRate;
 
   GenericInformation({
     required this.transactionId,
     required this.amount,
-    required this.transactionMethodsRequestedByBorrower,
     required this.interestRate,
     required this.initiationAt,
   });

@@ -19,8 +19,8 @@ class TransactionView extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    List<PaymentMethods> paymentMethods = customTransaction
-        .genericInformation.transactionMethodsRequestedByBorrower;
+    List<PaymentMethods> paymentMethods =
+        customTransaction.borrowerInformation.requestedPaybackMethods;
     String paymentMethodsString = '';
     for (int i = 0; i < paymentMethods.length; i++) {
       paymentMethodsString = paymentMethodsToString(paymentMethods[i]);

@@ -10,8 +10,8 @@ class RazorpayInformation {
   String? borrowerRazorpayPaymentId;
   String? lenderRazorpayPaymentId;
   RazorpayInformation({
-    this.borrowerRazorpayPaymentId,
-    this.lenderRazorpayPaymentId,
+    required this.borrowerRazorpayPaymentId,
+    required this.lenderRazorpayPaymentId,
     required this.sentMoneyToBorrower,
     required this.sentMoneyToLender,
   });

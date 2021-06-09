@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/models/enums.dart';
 import 'package:presto/models/limits/reward_limit_model.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
@@ -91,7 +92,9 @@ class LendViewModel extends StreamViewModel {
           CustomTransaction.fromJson(transactionFetched[0]);
 
       /// add lender's info and update transaction status
+      // TODO:  add the list fetched from bottom sheet
       newTransaction.lenderInformation = LenderInformation(
+        requestedPaybackMethods: [PaymentMethods.payTm],
         lenderReferralCode:
             locator<UserDataProvider>().platformData!.referralCode,
         lenderName: locator<UserDataProvider>().personalData!.name,

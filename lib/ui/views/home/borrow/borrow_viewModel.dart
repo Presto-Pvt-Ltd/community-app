@@ -206,17 +206,20 @@ class BorrowViewModel extends BaseViewModel {
               .createTransaction(
             transaction: CustomTransaction(
               razorpayInformation: RazorpayInformation(
+                borrowerRazorpayPaymentId: null,
+                lenderRazorpayPaymentId: null,
                 sentMoneyToLender: false,
                 sentMoneyToBorrower: false,
               ),
               genericInformation: GenericInformation(
                 transactionId: transactionId,
                 amount: amount.toInt(),
-                transactionMethodsRequestedByBorrower: [PaymentMethods.payTm],
                 interestRate: 0,
                 initiationAt: currentTime,
               ),
+              // TODO:  add the list fetched from bottom sheet
               borrowerInformation: BorrowerInformation(
+                requestedPaybackMethods: [PaymentMethods.payTm],
                 borrowerCreditScore: (locator<UserDataProvider>()
                             .platformRatingsData!
                             .communityScore +
@@ -240,6 +243,7 @@ class BorrowViewModel extends BaseViewModel {
               lenderInformation: LenderInformation(
                 lenderReferralCode: null,
                 lenderName: null,
+                requestedPaybackMethods: null,
               ),
             ),
           )
