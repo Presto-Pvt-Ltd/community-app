@@ -9,12 +9,12 @@ class BorrowerInformation {
   final String borrowerReferralCode;
   final String borrowerName;
   final double borrowerCreditScore;
-  final List<PaymentMethods> requestedPaybackMethods;
+  final String upiId;
   BorrowerInformation({
     required this.borrowerReferralCode,
     required this.borrowerName,
     required this.borrowerCreditScore,
-    required this.requestedPaybackMethods,
+    required this.upiId,
   });
   factory BorrowerInformation.fromJson(Map<String, dynamic> json) =>
       _$BorrowerInformationFromJson(json);

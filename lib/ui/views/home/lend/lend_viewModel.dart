@@ -100,7 +100,7 @@ class LendViewModel extends StreamViewModel {
       /// add lender's info and update transaction status
       // TODO:  add the list fetched from bottom sheet
       newTransaction.lenderInformation = LenderInformation(
-        requestedPaybackMethods: [PaymentMethods.payTm],
+        upiId: "upi@a",
         lenderReferralCode:
             locator<UserDataProvider>().platformData!.referralCode,
         lenderName: locator<UserDataProvider>().personalData!.name,

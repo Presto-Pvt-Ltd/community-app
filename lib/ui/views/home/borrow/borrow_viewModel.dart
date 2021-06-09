@@ -220,7 +220,7 @@ class BorrowViewModel extends BaseViewModel {
               ),
               // TODO:  add the list fetched from bottom sheet
               borrowerInformation: BorrowerInformation(
-                requestedPaybackMethods: [PaymentMethods.payTm],
+                upiId: "upi@a",
                 borrowerCreditScore: (locator<UserDataProvider>()
                             .platformRatingsData!
                             .communityScore +
@@ -244,7 +244,7 @@ class BorrowViewModel extends BaseViewModel {
               lenderInformation: LenderInformation(
                 lenderReferralCode: null,
                 lenderName: null,
-                requestedPaybackMethods: null,
+                upiId: null,
               ),
             ),
           )

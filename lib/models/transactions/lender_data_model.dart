@@ -8,11 +8,11 @@ part 'lender_data_model.g.dart';
 class LenderInformation {
   String? lenderReferralCode;
   String? lenderName;
-  List<PaymentMethods>? requestedPaybackMethods;
+  String? upiId;
   LenderInformation({
     required this.lenderReferralCode,
     required this.lenderName,
-    required this.requestedPaybackMethods,
+    required this.upiId,
   });
   factory LenderInformation.fromJson(Map<String, dynamic> json) =>
       _$LenderInformationFromJson(json);

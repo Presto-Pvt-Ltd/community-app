@@ -19,12 +19,9 @@ class TransactionView extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    List<PaymentMethods> paymentMethods =
-        customTransaction.borrowerInformation.requestedPaybackMethods;
+    String upiId = customTransaction.borrowerInformation.upiId;
     String paymentMethodsString = '';
-    for (int i = 0; i < paymentMethods.length; i++) {
-      paymentMethodsString = paymentMethodsToString(paymentMethods[i]);
-    }
+
     bool isTransactionIncomplete =
         !customTransaction.transactionStatus.borrowerSentMoney;
     String buttonText = isTransactionIncomplete ? 'Payback' : 'Already Paid';
@@ -105,15 +102,6 @@ class TransactionView extends StatelessWidget {
                               '${customTransaction.genericInformation.initiationAt.day}'
                               '/${customTransaction.genericInformation.initiationAt.month}'
                               '/${customTransaction.genericInformation.initiationAt.year}'),
-                      Tooltip(
-                        message: '$paymentMethodsString',
-                        child: ListToken(
-                            icon: Icons.chrome_reader_mode,
-                            name: 'Modes of Payment',
-                            trailName: paymentMethods.length > 1
-                                ? '${paymentMethodsToString(paymentMethods[0])}...'
-                                : '${paymentMethodsToString(paymentMethods[0])}'),
-                      ),
                       ListToken(
                         icon: Icons.rate_review,
                         name: 'Interest Rate',

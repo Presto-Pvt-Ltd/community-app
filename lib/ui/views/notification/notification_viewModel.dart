@@ -62,7 +62,7 @@ class NotificationViewModel extends BaseViewModel {
       /// add lender's info and update transaction status
       newTransaction.lenderInformation = LenderInformation(
         // TODO:  add the list fetched from bottom sheet
-        requestedPaybackMethods: [PaymentMethods.payTm],
+        upiId: "upi@a",
         lenderReferralCode:
             locator<UserDataProvider>().platformData!.referralCode,
         lenderName: locator<UserDataProvider>().personalData!.name,
