@@ -54,7 +54,7 @@ class NotificationView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Creditworthy Score: ${notification.borrowerRating}',
+                              'Creditworthy Score: ${notification.borrowerRating.toStringAsPrecision(3)}',
                               style: TextStyle(
                                 fontSize: height / 45,
                               ),
@@ -121,9 +121,9 @@ class NotificationView extends StatelessWidget {
                             width: width / 3.5,
                             height: height / 12,
                             decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.horizontal(left: Radius.circular(width / 15))
-                            ),
+                                color: Colors.green,
+                                borderRadius: BorderRadius.horizontal(
+                                    left: Radius.circular(width / 15))),
                             child: Center(
                               child: Text(
                                 'Accept',
@@ -138,9 +138,9 @@ class NotificationView extends StatelessWidget {
                             width: width / 3.5,
                             height: height / 12,
                             decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.horizontal(right: Radius.circular(width / 15))
-                            ),
+                                color: Colors.red,
+                                borderRadius: BorderRadius.horizontal(
+                                    right: Radius.circular(width / 15))),
                             child: Center(
                               child: Text(
                                 'Decline',

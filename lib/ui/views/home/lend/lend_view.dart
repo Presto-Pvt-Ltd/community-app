@@ -81,7 +81,7 @@ class LendView extends StatelessWidget {
                                               .toString(),
                                           score: model.notifications[index]
                                               .borrowerRating
-                                              .toString(),
+                                              .toStringAsPrecision(3),
                                           height: height,
                                           width: width,
                                           handShakeCallBack: () {

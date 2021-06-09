@@ -206,7 +206,7 @@ class ProfileView extends StatelessWidget {
                                               .platformRatings.communityScore +
                                           model.platformRatings.personalScore) *
                                       0.5)
-                                  .toString(),
+                                  .toStringAsPrecision(3),
                             ),
                             ListToken(
                               name: 'Presto Coins',
