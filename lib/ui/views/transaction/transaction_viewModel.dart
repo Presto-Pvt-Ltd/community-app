@@ -50,7 +50,6 @@ class TransactionViewModel extends BaseViewModel {
         .activeTransactions
         .remove(transaction.genericInformation.transactionId);
     log.w(locator<UserDataProvider>().transactionData!.activeTransactions);
-    // TODO: add reward
     for (int i = 0; i < userTransactionsFromProvider.length; i++) {
       if (userTransactionsFromProvider[i].genericInformation.transactionId ==
           transaction.genericInformation.transactionId) {

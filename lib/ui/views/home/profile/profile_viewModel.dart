@@ -95,7 +95,4 @@ class ProfileViewModel extends BaseViewModel {
       setBusy(false);
     });
   }
-
-  // TODO: when user clicks on my referees button fetch platform data from firestore and update it on local storage as well as providers
-
 }
