@@ -159,7 +159,7 @@ class AllTransactionsView extends StatelessWidget {
                                             return mixedCard(
                                               key: Key(
                                                 model
-                                                    .activeTransactions[index]
+                                                    .transactions[index]
                                                     .genericInformation
                                                     .transactionId,
                                               ),
