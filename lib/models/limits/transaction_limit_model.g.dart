@@ -18,7 +18,11 @@ TransactionLimits _$TransactionLimitsFromJson(Map<String, dynamic> json) {
     downCounter: json['downCounter'] as int,
     maxActiveTransactionsPerBorrowerForFreeVersion:
         json['maxActiveTransactionsPerBorrowerForFreeVersion'] as int,
-    mediatorTokens: json['mediatorTokens'] as List<String>?,
+    mediatorTokens: json['mediatorTokens'] == null
+        ? null
+        : (json['mediatorTokens'] as List<dynamic>)
+            .map((e) => e as String)
+            .toList(),
   );
 }
 

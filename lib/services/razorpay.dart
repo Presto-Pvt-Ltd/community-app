@@ -71,8 +71,8 @@ class RazorpayService {
     };
 
     var data =
-        '{ "amount": $amount, "currency": "INR", "receipt": ${transactionId} }';
-
+        '{ "amount": $amount, "currency": "INR", "receipt": $transactionId }';
+    log.wtf(data);
     await http
         .post(Uri.parse('https://api.razorpay.com/v1/orders'),
             headers: headers, body: data)
@@ -81,9 +81,11 @@ class RazorpayService {
         throw Exception(
             'http.post error: statusCode= ${res.statusCode} \n ${res.body}');
       var map = jsonDecode(res.body);
+      log.wtf(map);
       var options = {
         'key': 'rzp_live_czsnnKwmX3ZSff',
-        'amount': amount, //in the smallest currency sub-unit.
+        'amount':
+            amount.toInt().toString(), //in the smallest currency sub-unit.
         'name': 'Presto Private Ltd',
         'order_id': map['id'].toString(), // Generate order_id using Orders API
         'description': '',

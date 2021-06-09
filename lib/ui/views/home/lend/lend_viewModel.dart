@@ -73,6 +73,7 @@ class LendViewModel extends StreamViewModel {
         razorpayTransactionId: paymentId,
       );
     });
+    log.wtf(notification.amount.toDouble());
     await _razorpayService.createOrderInServer(
       amount: notification.amount.toDouble(),
       transactionId: notification.transactionId,
