@@ -63,7 +63,7 @@ class NotificationViewModel extends BaseViewModel {
       newTransaction.transactionStatus.approvedStatus = true;
       newTransaction.transactionStatus.lenderSentMoney = true;
       newTransaction.transactionStatus.lenderSentMoneyAt = DateTime.now();
-      newTransaction.razorpayInformation.lenderTransactionIdFromRazorpay =
+      newTransaction.razorpayInformation.borrowerRazorpayPaymentId =
           razorpayTransactionId;
 
       /// Add transaction in provider

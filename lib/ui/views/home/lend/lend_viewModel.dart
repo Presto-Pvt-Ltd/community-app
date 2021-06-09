@@ -99,7 +99,7 @@ class LendViewModel extends StreamViewModel {
       newTransaction.transactionStatus.approvedStatus = true;
       newTransaction.transactionStatus.lenderSentMoney = true;
       newTransaction.transactionStatus.lenderSentMoneyAt = DateTime.now();
-      newTransaction.razorpayInformation.lenderTransactionIdFromRazorpay =
+      newTransaction.razorpayInformation.lenderRazorpayPaymentId =
           razorpayTransactionId;
 
       /// Add transaction in provider

@@ -7,11 +7,11 @@ part 'razorpay_data_model.g.dart';
 class RazorpayInformation {
   bool sentMoneyToLender;
   bool sentMoneyToBorrower;
-  String? borrowerTransactionIdFromRazorpay;
-  String? lenderTransactionIdFromRazorpay;
+  String? borrowerRazorpayPaymentId;
+  String? lenderRazorpayPaymentId;
   RazorpayInformation({
-    this.borrowerTransactionIdFromRazorpay,
-    this.lenderTransactionIdFromRazorpay,
+    this.borrowerRazorpayPaymentId,
+    this.lenderRazorpayPaymentId,
     required this.sentMoneyToBorrower,
     required this.sentMoneyToLender,
   });

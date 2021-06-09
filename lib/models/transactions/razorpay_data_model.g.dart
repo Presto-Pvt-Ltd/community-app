@@ -10,10 +10,8 @@ RazorpayInformation _$RazorpayInformationFromJson(Map<String, dynamic> json) {
   return RazorpayInformation(
     sentMoneyToBorrower: json['sentMoneyToBorrower'] as bool,
     sentMoneyToLender: json['sentMoneyToLender'] as bool,
-    borrowerTransactionIdFromRazorpay:
-        json['borrowerTransactionIdFromRazorpay'] as String?,
-    lenderTransactionIdFromRazorpay:
-        json['lenderTransactionIdFromRazorpay'] as String?,
+    borrowerRazorpayPaymentId: json['borrowerRazorpayPaymentId'] as String?,
+    lenderRazorpayPaymentId: json['lenderRazorpayPaymentId'] as String?,
   );
 }
 
@@ -22,8 +20,6 @@ Map<String, dynamic> _$RazorpayInformationToJson(
     <String, dynamic>{
       'sentMoneyToBorrower': instance.sentMoneyToBorrower,
       'sentMoneyToLender': instance.sentMoneyToLender,
-      'borrowerTransactionIdFromRazorpay':
-          instance.borrowerTransactionIdFromRazorpay,
-      'lenderTransactionIdFromRazorpay':
-          instance.lenderTransactionIdFromRazorpay,
+      'borrowerRazorpayPaymentId': instance.borrowerRazorpayPaymentId,
+      'lenderRazorpayPaymentId': instance.lenderRazorpayPaymentId,
     };

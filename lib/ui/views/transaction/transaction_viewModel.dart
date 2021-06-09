@@ -26,13 +26,19 @@ class TransactionViewModel extends BaseViewModel {
   Future<void> initiateTransaction() async {
     setBusy(true);
     // TODO: make the razorpay function Future<bool> and the proceed with handshake
-    await payBackComplete(transaction);
+    await payBackComplete(
+      transaction,
+      borrowerRazorpayPaymentId: "the",
+    );
     // await locator<RazorpayService>().createOrderInServer(
     //   amount: notification.amount.toDouble(),
     // );
   }
 
-  Future<void> payBackComplete(CustomTransaction transaction) async {
+  Future<void> payBackComplete(
+    CustomTransaction transaction, {
+    required String borrowerRazorpayPaymentId,
+  }) async {
     var userTransactionsFromProvider =
         locator<TransactionsDataProvider>().userTransactions!;
     log.w("Executing payBackComplete ");
@@ -54,11 +60,15 @@ class TransactionViewModel extends BaseViewModel {
         DateTime current = DateTime.now();
         userTransactionsFromProvider[i].transactionStatus.borrowerSentMoneyAt =
             current;
+        userTransactionsFromProvider[i]
+            .razorpayInformation
+            .borrowerRazorpayPaymentId = borrowerRazorpayPaymentId;
 
         /// update transaction in firestore
         locator<TransactionsDataHandler>().updateTransaction(
           data: {
             "transactionStatus": transaction.transactionStatus.toJson(),
+            "razorpayInformation": transaction.razorpayInformation.toJson(),
           },
           transactionId: transaction.genericInformation.transactionId,
           toLocalStorage: false,
@@ -137,6 +147,24 @@ class TransactionViewModel extends BaseViewModel {
               );
               log.w("Borrower paid back");
             });
+
+            /// 1) updateCommunityScores
+            /// 2) updateCommunityScoresWithoutAsync
+            /// argument: jsonEncode({ "isReward" : true, "changeInChild" : locator<LimitsDataProvider>().rewardsLimit!.rewardCreditScore,  "parentId" :locator<UserDataProvider>().platformData!.referredBy})
+
+            FirebaseFunctions functions = FirebaseFunctions.instance;
+            Function updateCommunityScores =
+                functions.httpsCallable('updateCommunityScores');
+            log.v("Updating Community scores");
+            updateCommunityScores(
+              jsonEncode({
+                "isReward": true,
+                "changeInChild": locator<LimitsDataProvider>()
+                    .rewardsLimit!
+                    .rewardCreditScore,
+                "parentId": locator<UserDataProvider>().platformData!.referredBy
+              }),
+            );
           } else {
             log.v("Didn't update personal score");
             setBusy(false);
