@@ -11,10 +11,9 @@ BorrowerInformation _$BorrowerInformationFromJson(Map<String, dynamic> json) {
     borrowerReferralCode: json['borrowerReferralCode'] as String,
     borrowerName: json['borrowerName'] as String,
     borrowerCreditScore: (json['borrowerCreditScore'] as num).toDouble(),
-    requestedPaybackMethods:
-        (json['transactionMethodsRequestedByBorrower'] as List<dynamic>)
-            .map((e) => _$enumDecode(_$PaymentMethodsEnumMap, e))
-            .toList(),
+    requestedPaybackMethods: (json['requestedPaybackMethods'] as List<dynamic>)
+        .map((e) => _$enumDecode(_$PaymentMethodsEnumMap, e.toString()))
+        .toList(),
   );
 }
 
