@@ -58,6 +58,7 @@ class BorrowViewModel extends BaseViewModel {
   }
 
   bool inProcess = false;
+
   void initiateBorrowRequest() {
     inProcess = true;
     notifyListeners();

@@ -64,6 +64,7 @@ class LendViewModel extends StreamViewModel {
   }
 
   Future<void> initiateTransaction(CustomNotification notification) async {
+    // TODO: make the transaction function of type Future<bool> and then run handshake
     setBusy(true);
     // await locator<RazorpayService>().createOrderInServer(
     //   amount: notification.amount.toDouble(),

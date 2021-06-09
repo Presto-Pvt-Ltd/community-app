@@ -85,7 +85,6 @@ class LendView extends StatelessWidget {
                                           height: height,
                                           width: width,
                                           handShakeCallBack: () {
-                                            // TODO: make the transaction function of type Future<bool> and then run handshake
                                             model.initiateTransaction(
                                               model.notifications[index],
                                             );
