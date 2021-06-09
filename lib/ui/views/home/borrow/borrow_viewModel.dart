@@ -10,6 +10,7 @@ import 'package:presto/models/transactions/borrower_data_model.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/models/transactions/generic_data_model.dart';
 import 'package:presto/models/transactions/lender_data_model.dart';
+import 'package:presto/models/transactions/razorpay_data_model.dart';
 import 'package:presto/models/transactions/transaction_status_data_model.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/notificationDataHandler.dart';
@@ -204,6 +205,10 @@ class BorrowViewModel extends BaseViewModel {
           locator<TransactionsDataProvider>()
               .createTransaction(
             transaction: CustomTransaction(
+              razorpayInformation: RazorpayInformation(
+                sentMoneyToLender: false,
+                sentMoneyToBorrower: false,
+              ),
               genericInformation: GenericInformation(
                 transactionId: transactionId,
                 amount: amount.toInt(),

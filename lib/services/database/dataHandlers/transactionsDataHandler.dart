@@ -14,6 +14,7 @@ enum TransactionDocument {
   lenderInformation,
   borrowerInformation,
   transactionStatus,
+  razorpayInformation,
 }
 
 class TransactionsDataHandler {
@@ -153,6 +154,8 @@ class TransactionsDataHandler {
         return "lenderInformation";
       case TransactionDocument.transactionStatus:
         return "transactionStatus";
+      case TransactionDocument.razorpayInformation:
+        return "razorpayInformation";
       default:
         throw Exception("Accessed some unknown reference string");
     }

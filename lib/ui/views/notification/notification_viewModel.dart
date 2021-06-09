@@ -28,13 +28,19 @@ class NotificationViewModel extends BaseViewModel {
   Future<void> initiateTransaction() async {
     setBusy(true);
     // TODO: make the razorpay function Future<bool> and the proceed with handshake
-    await handshake(notification);
+    await handshake(
+      notification,
+      razorpayTransactionId: "helo",
+    );
     // await locator<RazorpayService>().createOrderInServer(
     //   amount: notification.amount.toDouble(),
     // );
   }
 
-  Future<void> handshake(CustomNotification notification) async {
+  Future<void> handshake(
+    CustomNotification notification, {
+    required String razorpayTransactionId,
+  }) async {
     log.w("Executing handshake");
 
     /// Fetch transaction
@@ -57,6 +63,8 @@ class NotificationViewModel extends BaseViewModel {
       newTransaction.transactionStatus.approvedStatus = true;
       newTransaction.transactionStatus.lenderSentMoney = true;
       newTransaction.transactionStatus.lenderSentMoneyAt = DateTime.now();
+      newTransaction.razorpayInformation.lenderTransactionIdFromRazorpay =
+          razorpayTransactionId;
 
       /// Add transaction in provider
       locator<TransactionsDataProvider>().userTransactions == null
@@ -73,6 +81,7 @@ class NotificationViewModel extends BaseViewModel {
         data: {
           "transactionStatus": newTransaction.transactionStatus.toJson(),
           "lenderInformation": newTransaction.lenderInformation!.toJson(),
+          "razorpayInformation": newTransaction.razorpayInformation.toJson(),
         },
         transactionId: newTransaction.genericInformation.transactionId,
         toLocalStorage: false,

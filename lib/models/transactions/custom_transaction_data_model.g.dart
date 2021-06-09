@@ -18,6 +18,8 @@ CustomTransaction _$CustomTransactionFromJson(Map<String, dynamic> json) {
         ? null
         : LenderInformation.fromJson(
             json['lenderInformation'] as Map<String, dynamic>),
+    razorpayInformation: RazorpayInformation.fromJson(
+        json['razorpayInformation'] as Map<String, dynamic>),
   );
 }
 
@@ -27,4 +29,5 @@ Map<String, dynamic> _$CustomTransactionToJson(CustomTransaction instance) =>
       'borrowerInformation': instance.borrowerInformation.toJson(),
       'lenderInformation': instance.lenderInformation!.toJson(),
       'transactionStatus': instance.transactionStatus.toJson(),
+      'razorpayInformation': instance.razorpayInformation.toJson(),
     };

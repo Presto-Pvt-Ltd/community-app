@@ -67,10 +67,16 @@ class LendViewModel extends StreamViewModel {
     // await locator<RazorpayService>().createOrderInServer(
     //   amount: notification.amount.toDouble(),
     // );
-    await handshake(notification);
+    await handshake(
+      notification,
+      razorpayTransactionId: "helo",
+    );
   }
 
-  Future<void> handshake(CustomNotification notification) async {
+  Future<void> handshake(
+    CustomNotification notification, {
+    required String razorpayTransactionId,
+  }) async {
     log.w("Executing handshake");
 
     /// Fetch transaction
@@ -93,6 +99,8 @@ class LendViewModel extends StreamViewModel {
       newTransaction.transactionStatus.approvedStatus = true;
       newTransaction.transactionStatus.lenderSentMoney = true;
       newTransaction.transactionStatus.lenderSentMoneyAt = DateTime.now();
+      newTransaction.razorpayInformation.lenderTransactionIdFromRazorpay =
+          razorpayTransactionId;
 
       /// Add transaction in provider
       locator<TransactionsDataProvider>().userTransactions == null
@@ -109,6 +117,7 @@ class LendViewModel extends StreamViewModel {
         data: {
           "transactionStatus": newTransaction.transactionStatus.toJson(),
           "lenderInformation": newTransaction.lenderInformation!.toJson(),
+          "razorpayInformation": newTransaction.razorpayInformation.toJson(),
         },
         transactionId: newTransaction.genericInformation.transactionId,
         toLocalStorage: false,

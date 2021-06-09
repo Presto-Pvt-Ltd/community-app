@@ -1,4 +1,4 @@
-package com.presto.org.presto
+package com.presto.org
 
 import io.flutter.embedding.android.FlutterActivity
 
