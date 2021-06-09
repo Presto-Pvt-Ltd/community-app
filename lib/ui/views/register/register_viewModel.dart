@@ -319,7 +319,7 @@ class RegisterViewModel extends FormViewModel {
                   locator<UserDataProvider>().platformData = platformData;
                   PlatformRatings platformRatings = PlatformRatings(
                     communityScore: 0.0,
-                    personalScore: 5,
+                    personalScore: 2.0,
                     prestoCoins: 0,
                   );
                   locator<UserDataProvider>().platformRatingsData =
