@@ -211,7 +211,7 @@ class BorrowView extends StatelessWidget {
                             // )
                             //busy: model.isBusy || model.borrowingLimits == null,
                             onPressed: () {
-                              model.amount = 100;
+                              model.amount = 1;
                               model.initiateBorrowRequest();
                             },
                           ),
