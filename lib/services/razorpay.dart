@@ -70,8 +70,11 @@ class RazorpayService {
       'Authorization': authn,
     };
 
-    var data =
-        '{ "amount": $amount, "currency": "INR", "receipt": $transactionId }';
+    var data = jsonEncode({
+      "amount": amount.toInt(),
+      "currency": "INR",
+      "receipt": transactionId
+    });
     log.wtf(data);
     await http
         .post(Uri.parse('https://api.razorpay.com/v1/orders'),
