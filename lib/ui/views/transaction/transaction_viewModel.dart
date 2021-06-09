@@ -67,8 +67,10 @@ class TransactionViewModel extends BaseViewModel {
         /// update transaction in firestore
         locator<TransactionsDataHandler>().updateTransaction(
           data: {
-            "transactionStatus": transaction.transactionStatus.toJson(),
-            "razorpayInformation": transaction.razorpayInformation.toJson(),
+            "transactionStatus":
+                userTransactionsFromProvider[i].transactionStatus.toJson(),
+            "razorpayInformation":
+                userTransactionsFromProvider[i].razorpayInformation.toJson(),
           },
           transactionId: transaction.genericInformation.transactionId,
           toLocalStorage: false,
