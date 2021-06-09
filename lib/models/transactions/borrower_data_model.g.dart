@@ -21,5 +21,5 @@ Map<String, dynamic> _$BorrowerInformationToJson(
       'borrowerReferralCode': instance.borrowerReferralCode,
       'borrowerName': instance.borrowerName,
       'borrowerCreditScore': instance.borrowerCreditScore,
-      'requestedPaybackMethods': instance.upiId,
+      'upiId': instance.upiId,
     };

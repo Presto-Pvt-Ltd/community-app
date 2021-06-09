@@ -3,6 +3,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/app/app.router.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -45,6 +46,10 @@ class RazorpayService {
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
+    locator<NavigationService>().clearStackAndShow(
+      Routes.homeView,
+      arguments: HomeViewArguments(index: 2),
+    );
     locator<DialogService>().showDialog(
         title: "Payment Failed",
         description: "Please Try Again ${response.message}");

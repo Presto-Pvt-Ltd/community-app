@@ -241,11 +241,14 @@ class AllTransactionsViewModel extends BaseViewModel {
                         .transactionDefaultsAfterDays *
                     24 -
                 differenceInHoursFromInitiation;
-            locator<DialogService>().showDialog(
-              title: "Gentle Reminder",
-              description:
-                  "You have borrowed money from lender: ${transaction.lenderInformation!.lenderName}. You still have ${(differenceInHours / 24).floor()} days ${differenceInHours % 24} hours to payback.",
-            );
+            if (transaction.borrowerInformation.borrowerReferralCode ==
+                locator<UserDataProvider>().platformData!.referralCode) {
+              locator<DialogService>().showDialog(
+                title: "Gentle Reminder",
+                description:
+                    "You have borrowed money from lender: ${transaction.lenderInformation!.lenderName}. You still have ${(differenceInHours / 24).floor()} days ${differenceInHours % 24} hours to payback.",
+              );
+            }
           }
         }
         if (active.contains(transaction.genericInformation.transactionId)) {

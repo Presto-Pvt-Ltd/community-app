@@ -18,5 +18,5 @@ Map<String, dynamic> _$LenderInformationToJson(LenderInformation instance) =>
     <String, dynamic>{
       'lenderReferralCode': instance.lenderReferralCode,
       'lenderName': instance.lenderName,
-      'requestedPaybackMethods': instance.upiId,
+      'upiId': instance.upiId,
     };

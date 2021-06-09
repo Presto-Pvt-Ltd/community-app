@@ -249,6 +249,23 @@ class BorrowViewModel extends BaseViewModel {
             ),
           )
               .then((value) {
+            if (locator<TransactionsDataProvider>().lenders != null) {
+              locator<TransactionsDataProvider>().lenders =
+                  locator<TransactionsDataProvider>().lenders!.toSet().toList();
+              locator<TransactionsDataProvider>().lenders!.remove(
+                  locator<UserDataProvider>().platformData!.referralCode);
+            }
+            if (locator<TransactionsDataProvider>().notificationTokens !=
+                null) {
+              locator<TransactionsDataProvider>().notificationTokens =
+                  locator<TransactionsDataProvider>()
+                      .notificationTokens!
+                      .toSet()
+                      .toList();
+              locator<TransactionsDataProvider>()
+                  .notificationTokens!
+                  .remove(locator<UserDataProvider>().token!.notificationToken);
+            }
             locator<NotificationDataHandler>()
                 .setNotificationDocument(
               docId: locator<UserDataProvider>().platformData!.referralCode,
