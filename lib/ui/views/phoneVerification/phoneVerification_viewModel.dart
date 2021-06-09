@@ -137,7 +137,7 @@ class PhoneVerificationViewModel extends BaseViewModel {
   Future<void> linkPhone() async {
     await _authenticationService
         .linkPhoneNumberWithEmail(_phoneAuthCredential!)
-        .then((user) {
+        .then((user) async {
       log.d(
           "Phone and email linking process returned : ${user == null ? "failure" : "success"} ");
       if (user == null) {
@@ -150,72 +150,72 @@ class PhoneVerificationViewModel extends BaseViewModel {
           fromLocalDatabase: false,
           userId: _userDataProvider.platformData!.referredBy,
         )
-            .then((value) {
+            .then((value) async {
           PlatformData parentData = PlatformData.fromJson(value);
           parentData.referredTo
               .add(_userDataProvider.platformData!.referralCode);
-          locator<ProfileDataHandler>().updateProfileData(
+          await locator<ProfileDataHandler>().updateProfileData(
             data: parentData.toJson(),
             typeOfDocument: ProfileDocument.userPlatformData,
             userId: _userDataProvider.platformData!.referredBy,
             toLocalDatabase: false,
           );
         });
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.personalData!.toJson(),
           typeOfDocument: ProfileDocument.userPersonalData,
           userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.platformData!.toJson(),
           typeOfDocument: ProfileDocument.userPlatformData,
           userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.platformRatingsData!.toJson(),
           typeOfDocument: ProfileDocument.userPlatformRatings,
           userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.transactionData!.toJson(),
           typeOfDocument: ProfileDocument.userTransactionsData,
           userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.token!.toJson(),
           typeOfDocument: ProfileDocument.userNotificationToken,
           userId: user.displayName!,
           toLocalDatabase: false,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.personalData!.toJson(),
           typeOfDocument: ProfileDocument.userPersonalData,
           userId: user.displayName!,
           toLocalDatabase: true,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.platformData!.toJson(),
           typeOfDocument: ProfileDocument.userPlatformData,
           userId: user.displayName!,
           toLocalDatabase: true,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.platformRatingsData!.toJson(),
           typeOfDocument: ProfileDocument.userPlatformRatings,
           userId: user.displayName!,
           toLocalDatabase: true,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.transactionData!.toJson(),
           typeOfDocument: ProfileDocument.userTransactionsData,
           userId: user.displayName!,
           toLocalDatabase: true,
         );
-        locator<ProfileDataHandler>().setProfileData(
+        await locator<ProfileDataHandler>().setProfileData(
           data: _userDataProvider.token!.toJson(),
           typeOfDocument: ProfileDocument.userNotificationToken,
           userId: user.displayName!,
@@ -223,12 +223,12 @@ class PhoneVerificationViewModel extends BaseViewModel {
         );
 
         _userDataProvider.platformData!.isCommunityManager
-            ? locator<CommunityTreeDataHandler>().createNewCommunity(
+            ? await locator<CommunityTreeDataHandler>().createNewCommunity(
                 managerReferralID: _userDataProvider.platformData!.referralCode,
                 communityName: _userDataProvider.platformData!.community,
                 token: _userDataProvider.token!.notificationToken,
               )
-            : locator<CommunityTreeDataHandler>().createNewUser(
+            : await locator<CommunityTreeDataHandler>().createNewUser(
                 userReferralID: _userDataProvider.platformData!.referralCode,
                 parentReferralID: _userDataProvider.platformData!.referredBy,
                 communityName: _userDataProvider.platformData!.community,

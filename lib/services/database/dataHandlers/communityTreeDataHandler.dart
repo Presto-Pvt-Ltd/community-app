@@ -185,22 +185,29 @@ class CommunityTreeDataHandler {
           level = int.parse(value.docs.first.id);
           levelDown = level;
           for (int i = 0; i <= levelCounter; i++) {
+            // log.wtf(
+            //     "Level : $level + Run type : ${level.runtimeType} \n i = $i");
             if (level == -1) {
               locator<TransactionsDataProvider>().notificationTokens = tokens;
               locator<TransactionsDataProvider>().lenders = lenders;
+
               break;
             }
-            FirebaseFirestore.instance
+            await FirebaseFirestore.instance
                 .collection(communityName)
                 .doc(level.toString())
                 .get()
-                .then((snapshot) {
+                .then((snapshot) async {
               if (snapshot.exists) {
+                // log.wtf("Data : " +
+                //     snapshot.data().toString() +
+                //     "\n" +
+                //     DateTime.now().toString() +
+                //     "\n$level");
                 log.v(
                   snapshot.data()![parentReferralID]["Token"].runtimeType,
                 );
                 if (!snapshot.data()!.containsKey("CM")) {
-                  log.wtf(snapshot.data());
                   tokens.addAll(snapshot
                       .data()![parentReferralID]['Token']
                       .map<String>((s) => s as String)
@@ -221,7 +228,7 @@ class CommunityTreeDataHandler {
                     .toString();
               }
               if (i == 0) {
-                FirebaseFirestore.instance
+                await FirebaseFirestore.instance
                     .collection(communityName)
                     .doc('Trusted')
                     .get()
@@ -240,7 +247,7 @@ class CommunityTreeDataHandler {
               }
               if (i == levelCounter) {
                 String tempToken = "";
-                _profileDataHandler
+                await _profileDataHandler
                     .getProfileData(
                   typeOfData: ProfileDocument.userNotificationToken,
                   userId: parentReferralID,
