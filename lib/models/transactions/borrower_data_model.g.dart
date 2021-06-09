@@ -24,7 +24,9 @@ Map<String, dynamic> _$BorrowerInformationToJson(
       'borrowerReferralCode': instance.borrowerReferralCode,
       'borrowerName': instance.borrowerName,
       'borrowerCreditScore': instance.borrowerCreditScore,
-      'requestedPaybackMethods': instance.requestedPaybackMethods,
+      'requestedPaybackMethods': instance.requestedPaybackMethods
+          .map((e) => _$PaymentMethodsEnumMap[e])
+          .toList(),
     };
 
 K _$enumDecode<K, V>(

@@ -22,7 +22,11 @@ Map<String, dynamic> _$LenderInformationToJson(LenderInformation instance) =>
     <String, dynamic>{
       'lenderReferralCode': instance.lenderReferralCode,
       'lenderName': instance.lenderName,
-      'requestedPaybackMethods': instance.requestedPaybackMethods,
+      'requestedPaybackMethods': instance.requestedPaybackMethods == null
+          ? null
+          : instance.requestedPaybackMethods!
+              .map((e) => _$PaymentMethodsEnumMap[e])
+              .toList(),
     };
 
 K _$enumDecode<K, V>(
