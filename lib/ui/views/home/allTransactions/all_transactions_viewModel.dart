@@ -107,7 +107,7 @@ class AllTransactionsViewModel extends BaseViewModel {
               /// Update transaction status to borrower penalised
               transactions[i].transactionStatus.isBorrowerPenalised = true;
               locator<TransactionsDataHandler>().updateTransaction(
-                data: {"transactionStatus": transaction.transactionStatus},
+                data: {"transactionStatus": transactions[i].transactionStatus},
                 transactionId: transaction.genericInformation.transactionId,
                 toLocalStorage: false,
               );
@@ -192,7 +192,7 @@ class AllTransactionsViewModel extends BaseViewModel {
               /// Update transaction status to borrower penalised
               transactions[i].transactionStatus.isBorrowerPenalised = true;
               locator<TransactionsDataHandler>().updateTransaction(
-                data: {"transactionStatus": transaction.transactionStatus},
+                data: {"transactionStatus": transactions[i].transactionStatus},
                 transactionId: transaction.genericInformation.transactionId,
                 toLocalStorage: false,
               );
