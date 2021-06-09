@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/widgets/transactionCard.dart';
@@ -17,7 +18,10 @@ class AllTransactionsView extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return ViewModelBuilder<AllTransactionsViewModel>.reactive(
-      onModelReady: (model) => model.onModelReady(slideChangeView),
+      onModelReady: (model) =>
+          SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+        model.onModelReady(slideChangeView);
+      }),
       viewModelBuilder: () => AllTransactionsViewModel(),
       disposeViewModel: false,
       builder: (context, model, child) {
@@ -106,7 +110,8 @@ class AllTransactionsView extends StatelessWidget {
                                                   arguments:
                                                       TransactionViewArguments(
                                                     customTransaction: model
-                                                        .transactions[index],
+                                                            .activeTransactions[
+                                                        index],
                                                     isBorrowed: model
                                                             .activeTransactions[
                                                                 index]

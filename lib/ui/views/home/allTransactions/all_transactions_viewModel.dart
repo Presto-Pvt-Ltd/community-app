@@ -234,8 +234,13 @@ class AllTransactionsViewModel extends BaseViewModel {
           else {
             DateTime initiationTime =
                 transaction.genericInformation.initiationAt;
-            int differenceInHours =
+            int differenceInHoursFromInitiation =
                 currentTime.difference(initiationTime).inHours;
+            differenceInHours = locator<LimitsDataProvider>()
+                        .transactionLimits!
+                        .transactionDefaultsAfterDays *
+                    24 -
+                differenceInHoursFromInitiation;
             locator<DialogService>().showDialog(
               title: "Gentle Reminder",
               description:
