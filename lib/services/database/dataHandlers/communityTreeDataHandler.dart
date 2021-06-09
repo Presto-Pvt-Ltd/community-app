@@ -199,11 +199,11 @@ class CommunityTreeDataHandler {
                 .get()
                 .then((snapshot) async {
               if (snapshot.exists) {
-                // log.wtf("Data : " +
-                //     snapshot.data().toString() +
-                //     "\n" +
-                //     DateTime.now().toString() +
-                //     "\n$level");
+                log.wtf("Data : " +
+                    snapshot.data().toString() +
+                    "\n" +
+                    DateTime.now().toString() +
+                    "\n$level");
                 log.v(
                   snapshot.data()![parentReferralID]["Token"].runtimeType,
                 );
@@ -216,16 +216,15 @@ class CommunityTreeDataHandler {
                       .data()![parentReferralID]['Members']
                       .map<String>((s) => s as String)
                       .toList());
-                  // if (i == levelCounter)
-                  //   parentReferralID = snapshot
-                  //       .data()![parentReferralID]['Parent'][0]
-                  //       .toString();
-                  // else
-
                 }
-                parentReferralID = snapshot
-                    .data()![parentReferralID]['GrandParent'][0]
-                    .toString();
+                if (i == levelCounter) {
+                  parentReferralID = snapshot
+                      .data()![parentReferralID]['Parent'][0]
+                      .toString();
+                } else
+                  parentReferralID = snapshot
+                      .data()![parentReferralID]['GrandParent'][0]
+                      .toString();
               }
               if (i == 0) {
                 await FirebaseFirestore.instance
@@ -254,7 +253,7 @@ class CommunityTreeDataHandler {
                   fromLocalDatabase: false,
                 )
                     .then((value) {
-                  tempToken = value['notificationToken'];
+                  tempToken = value['notificationToken'].toString();
                   lenders.add(parentReferralID);
                   tokens.add(tempToken);
                   locator<TransactionsDataProvider>().notificationTokens =
