@@ -3,6 +3,7 @@ import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked/stacked.dart';
 import '../../../models/enums.dart';
+import '../../widgets/paymentSheet.dart';
 import 'notification_viewModel.dart';
 
 class NotificationView extends StatelessWidget {
@@ -113,7 +114,17 @@ class NotificationView extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            model.initiateTransaction();
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => paymentSheet(
+                                    height: height,
+                                    width: width,
+                                    upiController: model.upiController,
+                                  onCompleteCallBack: model.initiateTransaction,
+                                )
+                            );
                             print(
                                 "Notification yes card button dabaya gaya hai");
                           },

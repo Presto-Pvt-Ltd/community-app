@@ -33,6 +33,8 @@ class BorrowViewModel extends BaseViewModel {
 
   double amount = 100;
 
+  String? finalUPI;
+
   void setAmount(double value) {
     amount = value;
     notifyListeners();
@@ -58,6 +60,8 @@ class BorrowViewModel extends BaseViewModel {
   }
 
   bool inProcess = false;
+
+ TextEditingController upiController = TextEditingController();
 
   void initiateBorrowRequest() {
     inProcess = true;

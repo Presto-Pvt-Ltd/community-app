@@ -5,6 +5,7 @@ import 'package:presto/ui/widgets/notificationCard.dart';
 import 'package:stacked/stacked.dart';
 import '../../../../app/app.router.dart';
 import '../../../../app/app.router.dart';
+import '../../../widgets/paymentSheet.dart';
 import 'lend_viewModel.dart';
 
 class LendView extends StatelessWidget {
@@ -85,9 +86,18 @@ class LendView extends StatelessWidget {
                                           height: height,
                                           width: width,
                                           handShakeCallBack: () {
-                                            model.initiateTransaction(
-                                              model.notifications[index],
-                                            );
+                                            showModalBottomSheet(
+                                                context: context,
+                                                isScrollControlled: true,
+                                                backgroundColor: Colors.transparent,
+                                                builder: (context) => paymentSheet(
+                                                  height: height,
+                                                  width: width,
+                                                  upiController: model.upiController,
+                                                  onCompleteCallBack: model.initiateTransaction(
+                                                    model.notifications[index],
+                                                  ),
+                                                ));
                                             print("Trying handshake");
                                           },
                                           onTap: () {

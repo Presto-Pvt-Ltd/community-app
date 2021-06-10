@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/enums.dart';
@@ -30,6 +31,7 @@ class LendViewModel extends StreamViewModel {
   final NavigationService navigationService = locator<NavigationService>();
   String title = "I am Lend Screen";
   late void Function(bool) callback;
+  TextEditingController upiController = TextEditingController();
 
   void onModelReady(void Function(bool) callback) {
     this.callback = callback;

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/enums.dart';
@@ -20,6 +21,7 @@ import 'package:stacked_services/stacked_services.dart';
 
 class NotificationViewModel extends BaseViewModel {
   final log = getLogger("NotificationViewModel");
+  TextEditingController upiController = TextEditingController();
 
   ///Paste your code here
   late final CustomNotification notification;
