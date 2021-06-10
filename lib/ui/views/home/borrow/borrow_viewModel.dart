@@ -18,6 +18,7 @@ import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/paymentSheet.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -28,7 +29,8 @@ class BorrowViewModel extends BaseViewModel {
   TextEditingController amountController = TextEditingController();
 
   final LimitsDataHandler _limitsDataHandler = locator<LimitsDataHandler>();
-  TransactionLimits? transactionLimits;
+  TransactionLimits? transactionLimits =
+      locator<LimitsDataProvider>().transactionLimits;
 
   late void Function(bool) callback;
 
@@ -37,19 +39,19 @@ class BorrowViewModel extends BaseViewModel {
   String? finalUPI;
 
   void setAmount(double value) {
-    amount = value;
+    amount = value.ceilToDouble();
     notifyListeners();
   }
 
   void increaseAmount(double value) {
-    if (amount + value <= transactionLimits!.borrowUpperLimit) {
+    if (amount + value <= (transactionLimits?.borrowUpperLimit ?? 1000)) {
       amount = amount + value;
       notifyListeners();
     }
   }
 
   void decreaseAmount(double value) {
-    if (amount - value >= transactionLimits!.borrowLowerLimit) {
+    if (amount - value >= (transactionLimits?.borrowLowerLimit ?? 1)) {
       amount = amount - value;
       notifyListeners();
     }
@@ -73,6 +75,8 @@ class BorrowViewModel extends BaseViewModel {
         locator<TransactionsDataProvider>().notificationTokens == null) {
       log.w("data not ready");
       locator<DialogService>().showDialog(
+        buttonTitle: "Proceed",
+        buttonTitleColor: Colors.black,
         title: "Wait a moment ",
         description: "Fetching information. Please try again in few seconds",
       );
@@ -85,6 +89,8 @@ class BorrowViewModel extends BaseViewModel {
     if (locator<UserDataProvider>().platformData!.disabled) {
       log.w("User Disabled");
       locator<DialogService>().showDialog(
+        buttonTitle: "Proceed",
+        buttonTitleColor: Colors.black,
         title: "Have some dignity",
         description:
             "You have not completed your previous transaction within time limit. Pay previous balances and contact Presto for more information.",
@@ -104,6 +110,8 @@ class BorrowViewModel extends BaseViewModel {
             .maxActiveTransactionsPerBorrowerForFreeVersion) {
       log.w("already in a borrowing request placed and accepted");
       locator<DialogService>().showDialog(
+        buttonTitle: "Proceed",
+        buttonTitleColor: Colors.black,
         title: "Limit Exceeded",
         description:
             "One can keep up-to ${locator<LimitsDataProvider>().transactionLimits!.maxActiveTransactionsPerBorrowerForFreeVersion} pending transactions. Please pay-back before borrowing previous requests first.",
@@ -161,6 +169,8 @@ class BorrowViewModel extends BaseViewModel {
         log.v("Remaining hours ${(remainingMinutes / 60).floor()}");
         log.v("Remaining minutes $remainingMinutes");
         locator<DialogService>().showDialog(
+          buttonTitle: "Proceed",
+          buttonTitleColor: Colors.black,
           title: "Warning",
           description:
               "Your previous borrowing request is in process. Please wait for $remainingHours hrs ${(remainingMinutes % 60)} min",
@@ -184,34 +194,72 @@ class BorrowViewModel extends BaseViewModel {
       }
     }
     log.wtf("Sheet please");
-
     if (amount != 0)
-      locator<DialogService>()
-          .showConfirmationDialog(
-        title: "Confirmation",
-        description:
-            "Are you sure you want to borrow and amount of \u20B9 $amount",
-      )
-          .then((value) {
-        if (value!.confirmed) {
-          /// ask for upi ID
-          showModalBottomSheet(
-            isDismissible: false,
-            context: StackedService.navigatorKey!.currentContext!,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => paymentSheet(
-              height: height,
-              width: width,
-              upiController: upiController,
-              onCompleteCallBack: startTransaction,
-            ),
+      showDialog(
+        barrierDismissible: false,
+        context: StackedService.navigatorKey!.currentContext!,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Confirmation"),
+            content: Text(
+                "Are you sure you want to borrow and amount of \u20B9 $amount"),
+            actions: [
+              Container(
+                height: height * 0.05,
+                width: width * 0.22,
+                color: Colors.white24,
+                child: MaterialButton(
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  onPressed: () {
+                    inProcess = false;
+                    notifyListeners();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              Container(
+                height: height * 0.05,
+                width: width * 0.22,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: MaterialButton(
+                  color: primaryColor,
+                  child: Text(
+                    "Proceed",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+
+                    /// ask for upi ID
+                    showModalBottomSheet(
+                      isDismissible: false,
+                      context: StackedService.navigatorKey!.currentContext!,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => paymentSheet(
+                        height: height,
+                        width: width,
+                        upiController: upiController,
+                        onCompleteCallBack: startTransaction,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           );
-        } else {
-          inProcess = false;
-          notifyListeners();
-        }
-      });
+        },
+      );
   }
 
   void startTransaction() {

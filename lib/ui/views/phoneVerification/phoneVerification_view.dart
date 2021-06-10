@@ -25,20 +25,64 @@ class PhoneVerificationView extends StatelessWidget {
       builder: (context, model, child) {
         return WillPopScope(
           onWillPop: () async {
-            Future<DialogResponse?> response =
-                locator<DialogService>().showConfirmationDialog(
-              title: "Check!!",
-              description: "Are you sure you don't want to continue?",
-              confirmationTitle: "Confirm",
-              cancelTitle: "Cancel",
-            );
-
-            return response.then((value) {
-              if (value!.confirmed) {
-                model.deleteUser();
-                return true;
-              } else
+            return showDialog<bool>(
+              barrierDismissible: false,
+              context: StackedService.navigatorKey!.currentContext!,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text(
+                    "Check!!",
+                  ),
+                  content: Text(
+                    "Are you sure you don't want to continue?",
+                  ),
+                  actions: [
+                    Container(
+                      height: height * 0.05,
+                      width: width * 0.22,
+                      color: Colors.white24,
+                      child: MaterialButton(
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                    ),
+                    Container(
+                      height: height * 0.05,
+                      width: width * 0.22,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      clipBehavior: Clip.hardEdge,
+                      child: MaterialButton(
+                        color: primaryColor,
+                        child: Text(
+                          "Confirm",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: () {
+                          model.deleteUser();
+                          Navigator.of(context).pop(true);
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ).then((value) {
+              if (value == null) {
                 return false;
+              } else {
+                return value;
+              }
             });
           },
           child: SafeArea(

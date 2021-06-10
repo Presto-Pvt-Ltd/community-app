@@ -171,17 +171,23 @@ class BorrowView extends StatelessWidget {
                                         overlayRadius: height / 40),
                                   ),
                                   child: Slider(
+                                    divisions: model.transactionLimits != null
+                                        ? ((model.transactionLimits!
+                                                        .borrowUpperLimit -
+                                                    model.transactionLimits!
+                                                        .borrowLowerLimit) /
+                                                10)
+                                            .floor()
+                                        : 90,
                                     value: model.amount,
-                                    max: model.transactionLimits != null
-                                        ? model
-                                            .transactionLimits!.borrowUpperLimit
-                                            .toDouble()
-                                        : 1000.0,
-                                    min: model.transactionLimits != null
-                                        ? model
-                                            .transactionLimits!.borrowLowerLimit
-                                            .toDouble()
-                                        : 0.0,
+                                    max: model
+                                            .transactionLimits?.borrowUpperLimit
+                                            .toDouble() ??
+                                        1000,
+                                    min: model
+                                            .transactionLimits?.borrowLowerLimit
+                                            .toDouble() ??
+                                        1,
                                     onChanged: (double newValue) {
                                       print("Changing the value");
                                       model.setAmount(newValue);
@@ -213,7 +219,6 @@ class BorrowView extends StatelessWidget {
                                   Radius.circular(width / 15.0)),
                             ),
                             onPressed: () {
-                              model.amount = 1;
                               model.checkCurrentStatus(
                                 height: height,
                                 width: width,
