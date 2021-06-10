@@ -11,8 +11,8 @@ part 'transaction_data_model.g.dart';
 class TransactionData {
   final Map<String, dynamic> paymentMethodsUsed;
   final List<String> transactionIds;
-  final int totalBorrowed;
-  final int totalLent;
+  int totalBorrowed;
+  int totalLent;
   final List<String> activeTransactions;
   bool borrowingRequestInProcess;
   DateTime? lastBorrowingRequestPlacedAt;

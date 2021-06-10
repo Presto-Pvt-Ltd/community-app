@@ -76,12 +76,11 @@ class FirestoreService {
         .get();
   }
 
-  Future<QuerySnapshot> checkForCollectionExistence(
-      {required String community}) async {
-    log.d(community);
+  Future<QuerySnapshot> checkForCollectionExistence({
+    required String community,
+  }) async {
     final QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection(community).get();
-    log.d(querySnapshot.docs);
     return querySnapshot;
   }
 }

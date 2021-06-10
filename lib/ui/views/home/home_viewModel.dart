@@ -35,7 +35,11 @@ class HomeViewModel extends IndexTrackingViewModel {
   Future<void> refresh() async {
     locator<UserDataProvider>().dispose();
     locator<TransactionsDataProvider>().dispose();
-    onModelReady(currentIndex);
+
+    if (currentIndex != 2)
+      onModelReady(currentIndex);
+    else
+      onModelReady(1);
   }
 
   Future<void> onModelReady(int index) async {

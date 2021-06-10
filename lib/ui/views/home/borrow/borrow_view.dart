@@ -5,11 +5,17 @@ import 'package:presto/ui/widgets/amountButton.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:stacked/stacked.dart';
 
+import '../../../widgets/paymentSheet.dart';
 import 'borrow_viewModel.dart';
 
 class BorrowView extends StatelessWidget {
   final void Function(bool) slideChangeView;
-  const BorrowView({Key? key, required this.slideChangeView}) : super(key: key);
+
+  const BorrowView({
+    Key? key,
+    required this.slideChangeView,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -25,9 +31,12 @@ class BorrowView extends StatelessWidget {
             onHorizontalDragEnd: (dragEndDetails) {
               print(dragEndDetails.velocity);
               print(dragEndDetails.primaryVelocity);
-              if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
+              if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative &&
+                  dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
                 model.callback(false);
-              } else {
+              } else if (dragEndDetails
+                      .velocity.pixelsPerSecond.dx.isNegative &&
+                  dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
                 model.callback(true);
               }
               print('end');
@@ -162,17 +171,23 @@ class BorrowView extends StatelessWidget {
                                         overlayRadius: height / 40),
                                   ),
                                   child: Slider(
+                                    divisions: model.transactionLimits != null
+                                        ? ((model.transactionLimits!
+                                                        .borrowUpperLimit -
+                                                    model.transactionLimits!
+                                                        .borrowLowerLimit) /
+                                                10)
+                                            .floor()
+                                        : 90,
                                     value: model.amount,
-                                    max: model.transactionLimits != null
-                                        ? model
-                                            .transactionLimits!.borrowUpperLimit
-                                            .toDouble()
-                                        : 1000.0,
-                                    min: model.transactionLimits != null
-                                        ? model
-                                            .transactionLimits!.borrowLowerLimit
-                                            .toDouble()
-                                        : 0.0,
+                                    max: model
+                                            .transactionLimits?.borrowUpperLimit
+                                            .toDouble() ??
+                                        1000,
+                                    min: model
+                                            .transactionLimits?.borrowLowerLimit
+                                            .toDouble() ??
+                                        1,
                                     onChanged: (double newValue) {
                                       print("Changing the value");
                                       model.setAmount(newValue);
@@ -203,16 +218,11 @@ class BorrowView extends StatelessWidget {
                               borderRadius: BorderRadius.all(
                                   Radius.circular(width / 15.0)),
                             ),
-                            // onPressed: () => showModalBottomSheet(
-                            //     context: context,
-                            //     isScrollControlled: true,
-                            //     backgroundColor: Colors.transparent,
-                            //     builder: (context) => paymentSheet(height,width)
-                            // )
-                            //busy: model.isBusy || model.borrowingLimits == null,
                             onPressed: () {
-                              model.amount = 1;
-                              model.initiateBorrowRequest();
+                              model.checkCurrentStatus(
+                                height: height,
+                                width: width,
+                              );
                             },
                           ),
                         ],

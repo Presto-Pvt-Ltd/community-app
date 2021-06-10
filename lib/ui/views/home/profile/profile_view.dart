@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:presto/app/app.locator.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/ListToken.dart';
+import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'profile_viewModel.dart';
 
@@ -28,9 +31,11 @@ class ProfileView extends StatelessWidget {
           onHorizontalDragEnd: (dragEndDetails) {
             print(dragEndDetails.velocity);
             print(dragEndDetails.primaryVelocity);
-            if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
+            if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative &&
+                dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
               model.callback(false);
-            } else {
+            } else if (dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300 &&
+                dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
               model.callback(true);
             }
             print('end');
@@ -121,22 +126,16 @@ class ProfileView extends StatelessWidget {
                                               Icons.share,
                                               color: Colors.white,
                                             ),
-                                            onPressed: () {},
-                                            // onPressed: () async {
-                                            //   final RenderObject? box =
-                                            //   context.findRenderObject();
-                                            //   String text =
-                                            //   await model.getShareText();
-                                            //   Share.share(
-                                            //       text +
-                                            //           "\nPlease enter this referral code ${model.user.referralCode}",
-                                            //       subject:
-                                            //       "Download New Presto Mobile App Now!!",
-                                            //       sharePositionOrigin:
-                                            //       box.localToGlobal(
-                                            //           Offset.zero) &
-                                            //       box.size);
-                                            //   },
+                                            onPressed: () async {
+                                              String text =
+                                                  await model.getShareText();
+                                              Share.share(
+                                                text +
+                                                    "\nPlease enter this referral code ${locator<UserDataProvider>().platformData!.referralCode}",
+                                                subject:
+                                                    "Download New Presto Mobile App Now!!",
+                                              );
+                                            },
                                           ),
                                         ),
                                       ],

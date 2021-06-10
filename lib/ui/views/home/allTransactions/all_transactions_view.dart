@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:presto/app/app.locator.dart';
-import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/widgets/transactionCard.dart';
 import 'package:stacked/stacked.dart';
 import '../../../../app/app.router.dart';
@@ -30,9 +26,11 @@ class AllTransactionsView extends StatelessWidget {
           onHorizontalDragEnd: (dragEndDetails) {
             print(dragEndDetails.velocity);
             print(dragEndDetails.primaryVelocity);
-            if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
+            if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative &&
+                dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
               model.callback(false);
-            } else {
+            } else if (dragEndDetails.velocity.pixelsPerSecond.dx.isNegative &&
+                dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
               model.callback(true);
             }
             print('end');
@@ -51,88 +49,63 @@ class AllTransactionsView extends StatelessWidget {
                             SizedBox(
                               height: height * 0.04,
                             ),
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Text(
-                                "Active Transactions",
-                                style: TextStyle(
-                                  fontSize: height * 0.045,
-                                  color: Colors.black,
-                                  fontFamily: "Oswald",
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
-                            Column(
-                              // children: model.recentTransactions != null
-                              //     ? model.recentTransactions
-                              children: [
-                                Container(
-                                  height: height * 0.3,
-                                  child: model.activeTransactions.length == 0
-                                      ? Text(
-                                          "No Active Transactions to Display",
-                                          style: TextStyle(
-                                              fontSize: height * 0.022,
-                                              color: Colors.black),
-                                        )
-                                      : ListView.builder(
-                                          itemCount:
-                                              model.activeTransactions.length,
-                                          itemBuilder: (context, index) {
-                                            return mixedCard(
-                                              key: Key(
-                                                "Active$index",
-                                              ),
-                                              height: height,
-                                              width: width,
-                                              lenderName: model
-                                                  .activeTransactions[index]
-                                                  .lenderInformation!
-                                                  .lenderName,
-                                              isBorrowed: model
-                                                      .activeTransactions[index]
-                                                      .borrowerInformation
-                                                      .borrowerReferralCode ==
-                                                  locator<UserDataProvider>()
-                                                      .platformData!
-                                                      .referralCode,
-                                              amount: model
-                                                  .activeTransactions[index]
-                                                  .genericInformation
-                                                  .amount,
-                                              onTap: () {
-                                                model.navigationService
-                                                    .navigateTo(
-                                                  Routes.transactionView,
-                                                  arguments:
-                                                      TransactionViewArguments(
-                                                    customTransaction: model
-                                                            .activeTransactions[
-                                                        index],
-                                                    isBorrowed: model
-                                                            .activeTransactions[
-                                                                index]
-                                                            .borrowerInformation
-                                                            .borrowerReferralCode ==
-                                                        locator<UserDataProvider>()
-                                                            .platformData!
-                                                            .referralCode,
-                                                  ),
-                                                );
-                                                print("Mujhe dabaya gaya hai");
-                                              },
-                                            );
-                                          },
-                                        ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
+                            // Align(
+                            //   alignment: Alignment.topCenter,
+                            //   child: Text(
+                            //     "Active Transactions",
+                            //     style: TextStyle(
+                            //       fontSize: height * 0.045,
+                            //       color: Colors.black,
+                            //       fontFamily: "Oswald",
+                            //     ),
+                            //   ),
+                            // ),
+                            // SizedBox(
+                            //   height: height * 0.04,
+                            // ),
+                            // Container(
+                            //   height: model.activeTransactions.length == 0
+                            //       ? height * 0.05
+                            //       : (height *
+                            //           0.135 *
+                            //           model.activeTransactions.length),
+                            //   child: model.activeTransactions.length == 0
+                            //       ? Text(
+                            //           "No Active Transactions to Display",
+                            //           style: TextStyle(
+                            //               fontSize: height * 0.022,
+                            //               color: Colors.black),
+                            //         )
+                            //       : ListView.builder(
+                            //           itemCount:
+                            //               model.activeTransactions.length,
+                            //           itemBuilder: (context, index) {
+                            //             return mixedCard(
+                            //               transaction:
+                            //                   model.activeTransactions[index],
+                            //               key: Key(
+                            //                 "Active$index",
+                            //               ),
+                            //               height: height,
+                            //               width: width,
+                            //               onTap: () {
+                            //                 model.navigationService.navigateTo(
+                            //                   Routes.transactionView,
+                            //                   arguments:
+                            //                       TransactionViewArguments(
+                            //                     customTransaction: model
+                            //                         .activeTransactions[index],
+                            //                   ),
+                            //                 );
+                            //                 print("Mujhe dabaya gaya hai");
+                            //               },
+                            //             );
+                            //           },
+                            //         ),
+                            // ),
+                            // SizedBox(
+                            //   height: height * 0.04,
+                            // ),
                             Center(
                               child: Text(
                                 "All Transactions",
@@ -144,69 +117,44 @@ class AllTransactionsView extends StatelessWidget {
                             SizedBox(
                               height: height * 0.04,
                             ),
-                            Column(
-                              // children: model.allTransactions.length > 0 &&
-                              //     model.allTransactions != null
-                              //     ? model.allTransactions
-                              children: [
-                                Container(
-                                  height: height * 0.3,
-                                  child: model.transactions.length == 0
-                                      ? Text(
-                                          "No Transactions to Display",
-                                          style: TextStyle(
-                                              fontSize: height * 0.022,
-                                              color: Colors.black),
-                                        )
-                                      : ListView.builder(
-                                          itemCount: model.transactions.length,
-                                          itemBuilder: (context, index) {
-                                            return mixedCard(
-                                              key: Key(
-                                                model
-                                                    .transactions[index]
-                                                    .genericInformation
-                                                    .transactionId,
+                            Container(
+                              height: height * 0.745,
+                              child: model.transactions.length == 0
+                                  ? Text(
+                                      "No Transactions to Display",
+                                      style: TextStyle(
+                                          fontSize: height * 0.022,
+                                          color: Colors.black),
+                                    )
+                                  : ListView.builder(
+                                      itemCount: model.transactions.length,
+                                      reverse: true,
+                                      itemBuilder: (context, index) {
+                                        return mixedCard(
+                                          transaction:
+                                              model.transactions[index],
+                                          key: Key(
+                                            model
+                                                .transactions[index]
+                                                .genericInformation
+                                                .transactionId,
+                                          ),
+                                          height: height,
+                                          width: width,
+                                          onTap: () {
+                                            model.navigationService.navigateTo(
+                                              Routes.transactionView,
+                                              arguments:
+                                                  TransactionViewArguments(
+                                                customTransaction:
+                                                    model.transactions[index],
                                               ),
-                                              height: height,
-                                              width: width,
-                                              lenderName: model
-                                                  .transactions[index]
-                                                  .lenderInformation!
-                                                  .lenderName,
-                                              isBorrowed: model
-                                                      .transactions[index]
-                                                      .borrowerInformation
-                                                      .borrowerReferralCode ==
-                                                  locator<UserDataProvider>()
-                                                      .platformData!
-                                                      .referralCode,
-                                              amount: model.transactions[index]
-                                                  .genericInformation.amount,
-                                              onTap: () {
-                                                model.navigationService
-                                                    .navigateTo(
-                                                  Routes.transactionView,
-                                                  arguments:
-                                                      TransactionViewArguments(
-                                                    customTransaction: model
-                                                        .transactions[index],
-                                                    isBorrowed: model
-                                                            .transactions[index]
-                                                            .borrowerInformation
-                                                            .borrowerReferralCode ==
-                                                        locator<UserDataProvider>()
-                                                            .platformData!
-                                                            .referralCode,
-                                                  ),
-                                                );
-                                                print("Mujhe dabaya gaya hai");
-                                              },
                                             );
+                                            print("Mujhe dabaya gaya hai");
                                           },
-                                        ),
-                                ),
-                              ],
+                                        );
+                                      },
+                                    ),
                             ),
                           ],
                         ),

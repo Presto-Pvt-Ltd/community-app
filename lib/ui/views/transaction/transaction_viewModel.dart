@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/material.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/reward_limit_model.dart';
@@ -13,18 +14,64 @@ import 'package:presto/services/database/dataProviders/limits_data_provider.dart
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/razorpay.dart';
+import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class TransactionViewModel extends BaseViewModel {
   final log = getLogger("TransactionViewModel");
-
+  late final bool isBorrowed;
+  late bool isTransactionIncomplete;
+  late String buttonText;
+  late String transactionStatus;
+  late Color buttonColor;
   late final CustomTransaction transaction;
   void onModelReady(CustomTransaction transaction) {
     this.transaction = transaction;
+    this.isBorrowed = transaction.borrowerInformation.borrowerReferralCode ==
+        locator<UserDataProvider>().platformData!.referralCode;
+    this.isTransactionIncomplete =
+        transaction.razorpayInformation.sentMoneyToBorrower &&
+            transaction.razorpayInformation.sentMoneyToLender;
+    this.buttonColor = Colors.grey;
+    this.buttonText = "In Process";
+    this.transactionStatus = "Searching for Lenders";
+    if (this.isBorrowed) {
+      if (!transaction.razorpayInformation.sentMoneyToBorrower &&
+          transaction.transactionStatus.lenderSentMoney) {
+        this.transactionStatus = "Processing money";
+      } else if (transaction.razorpayInformation.sentMoneyToBorrower &&
+          !transaction.transactionStatus.borrowerSentMoney) {
+        this.transactionStatus = "Your turn to pay back";
+        this.buttonText = "Pay Back";
+        this.buttonColor = primaryColor;
+      } else if (transaction.transactionStatus.borrowerSentMoney &&
+          !transaction.razorpayInformation.sentMoneyToLender) {
+        this.transactionStatus = "Processing money";
+      } else {
+        this.transactionStatus = "Success";
+        this.buttonText = "Paid Back";
+      }
+    } else {
+      if (transaction.transactionStatus.lenderSentMoney &&
+          !transaction.razorpayInformation.sentMoneyToBorrower) {
+        this.transactionStatus = "Processing money";
+        this.buttonText = "In Process";
+      } else if (transaction.razorpayInformation.sentMoneyToLender) {
+        this.buttonText = "Transaction Complete";
+        this.transactionStatus = "Success";
+      } else if (transaction.transactionStatus.borrowerSentMoney &&
+          !transaction.razorpayInformation.sentMoneyToLender) {
+        this.transactionStatus = "Processing money";
+      } else {
+        this.buttonText = "Wait for Pay Back";
+        this.transactionStatus = "Wait for Pay Back";
+      }
+    }
   }
 
   Future<void> initiateTransaction() async {
+    print("Hello");
     setBusy(true);
     RazorpayService _razorpayService =
         RazorpayService(callback: (String paymentId) async {
