@@ -64,7 +64,7 @@ class NotificationViewModel extends BaseViewModel {
       /// add lender's info and update transaction status
       newTransaction.lenderInformation = LenderInformation(
         // TODO:  add the list fetched from bottom sheet
-        upiId: "upi@a",
+        upiId: upiController.text.trim(),
         lenderReferralCode:
             locator<UserDataProvider>().platformData!.referralCode,
         lenderName: locator<UserDataProvider>().personalData!.name,
@@ -74,6 +74,8 @@ class NotificationViewModel extends BaseViewModel {
       newTransaction.transactionStatus.lenderSentMoneyAt = DateTime.now();
       newTransaction.razorpayInformation.lenderRazorpayPaymentId =
           razorpayTransactionId;
+      locator<UserDataProvider>().transactionData!.totalLent +=
+          newTransaction.genericInformation.amount;
 
       /// Add transaction in provider
       locator<TransactionsDataProvider>().userTransactions == null
@@ -134,6 +136,8 @@ class NotificationViewModel extends BaseViewModel {
         TransactionData transactionData = TransactionData.fromJson(value);
         transactionData.activeTransactions
             .add(newTransaction.genericInformation.transactionId);
+        transactionData.totalBorrowed +=
+            newTransaction.genericInformation.amount;
         transactionData.borrowingRequestInProcess = false;
         locator<ProfileDataHandler>().updateProfileData(
           data: transactionData.toJson(),
@@ -156,7 +160,7 @@ class NotificationViewModel extends BaseViewModel {
                           .rewardsLimit!
                           .rewardPrestoCoinsPercent *
                       (newTransaction.genericInformation.amount / 100))
-                  .toInt();
+                  .ceil();
           locator<ProfileDataHandler>().updateProfileData(
             data: locator<UserDataProvider>().platformRatingsData!.toJson(),
             typeOfDocument: ProfileDocument.userPlatformRatings,

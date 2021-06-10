@@ -10,21 +10,15 @@ import '../../shared/colors.dart';
 
 class TransactionView extends StatelessWidget {
   final CustomTransaction customTransaction;
-  final bool isBorrowed;
-  const TransactionView(
-      {Key? key, required this.customTransaction, required this.isBorrowed})
-      : super(key: key);
+  const TransactionView({
+    Key? key,
+    required this.customTransaction,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    String upiId = customTransaction.borrowerInformation.upiId;
-    String paymentMethodsString = '';
-
-    bool isTransactionIncomplete =
-        !customTransaction.transactionStatus.borrowerSentMoney;
-    String buttonText = isTransactionIncomplete ? 'Payback' : 'Already Paid';
     return ViewModelBuilder<TransactionViewModel>.reactive(
       viewModelBuilder: () => TransactionViewModel(),
       disposeViewModel: false,
@@ -51,22 +45,8 @@ class TransactionView extends StatelessWidget {
                         child: Text(
                           '₹ ${customTransaction.genericInformation.amount}',
                           style: TextStyle(
-                              fontSize: height / 15, color: primaryColor),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          customTransaction.lenderInformation!.lenderName ==
-                                  null
-                              ? "Searching for lender"
-                              : 'Lender: ${customTransaction.lenderInformation!.lenderName}',
-                          style: TextStyle(
-                            fontSize: height / 35,
-                            color: customTransaction
-                                        .lenderInformation!.lenderName ==
-                                    null
-                                ? Colors.orangeAccent
-                                : primaryColor,
+                            fontSize: height / 15,
+                            color: primaryColor,
                           ),
                         ),
                       ),
@@ -79,29 +59,39 @@ class TransactionView extends StatelessWidget {
                           Text(
                             'Current Status:',
                             style: TextStyle(
-                              fontSize: height / 30,
+                              fontSize: height * 0.027,
                             ),
                           ),
                           Text(
-                            isTransactionIncomplete
-                                ? 'In Progress'
-                                : 'Completed',
+                            model.transactionStatus,
                             style: TextStyle(
-                              fontSize: height / 30,
+                              fontSize: height * 0.027,
+                              color: customTransaction
+                                          .lenderInformation!.lenderName ==
+                                      null
+                                  ? Colors.orangeAccent
+                                  : primaryColor,
                             ),
-                          )
+                          ),
                         ],
                       ),
                       SizedBox(
                         height: height / 15,
                       ),
                       ListToken(
-                          icon: Icons.date_range,
-                          name: 'Date of Transaction:',
-                          trailName:
-                              '${customTransaction.genericInformation.initiationAt.day}'
-                              '/${customTransaction.genericInformation.initiationAt.month}'
-                              '/${customTransaction.genericInformation.initiationAt.year}'),
+                        icon: Icons.receipt,
+                        name: 'Transaction Id:',
+                        trailName:
+                            customTransaction.genericInformation.transactionId,
+                      ),
+                      ListToken(
+                        icon: Icons.date_range,
+                        name: 'Date of Transaction:',
+                        trailName:
+                            '${customTransaction.genericInformation.initiationAt.day}'
+                            '/${customTransaction.genericInformation.initiationAt.month}'
+                            '/${customTransaction.genericInformation.initiationAt.year}',
+                      ),
                       ListToken(
                         icon: Icons.rate_review,
                         name: 'Interest Rate',
@@ -118,29 +108,24 @@ class TransactionView extends StatelessWidget {
                       SizedBox(
                         height: height / 10,
                       ),
-                      isBorrowed &&
-                              customTransaction.lenderInformation!.lenderName !=
-                                  null
-                          ? BusyButton(
-                              height: height / 10,
-                              width: width / 2.5,
-                              title: buttonText,
-                              decoration: BoxDecoration(
-                                color: isTransactionIncomplete
-                                    ? primaryColor
-                                    : Colors.grey,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(width / 15),
-                                ),
-                              ),
-                              onPressed: () {
-                                isTransactionIncomplete
-                                    ? model.initiateTransaction()
-                                    : null;
-                              },
-                              textColor: Colors.white,
-                            )
-                          : Container()
+                      BusyButton(
+                        busy: model.isBusy,
+                        height: height / 10,
+                        width: width / 2.5,
+                        title: model.buttonText,
+                        decoration: BoxDecoration(
+                          color: model.buttonColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(width / 15),
+                          ),
+                        ),
+                        onPressed: () {
+                          model.buttonText == "Pay Back"
+                              ? model.initiateTransaction()
+                              : null;
+                        },
+                        textColor: Colors.white,
+                      ),
                     ],
                   ),
                 ),

@@ -26,9 +26,12 @@ class LendView extends StatelessWidget {
             onHorizontalDragEnd: (dragEndDetails) {
               print(dragEndDetails.velocity);
               print(dragEndDetails.primaryVelocity);
-              if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
+              if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative &&
+                  dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
                 model.callback(false);
-              } else {
+              } else if (dragEndDetails
+                      .velocity.pixelsPerSecond.dx.isNegative &&
+                  dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
                 if (!locator<UserDataProvider>()
                     .platformData!
                     .isCommunityManager) model.callback(true);
@@ -89,15 +92,19 @@ class LendView extends StatelessWidget {
                                             showModalBottomSheet(
                                                 context: context,
                                                 isScrollControlled: true,
-                                                backgroundColor: Colors.transparent,
-                                                builder: (context) => paymentSheet(
-                                                  height: height,
-                                                  width: width,
-                                                  upiController: model.upiController,
-                                                  onCompleteCallBack: model.initiateTransaction(
-                                                    model.notifications[index],
-                                                  ),
-                                                ));
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                builder: (context) =>
+                                                    paymentSheet(
+                                                      customNotification: model
+                                                          .notifications[index],
+                                                      height: height,
+                                                      width: width,
+                                                      upiController:
+                                                          model.upiController,
+                                                      onCompleteCallBack: model
+                                                          .initiateTransaction,
+                                                    ));
                                             print("Trying handshake");
                                           },
                                           onTap: () {

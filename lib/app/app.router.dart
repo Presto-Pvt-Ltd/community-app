@@ -144,7 +144,6 @@ class StackedRouter extends RouterBase {
         builder: (context) => TransactionView(
           key: args.key,
           customTransaction: args.customTransaction,
-          isBorrowed: args.isBorrowed,
         ),
         settings: data,
       );
@@ -201,7 +200,8 @@ class NotificationViewArguments {
 class TransactionViewArguments {
   final Key? key;
   final CustomTransaction customTransaction;
-  final bool isBorrowed;
-  TransactionViewArguments(
-      {this.key, required this.customTransaction, required this.isBorrowed});
+  TransactionViewArguments({
+    this.key,
+    required this.customTransaction,
+  });
 }

@@ -31,9 +31,12 @@ class BorrowView extends StatelessWidget {
             onHorizontalDragEnd: (dragEndDetails) {
               print(dragEndDetails.velocity);
               print(dragEndDetails.primaryVelocity);
-              if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
+              if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative &&
+                  dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
                 model.callback(false);
-              } else {
+              } else if (dragEndDetails
+                      .velocity.pixelsPerSecond.dx.isNegative &&
+                  dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
                 model.callback(true);
               }
               print('end');
@@ -199,32 +202,24 @@ class BorrowView extends StatelessWidget {
                             height: height / 20,
                           ),
                           BusyButton(
-                              busy: model.inProcess,
-                              textColor: Colors.white,
-                              height: height / 10,
-                              width: width / 3,
-                              title: "Get Paid!",
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(width / 15.0)),
-                              ),
-                              onPressed: () => showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) => paymentSheet(
-                                        height: height,
-                                        width: width,
-                                        upiController: model.upiController,
-                                        onCompleteCallBack: model.initiateBorrowRequest,
-                                      ))
-                              // busy: model.isBusy || model.borrowingLimits == null,
-                              // onPressed: () {
-                              //   model.amount = 1;
-                              //   model.initiateBorrowRequest();
-                              // },
-                              ),
+                            busy: model.inProcess,
+                            textColor: Colors.white,
+                            height: height / 10,
+                            width: width / 3,
+                            title: "Get Paid!",
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(width / 15.0)),
+                            ),
+                            onPressed: () {
+                              model.amount = 1;
+                              model.checkCurrentStatus(
+                                height: height,
+                                width: width,
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),

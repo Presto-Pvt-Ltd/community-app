@@ -28,9 +28,11 @@ class ProfileView extends StatelessWidget {
           onHorizontalDragEnd: (dragEndDetails) {
             print(dragEndDetails.velocity);
             print(dragEndDetails.primaryVelocity);
-            if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
+            if (!dragEndDetails.velocity.pixelsPerSecond.dx.isNegative &&
+                dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300) {
               model.callback(false);
-            } else {
+            } else if (dragEndDetails.velocity.pixelsPerSecond.dx.abs() > 300 &&
+                dragEndDetails.velocity.pixelsPerSecond.dx.isNegative) {
               model.callback(true);
             }
             print('end');

@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:presto/app/app.locator.dart';
+import 'package:presto/models/transactions/custom_transaction_data_model.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 
 Widget mixedCard({
   //TransactionModel transaction,
   required double height,
   required double width,
-  required bool isBorrowed,
-  required int amount,
-  required String? lenderName,
+  required CustomTransaction transaction,
   required Function onTap,
   required Key key,
 }) {
-  Color? textColor = isBorrowed ? Colors.red[800] : Colors.green[800];
+  late Color textColor;
+  bool isBorrower;
+  String user = locator<UserDataProvider>().platformData!.referralCode;
+  bool inProcess = true;
+  if (transaction.razorpayInformation.sentMoneyToBorrower &&
+      !transaction.razorpayInformation.sentMoneyToLender) {
+    /// Money sent by borrower but no received by lender
+    inProcess = false;
+    textColor = Colors.orange;
+  } else if (transaction.razorpayInformation.sentMoneyToBorrower &&
+      !transaction.razorpayInformation.sentMoneyToLender) {
+    inProcess = false;
+    textColor = Colors.red;
+  } else if (!transaction.razorpayInformation.sentMoneyToBorrower) {
+    /// Money sent by lender not received by borrower
+    textColor = Colors.orange;
+  } else if (transaction.razorpayInformation.sentMoneyToLender) {
+    /// Money sent by lender not received by borrower
+    textColor = Colors.black38;
+  } else {}
   return GestureDetector(
     onTap: () {
       onTap();
@@ -32,20 +52,21 @@ Widget mixedCard({
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '₹ $amount',
+                    '₹ ${transaction.genericInformation.amount}',
                     style: TextStyle(
                       fontSize: width * 0.07,
                       color: textColor,
                     ),
                   ),
                   Text(
-                    lenderName == null
+                    transaction.lenderInformation!.lenderName == null
                         ? "Searching for lender"
-                        : 'Lender: $lenderName',
+                        : 'Lender: ${transaction.lenderInformation!.lenderName}',
                     style: TextStyle(
                       fontSize: width * 0.05,
-                      color:
-                          lenderName == null ? Colors.orangeAccent : textColor,
+                      color: transaction.lenderInformation!.lenderName == null
+                          ? Colors.orangeAccent
+                          : textColor,
                     ),
                   ),
                 ],

@@ -102,7 +102,7 @@ class LendViewModel extends StreamViewModel {
       /// add lender's info and update transaction status
       // TODO:  add the list fetched from bottom sheet
       newTransaction.lenderInformation = LenderInformation(
-        upiId: "upi@a",
+        upiId: upiController.text.trim(),
         lenderReferralCode:
             locator<UserDataProvider>().platformData!.referralCode,
         lenderName: locator<UserDataProvider>().personalData!.name,
@@ -121,6 +121,9 @@ class LendViewModel extends StreamViewModel {
           : locator<TransactionsDataProvider>()
               .userTransactions!
               .add(newTransaction);
+
+      locator<UserDataProvider>().transactionData!.totalLent +=
+          newTransaction.genericInformation.amount;
 
       /// update transaction in firestore
 
@@ -172,6 +175,8 @@ class LendViewModel extends StreamViewModel {
         TransactionData transactionData = TransactionData.fromJson(value);
         transactionData.activeTransactions
             .add(newTransaction.genericInformation.transactionId);
+        transactionData.totalBorrowed +=
+            newTransaction.genericInformation.amount;
         transactionData.borrowingRequestInProcess = false;
         locator<ProfileDataHandler>().updateProfileData(
           data: transactionData.toJson(),
@@ -195,7 +200,7 @@ class LendViewModel extends StreamViewModel {
                           .rewardsLimit!
                           .rewardPrestoCoinsPercent *
                       (newTransaction.genericInformation.amount / 100))
-                  .toInt();
+                  .ceil();
           locator<ProfileDataHandler>().updateProfileData(
             data: locator<UserDataProvider>().platformRatingsData!.toJson(),
             typeOfDocument: ProfileDocument.userPlatformRatings,

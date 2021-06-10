@@ -18,6 +18,7 @@ import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/ui/widgets/paymentSheet.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -61,9 +62,9 @@ class BorrowViewModel extends BaseViewModel {
 
   bool inProcess = false;
 
- TextEditingController upiController = TextEditingController();
+  TextEditingController upiController = TextEditingController();
 
-  void initiateBorrowRequest() {
+  void checkCurrentStatus({required double height, required double width}) {
     inProcess = true;
     notifyListeners();
 
@@ -79,6 +80,8 @@ class BorrowViewModel extends BaseViewModel {
       notifyListeners();
       return;
     }
+
+    /// Check if user is disabled
     if (locator<UserDataProvider>().platformData!.disabled) {
       log.w("User Disabled");
       locator<DialogService>().showDialog(
@@ -92,11 +95,6 @@ class BorrowViewModel extends BaseViewModel {
     }
 
     /// Confirm transaction intent
-    /// initiate transaction
-    /// ask for user preference in payment method
-    /// then create new transaction document in firebase and hive
-    /// update provider
-    /// send notifications and display some sort of timer
     if (locator<UserDataProvider>()
             .transactionData!
             .activeTransactions
@@ -130,13 +128,14 @@ class BorrowViewModel extends BaseViewModel {
       int? differenceInMinutes = lastRequestTime != null
           ? currentTime.difference(lastRequestTime).inMinutes
           : null;
-      log.v("Last Request time: $lastRequestTime");
-      log.v("Current Time: $currentTime");
-      log.v(
-          "Valid or not: ${differenceInMinutes! < locator<LimitsDataProvider>().transactionLimits!.keepTransactionActiveForHours}");
-      log.v(
-          "Transaction Alive time: ${locator<LimitsDataProvider>().transactionLimits!.keepTransactionActiveForHours}");
+      // log.v("Last Request time: $lastRequestTime");
+      // log.v("Current Time: $currentTime");
+      // log.v(
+      //     "Valid or not: ${differenceInMinutes! < locator<LimitsDataProvider>().transactionLimits!.keepTransactionActiveForHours}");
+      // log.v(
+      //     "Transaction Alive time: ${locator<LimitsDataProvider>().transactionLimits!.keepTransactionActiveForHours}");
       if (lastRequestTime != null &&
+          differenceInMinutes != null &&
           differenceInMinutes <
               (locator<LimitsDataProvider>()
                       .transactionLimits!
@@ -184,6 +183,8 @@ class BorrowViewModel extends BaseViewModel {
         );
       }
     }
+    log.wtf("Sheet please");
+
     if (amount != 0)
       locator<DialogService>()
           .showConfirmationDialog(
@@ -193,131 +194,146 @@ class BorrowViewModel extends BaseViewModel {
       )
           .then((value) {
         if (value!.confirmed) {
-          /// initiate the process
-          // TODO: ask for user preference in payment method
-          ///create transaction and update databases
-          var transactionId =
-              locator<TransactionsDataProvider>().createRandomString();
-
-          if (locator<TransactionsDataProvider>().lenders != null)
-            locator<TransactionsDataProvider>().lenders!.remove(
-                  locator<UserDataProvider>().platformData!.referralCode,
-                );
-          if (locator<TransactionsDataProvider>().notificationTokens != null)
-            locator<TransactionsDataProvider>().notificationTokens!.remove(
-                  locator<UserDataProvider>().token!.notificationToken,
-                );
-          locator<TransactionsDataProvider>()
-              .createTransaction(
-            transaction: CustomTransaction(
-              razorpayInformation: RazorpayInformation(
-                borrowerRazorpayPaymentId: null,
-                lenderRazorpayPaymentId: null,
-                sentMoneyToLender: false,
-                sentMoneyToBorrower: false,
-              ),
-              genericInformation: GenericInformation(
-                transactionId: transactionId,
-                amount: amount.toInt(),
-                interestRate: 0,
-                initiationAt: currentTime,
-              ),
-              // TODO:  add the list fetched from bottom sheet
-              borrowerInformation: BorrowerInformation(
-                upiId: "upi@a",
-                borrowerCreditScore: (locator<UserDataProvider>()
-                            .platformRatingsData!
-                            .communityScore +
-                        locator<UserDataProvider>()
-                            .platformRatingsData!
-                            .personalScore) /
-                    2,
-                borrowerReferralCode:
-                    locator<UserDataProvider>().platformData!.referralCode,
-                borrowerName: locator<UserDataProvider>().personalData!.name,
-              ),
-              transactionStatus: TransactionStatus(
-                borrowerSentMoneyAt: null,
-                lenderSentMoneyAt: null,
-                approvedStatus: false,
-                lenderSentMoney: false,
-                borrowerSentMoney: false,
-                isBorrowerPenalised: false,
-                isLenderPenalised: false,
-              ),
-              lenderInformation: LenderInformation(
-                lenderReferralCode: null,
-                lenderName: null,
-                upiId: null,
-              ),
+          /// ask for upi ID
+          showModalBottomSheet(
+            isDismissible: false,
+            context: StackedService.navigatorKey!.currentContext!,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => paymentSheet(
+              height: height,
+              width: width,
+              upiController: upiController,
+              onCompleteCallBack: startTransaction,
             ),
-          )
-              .then((value) {
-            if (locator<TransactionsDataProvider>().lenders != null) {
-              locator<TransactionsDataProvider>().lenders =
-                  locator<TransactionsDataProvider>().lenders!.toSet().toList();
-              locator<TransactionsDataProvider>().lenders!.remove(
-                  locator<UserDataProvider>().platformData!.referralCode);
-            }
-            if (locator<TransactionsDataProvider>().notificationTokens !=
-                null) {
-              locator<TransactionsDataProvider>().notificationTokens =
-                  locator<TransactionsDataProvider>()
-                      .notificationTokens!
-                      .toSet()
-                      .toList();
-              locator<TransactionsDataProvider>()
-                  .notificationTokens!
-                  .remove(locator<UserDataProvider>().token!.notificationToken);
-            }
-            locator<NotificationDataHandler>()
-                .setNotificationDocument(
-              docId: locator<UserDataProvider>().platformData!.referralCode,
-              data: CustomNotification(
-                community: locator<UserDataProvider>().platformData!.community,
-                borrowerRating: (locator<UserDataProvider>()
-                            .platformRatingsData!
-                            .personalScore +
-                        locator<UserDataProvider>()
-                            .platformRatingsData!
-                            .communityScore) /
-                    2,
-                amount: amount.ceil(),
-                transactionId: transactionId,
-                paymentMethods: [PaymentMethods.googlePay],
-                borrowerReferralCode:
-                    locator<UserDataProvider>().platformData!.referralCode,
-                lendersReferralCodes:
-                    locator<TransactionsDataProvider>().lenders!,
-                initiationTime: currentTime,
-              ).toJson(),
-            )
-                .then((value) {
-              try {
-                FirebaseFunctions functions = FirebaseFunctions.instance;
-                Function sendPushNotification =
-                    functions.httpsCallable('sendPushNotification');
-                print(
-                    "\n\nSending Push Notification to ${locator<TransactionsDataProvider>().notificationTokens}\n\n");
-                sendPushNotification(
-                  locator<TransactionsDataProvider>()
-                      .notificationTokens!
-                      .toSet()
-                      .toList(),
-                );
-                inProcess = false;
-                notifyListeners();
-              } on FirebaseFunctionsException catch (e) {
-                log.e("${e.toString()} \n ${e.runtimeType}");
-              } catch (e) {
-                log.e("${e.toString()} \n ${e.runtimeType}");
-              }
-            });
-          });
+          );
         } else {
           inProcess = false;
           notifyListeners();
         }
       });
+  }
+
+  void startTransaction() {
+    DateTime currentTime = DateTime.now();
+
+    /// initiate the process
+    // TODO: ask for user preference in payment method
+    ///create transaction and update databases
+    var transactionId =
+        locator<TransactionsDataProvider>().createRandomString();
+
+    if (locator<TransactionsDataProvider>().lenders != null)
+      locator<TransactionsDataProvider>().lenders!.remove(
+            locator<UserDataProvider>().platformData!.referralCode,
+          );
+    if (locator<TransactionsDataProvider>().notificationTokens != null)
+      locator<TransactionsDataProvider>().notificationTokens!.remove(
+            locator<UserDataProvider>().token!.notificationToken,
+          );
+    locator<TransactionsDataProvider>()
+        .createTransaction(
+      transaction: CustomTransaction(
+        razorpayInformation: RazorpayInformation(
+          borrowerRazorpayPaymentId: null,
+          lenderRazorpayPaymentId: null,
+          sentMoneyToLender: false,
+          sentMoneyToBorrower: false,
+        ),
+        genericInformation: GenericInformation(
+          transactionId: transactionId,
+          amount: amount.toInt(),
+          interestRate: 0,
+          initiationAt: currentTime,
+        ),
+        // TODO:  add the list fetched from bottom sheet
+        borrowerInformation: BorrowerInformation(
+          upiId: upiController.text.trim(),
+          borrowerCreditScore:
+              (locator<UserDataProvider>().platformRatingsData!.communityScore +
+                      locator<UserDataProvider>()
+                          .platformRatingsData!
+                          .personalScore) /
+                  2,
+          borrowerReferralCode:
+              locator<UserDataProvider>().platformData!.referralCode,
+          borrowerName: locator<UserDataProvider>().personalData!.name,
+        ),
+        transactionStatus: TransactionStatus(
+          borrowerSentMoneyAt: null,
+          lenderSentMoneyAt: null,
+          approvedStatus: false,
+          lenderSentMoney: false,
+          borrowerSentMoney: false,
+          isBorrowerPenalised: false,
+          isLenderPenalised: false,
+        ),
+        lenderInformation: LenderInformation(
+          lenderReferralCode: null,
+          lenderName: null,
+          upiId: null,
+        ),
+      ),
+    )
+        .then((value) {
+      if (locator<TransactionsDataProvider>().lenders != null) {
+        locator<TransactionsDataProvider>().lenders =
+            locator<TransactionsDataProvider>().lenders!.toSet().toList();
+        locator<TransactionsDataProvider>()
+            .lenders!
+            .remove(locator<UserDataProvider>().platformData!.referralCode);
+      }
+      if (locator<TransactionsDataProvider>().notificationTokens != null) {
+        locator<TransactionsDataProvider>().notificationTokens =
+            locator<TransactionsDataProvider>()
+                .notificationTokens!
+                .toSet()
+                .toList();
+        locator<TransactionsDataProvider>()
+            .notificationTokens!
+            .remove(locator<UserDataProvider>().token!.notificationToken);
+      }
+      locator<NotificationDataHandler>()
+          .setNotificationDocument(
+        docId: locator<UserDataProvider>().platformData!.referralCode,
+        data: CustomNotification(
+          community: locator<UserDataProvider>().platformData!.community,
+          borrowerRating:
+              (locator<UserDataProvider>().platformRatingsData!.personalScore +
+                      locator<UserDataProvider>()
+                          .platformRatingsData!
+                          .communityScore) /
+                  2,
+          amount: amount.ceil(),
+          transactionId: transactionId,
+          paymentMethods: [PaymentMethods.googlePay],
+          borrowerReferralCode:
+              locator<UserDataProvider>().platformData!.referralCode,
+          lendersReferralCodes: locator<TransactionsDataProvider>().lenders!,
+          initiationTime: currentTime,
+        ).toJson(),
+      )
+          .then((value) {
+        try {
+          FirebaseFunctions functions = FirebaseFunctions.instance;
+          Function sendPushNotification =
+              functions.httpsCallable('sendPushNotification');
+          print(
+              "\n\nSending Push Notification to ${locator<TransactionsDataProvider>().notificationTokens}\n\n");
+          sendPushNotification(
+            locator<TransactionsDataProvider>()
+                .notificationTokens!
+                .toSet()
+                .toList(),
+          );
+          inProcess = false;
+          notifyListeners();
+        } on FirebaseFunctionsException catch (e) {
+          log.e("${e.toString()} \n ${e.runtimeType}");
+        } catch (e) {
+          log.e("${e.toString()} \n ${e.runtimeType}");
+        }
+      });
+    });
   }
 }
