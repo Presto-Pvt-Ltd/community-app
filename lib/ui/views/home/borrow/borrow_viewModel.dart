@@ -12,7 +12,6 @@ import 'package:presto/models/transactions/generic_data_model.dart';
 import 'package:presto/models/transactions/lender_data_model.dart';
 import 'package:presto/models/transactions/razorpay_data_model.dart';
 import 'package:presto/models/transactions/transaction_status_data_model.dart';
-import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/notificationDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
@@ -28,7 +27,7 @@ class BorrowViewModel extends BaseViewModel {
   String title = "I am Borrow";
   TextEditingController amountController = TextEditingController();
 
-  final LimitsDataHandler _limitsDataHandler = locator<LimitsDataHandler>();
+  // final LimitsDataHandler _limitsDataHandler = locator<LimitsDataHandler>();
   TransactionLimits? transactionLimits =
       locator<LimitsDataProvider>().transactionLimits;
 

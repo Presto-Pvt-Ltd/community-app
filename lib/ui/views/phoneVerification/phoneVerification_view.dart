@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:presto/app/app.locator.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:stacked/stacked.dart';

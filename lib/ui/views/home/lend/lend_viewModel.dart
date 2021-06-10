@@ -2,13 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/models/enums.dart';
 import 'package:presto/models/limits/reward_limit_model.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/models/transactions/lender_data_model.dart';
 import 'package:presto/models/user/transaction_data_model.dart';
-import 'package:presto/services/authentication.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/notificationDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
@@ -25,8 +23,8 @@ class LendViewModel extends StreamViewModel {
   final log = getLogger("LendViewModel");
   final NotificationDataHandler _notificationDataHandler =
       locator<NotificationDataHandler>();
-  final AuthenticationService _authenticationService =
-      locator<AuthenticationService>();
+  // final AuthenticationService _authenticationService =
+  //     locator<AuthenticationService>();
   List<CustomNotification> notifications = <CustomNotification>[];
   final NavigationService navigationService = locator<NavigationService>();
   String title = "I am Lend Screen";

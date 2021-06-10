@@ -12,7 +12,6 @@ import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/hiveDatabase.dart';
-import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 

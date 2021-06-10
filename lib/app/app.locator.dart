@@ -21,7 +21,6 @@ import '../services/database/dataProviders/user_data_provider.dart';
 import '../services/database/firestoreBase.dart';
 import '../services/database/hiveDatabase.dart';
 import '../services/error/error.dart';
-import '../services/razorpay.dart';
 
 final locator = StackedLocator.instance;
 

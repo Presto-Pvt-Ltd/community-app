@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
-import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:stacked_services/stacked_services.dart';

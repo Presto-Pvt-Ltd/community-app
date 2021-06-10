@@ -7,8 +7,8 @@ class NoInternetView extends StatelessWidget {
   const NoInternetView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    // double height = MediaQuery.of(context).size.height;
+    // double width = MediaQuery.of(context).size.width;
     return ViewModelBuilder<NoInternetViewModel>.reactive(
       viewModelBuilder: () => NoInternetViewModel(),
       builder: (context, model, child) {

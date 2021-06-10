@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:presto/app/app.locator.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
-import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 
 Widget mixedCard({
   //TransactionModel transaction,
@@ -12,17 +10,12 @@ Widget mixedCard({
   required Key key,
 }) {
   late Color textColor;
-  bool isBorrower;
-  String user = locator<UserDataProvider>().platformData!.referralCode;
-  bool inProcess = true;
   if (transaction.razorpayInformation.sentMoneyToBorrower &&
       !transaction.razorpayInformation.sentMoneyToLender) {
     /// Money sent by borrower but no received by lender
-    inProcess = false;
     textColor = Colors.orange;
   } else if (transaction.razorpayInformation.sentMoneyToBorrower &&
       !transaction.razorpayInformation.sentMoneyToLender) {
-    inProcess = false;
     textColor = Colors.red;
   } else if (!transaction.razorpayInformation.sentMoneyToBorrower) {
     /// Money sent by lender not received by borrower

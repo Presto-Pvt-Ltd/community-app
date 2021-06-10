@@ -22,7 +22,7 @@ class _PaymentCardState extends State<PaymentCard> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
+    // var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
         onTap: () async {

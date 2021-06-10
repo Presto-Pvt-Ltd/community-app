@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:presto/models/enums.dart';
 part 'borrower_data_model.g.dart';
 
 /// [borrowerSentMoneyAt] gives the Time stamp at which borrower paid back.

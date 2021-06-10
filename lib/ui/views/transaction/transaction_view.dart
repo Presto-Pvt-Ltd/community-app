@@ -5,7 +5,6 @@ import 'package:presto/ui/views/transaction/transaction_viewModel.dart';
 import 'package:presto/ui/widgets/ListToken.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:stacked/stacked.dart';
-import '../../../models/enums.dart';
 import '../../shared/colors.dart';
 
 class TransactionView extends StatelessWidget {
@@ -120,9 +119,8 @@ class TransactionView extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          model.buttonText == "Pay Back"
-                              ? model.initiateTransaction()
-                              : null;
+                          if (model.buttonText == "Pay Back")
+                            model.initiateTransaction();
                         },
                         textColor: Colors.white,
                       ),
