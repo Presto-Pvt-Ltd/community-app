@@ -4,8 +4,6 @@ import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/amountButton.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:stacked/stacked.dart';
-
-import '../../../widgets/paymentSheet.dart';
 import 'borrow_viewModel.dart';
 
 class BorrowView extends StatelessWidget {

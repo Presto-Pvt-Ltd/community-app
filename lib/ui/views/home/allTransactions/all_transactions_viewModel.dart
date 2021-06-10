@@ -11,6 +11,7 @@ import 'package:presto/services/database/dataHandlers/transactionsDataHandler.da
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/ui/widgets/dialogBox.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -85,7 +86,7 @@ class AllTransactionsViewModel extends BaseViewModel {
                   toLocalDatabase: true,
                 );
                 log.w("User Disabled");
-                locator<DialogService>().showDialog(
+                showCustomDialog(
                   title: "Have some dignity",
                   description:
                       "You have not completed your previous transaction within time limit. You have been disabled from this platform. Pay previous balances and contact Presto for more information.",
@@ -222,7 +223,7 @@ class AllTransactionsViewModel extends BaseViewModel {
                       locator<UserDataProvider>().platformData!.referredBy
                 }),
               );
-              locator<DialogService>().showDialog(
+              showCustomDialog(
                 title: "Default",
                 description:
                     "Rest assured! Transaction with borrower: ${transaction.borrowerInformation.borrowerName} have exceeded time limit. The borrower has been penalised and you will be re-compensated",
@@ -243,7 +244,7 @@ class AllTransactionsViewModel extends BaseViewModel {
                 differenceInHoursFromInitiation;
             if (transaction.borrowerInformation.borrowerReferralCode ==
                 locator<UserDataProvider>().platformData!.referralCode) {
-              locator<DialogService>().showDialog(
+              showCustomDialog(
                 title: "Gentle Reminder",
                 description:
                     "You have borrowed money from lender: ${transaction.lenderInformation!.lenderName}. You still have ${(differenceInHours / 24).floor()} days ${differenceInHours % 24} hours to payback.",

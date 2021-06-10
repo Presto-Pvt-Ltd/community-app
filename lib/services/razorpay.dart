@@ -5,6 +5,7 @@ import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
+import 'package:presto/ui/widgets/dialogBox.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -49,9 +50,10 @@ class RazorpayService {
       Routes.homeView,
       arguments: HomeViewArguments(index: 2),
     );
-    locator<DialogService>().showDialog(
-        title: "Payment Failed",
-        description: "Please Try Again ${response.message}");
+    showCustomDialog(
+      title: "Payment Failed",
+      description: "Please Try Again ${response.message}",
+    );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {

@@ -16,6 +16,7 @@ import 'package:presto/services/database/dataProviders/transactions_data_provide
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/services/database/firestoreBase.dart';
 import 'package:presto/services/razorpay.dart';
+import 'package:presto/ui/widgets/dialogBox.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -219,7 +220,7 @@ class LendViewModel extends StreamViewModel {
               .collection("notifications")
               .doc(newTransaction.borrowerInformation.borrowerReferralCode),
         );
-        locator<DialogService>().showDialog(
+        showCustomDialog(
           title: "Success",
           description: "Payback Successful!!",
         );

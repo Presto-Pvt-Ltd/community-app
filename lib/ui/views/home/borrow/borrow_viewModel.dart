@@ -18,6 +18,7 @@ import 'package:presto/services/database/dataProviders/limits_data_provider.dart
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/shared/colors.dart';
+import 'package:presto/ui/widgets/dialogBox.dart';
 import 'package:presto/ui/widgets/paymentSheet.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -73,9 +74,9 @@ class BorrowViewModel extends BaseViewModel {
     if (locator<TransactionsDataProvider>().lenders == null ||
         locator<TransactionsDataProvider>().notificationTokens == null) {
       log.w("data not ready");
-      locator<DialogService>().showDialog(
+
+      showCustomDialog(
         buttonTitle: "Proceed",
-        buttonTitleColor: Colors.black,
         title: "Wait a moment ",
         description: "Fetching information. Please try again in few seconds",
       );
@@ -87,9 +88,8 @@ class BorrowViewModel extends BaseViewModel {
     /// Check if user is disabled
     if (locator<UserDataProvider>().platformData!.disabled) {
       log.w("User Disabled");
-      locator<DialogService>().showDialog(
+      showCustomDialog(
         buttonTitle: "Proceed",
-        buttonTitleColor: Colors.black,
         title: "Have some dignity",
         description:
             "You have not completed your previous transaction within time limit. Pay previous balances and contact Presto for more information.",
@@ -108,9 +108,8 @@ class BorrowViewModel extends BaseViewModel {
             .transactionLimits!
             .maxActiveTransactionsPerBorrowerForFreeVersion) {
       log.w("already in a borrowing request placed and accepted");
-      locator<DialogService>().showDialog(
+      showCustomDialog(
         buttonTitle: "Proceed",
-        buttonTitleColor: Colors.black,
         title: "Limit Exceeded",
         description:
             "One can keep up-to ${locator<LimitsDataProvider>().transactionLimits!.maxActiveTransactionsPerBorrowerForFreeVersion} pending transactions. Please pay-back before borrowing previous requests first.",
@@ -167,9 +166,8 @@ class BorrowViewModel extends BaseViewModel {
         log.v("Last request completes at $completionTime");
         log.v("Remaining hours ${(remainingMinutes / 60).floor()}");
         log.v("Remaining minutes $remainingMinutes");
-        locator<DialogService>().showDialog(
+        showCustomDialog(
           buttonTitle: "Proceed",
-          buttonTitleColor: Colors.black,
           title: "Warning",
           description:
               "Your previous borrowing request is in process. Please wait for $remainingHours hrs ${(remainingMinutes % 60)} min",
@@ -265,7 +263,6 @@ class BorrowViewModel extends BaseViewModel {
     DateTime currentTime = DateTime.now();
 
     /// initiate the process
-    // TODO: ask for user preference in payment method
     ///create transaction and update databases
     var transactionId =
         locator<TransactionsDataProvider>().createRandomString();
@@ -293,7 +290,6 @@ class BorrowViewModel extends BaseViewModel {
           interestRate: 0,
           initiationAt: currentTime,
         ),
-        // TODO:  add the list fetched from bottom sheet
         borrowerInformation: BorrowerInformation(
           upiId: upiController.text.trim(),
           borrowerCreditScore:
