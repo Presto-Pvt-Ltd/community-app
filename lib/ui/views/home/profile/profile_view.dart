@@ -235,8 +235,8 @@ class ProfileView extends StatelessWidget {
                               Radius.circular(width / 15),
                             ),
                           ),
-                          height: height / 10,
-                          width: width / 1.5,
+                          height: height * 0.085,
+                          width: width * 0.7,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -251,7 +251,7 @@ class ProfileView extends StatelessWidget {
                                   child: Text(
                                     "Referees",
                                     style: TextStyle(
-                                      fontSize: height / 50,
+                                      fontSize: height / 48,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -268,13 +268,27 @@ class ProfileView extends StatelessWidget {
                                   child: Text(
                                     "Redeem Presto Coins",
                                     style: TextStyle(
-                                      fontSize: height / 50,
+                                      fontSize: height / 48,
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
                               )
                             ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: height * 0.02,
+                        ),
+                        GestureDetector(
+                          onTap: model.goToContactUs,
+                          child: Text(
+                            "Contact Us",
+                            style: TextStyle(
+                              fontSize: height / 47,
+                              color: Colors.black,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                         ),
                         SizedBox(

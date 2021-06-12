@@ -15,7 +15,7 @@ Widget notificationCard(
       padding: EdgeInsets.symmetric(
           horizontal: width * 0.05, vertical: width * 0.02),
       child: Container(
-        height: height * 0.135,
+        height: height * 0.142,
         child: Card(
           elevation: 5,
           child: Align(
@@ -48,8 +48,12 @@ Widget notificationCard(
                       GestureDetector(
                         onTap: () => handShakeCallBack(),
                         child: Container(
-                          width: width * 0.1,
-                          color: Colors.green,
+                          width: width * 0.2,
+                          height: height * 0.045,
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           child: Center(
                             child: Text(
                               'Yes',

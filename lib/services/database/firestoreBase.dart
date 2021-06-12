@@ -83,4 +83,11 @@ class FirestoreService {
         await FirebaseFirestore.instance.collection(community).get();
     return querySnapshot;
   }
+
+  Future<QuerySnapshot?> getCollection({required String collection}) async {
+    return await FirebaseFirestore.instance
+        .collection(collection)
+        .limit(1)
+        .get();
+  }
 }
