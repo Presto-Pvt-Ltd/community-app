@@ -187,10 +187,21 @@ class TransactionsDataProvider {
     );
 
     log.v("Created transaction in firebase");
+    log.wtf("Created transaction in firebase");
     transaction.borrowerInformation.paymentMethods?.forEach((method) {
-      locator<UserDataProvider>()
-          .transactionData!
-          .paymentMethodsUsed[PaymentMethodsMap[method]!] += 1;
+      log.wtf(
+          "${locator<UserDataProvider>().transactionData!.paymentMethodsUsed[PaymentMethodsMap[method]!].runtimeType}");
+      if (locator<UserDataProvider>()
+              .transactionData!
+              .paymentMethodsUsed[PaymentMethodsMap[method]!] ==
+          null) {
+        locator<UserDataProvider>()
+            .transactionData!
+            .paymentMethodsUsed[PaymentMethodsMap[method]!] = 1;
+      } else
+        locator<UserDataProvider>()
+            .transactionData!
+            .paymentMethodsUsed[PaymentMethodsMap[method]!] += 1;
     });
 
     /// Update User document

@@ -96,9 +96,17 @@ class NotificationViewModel extends BaseViewModel {
 
     /// update transaction in firestore
     paymentMethods.forEach((method) {
-      locator<UserDataProvider>()
-          .transactionData!
-          .paymentMethodsUsed[PaymentMethodsMap[method]!] += 1;
+      if (locator<UserDataProvider>()
+              .transactionData!
+              .paymentMethodsUsed[PaymentMethodsMap[method]!] ==
+          null) {
+        locator<UserDataProvider>()
+            .transactionData!
+            .paymentMethodsUsed[PaymentMethodsMap[method]!] = 1;
+      } else
+        locator<UserDataProvider>()
+            .transactionData!
+            .paymentMethodsUsed[PaymentMethodsMap[method]!] += 1;
     });
     locator<TransactionsDataHandler>().updateTransaction(
       data: {

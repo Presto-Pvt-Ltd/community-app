@@ -197,7 +197,8 @@ class BorrowViewModel extends BaseViewModel {
           return AlertDialog(
             title: Text("Confirmation"),
             content: Text(
-                "Are you sure you want to borrow and amount of \u20B9 $amount"),
+              "Are you sure you want to borrow and amount of \u20B9 $amount",
+            ),
             actions: [
               Container(
                 height: height * 0.05,
@@ -322,6 +323,7 @@ class BorrowViewModel extends BaseViewModel {
       ),
     )
         .then((value) {
+      log.wtf("Transaction created");
       if (locator<TransactionsDataProvider>().lenders != null) {
         locator<TransactionsDataProvider>().lenders =
             locator<TransactionsDataProvider>().lenders!.toSet().toList();
@@ -339,6 +341,7 @@ class BorrowViewModel extends BaseViewModel {
             .notificationTokens!
             .remove(locator<UserDataProvider>().token!.notificationToken);
       }
+      log.wtf("Updated list");
       locator<NotificationDataHandler>()
           .setNotificationDocument(
         docId: locator<UserDataProvider>().platformData!.referralCode,
@@ -364,7 +367,7 @@ class BorrowViewModel extends BaseViewModel {
           FirebaseFunctions functions = FirebaseFunctions.instance;
           Function sendPushNotification =
               functions.httpsCallable('sendPushNotification');
-          print(
+          log.wtf(
               "\n\nSending Push Notification to ${locator<TransactionsDataProvider>().notificationTokens}\n\n");
           sendPushNotification(
             locator<TransactionsDataProvider>()

@@ -134,9 +134,17 @@ class LendViewModel extends StreamViewModel {
     locator<UserDataProvider>().transactionData!.totalLent +=
         transaction.genericInformation.amount;
     paymentMethods.forEach((method) {
-      locator<UserDataProvider>()
-          .transactionData!
-          .paymentMethodsUsed[PaymentMethodsMap[method]!] += 1;
+      if (locator<UserDataProvider>()
+              .transactionData!
+              .paymentMethodsUsed[PaymentMethodsMap[method]!] ==
+          null) {
+        locator<UserDataProvider>()
+            .transactionData!
+            .paymentMethodsUsed[PaymentMethodsMap[method]!] = 1;
+      } else
+        locator<UserDataProvider>()
+            .transactionData!
+            .paymentMethodsUsed[PaymentMethodsMap[method]!] += 1;
     });
 
     /// update transaction in firestore
