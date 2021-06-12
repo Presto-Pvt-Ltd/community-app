@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:presto/ui/widgets/transactionCard.dart';
@@ -130,13 +129,17 @@ class AllTransactionsView extends StatelessWidget {
                                   : ListView.builder(
                                       itemCount: model.transactions.length,
                                       itemBuilder: (context, index) {
-                                      
                                         return mixedCard(
-                                          transaction:
-                                              model.transactions[model.transactions.length -1-index],
+                                          transaction: model.transactions[
+                                              model.transactions.length -
+                                                  1 -
+                                                  index],
                                           key: Key(
                                             model
-                                                .transactions[model.transactions.length-1-index]
+                                                .transactions[
+                                                    model.transactions.length -
+                                                        1 -
+                                                        index]
                                                 .genericInformation
                                                 .transactionId,
                                           ),
@@ -147,8 +150,11 @@ class AllTransactionsView extends StatelessWidget {
                                               Routes.transactionView,
                                               arguments:
                                                   TransactionViewArguments(
-                                                customTransaction:
-                                                    model.transactions[model.transactions.length-1-index],
+                                                customTransaction: model
+                                                        .transactions[
+                                                    model.transactions.length -
+                                                        1 -
+                                                        index],
                                               ),
                                             );
                                             print("Mujhe dabaya gaya hai");
