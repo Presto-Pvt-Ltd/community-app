@@ -7,11 +7,20 @@ part of 'borrower_data_model.dart';
 // **************************************************************************
 
 BorrowerInformation _$BorrowerInformationFromJson(Map<String, dynamic> json) {
+  print("\n\n\n");
+  print(json);
+  print("\n\n\n");
   return BorrowerInformation(
     borrowerReferralCode: json['borrowerReferralCode'] as String,
     borrowerName: json['borrowerName'] as String,
     borrowerCreditScore: (json['borrowerCreditScore'] as num).toDouble(),
-    upiId: json['upiId'] as String,
+    contact: json['contact'] as String,
+    paymentMethods:
+        (json['paymentMethods'] == null || json['paymentMethods'].length == 0)
+            ? null
+            : (json['paymentMethods'] as List<dynamic>)
+                .map((e) => paymentEnumDecode(e))
+                .toList(),
   );
 }
 
@@ -21,5 +30,7 @@ Map<String, dynamic> _$BorrowerInformationToJson(
       'borrowerReferralCode': instance.borrowerReferralCode,
       'borrowerName': instance.borrowerName,
       'borrowerCreditScore': instance.borrowerCreditScore,
-      'upiId': instance.upiId,
+      'contact': instance.contact,
+      'paymentMethods':
+          instance.paymentMethods?.map((e) => PaymentMethodsMap[e]).toList(),
     };

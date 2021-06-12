@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/models/enums.dart';
 import 'package:presto/models/limits/reward_limit_model.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
@@ -22,20 +23,38 @@ import 'package:stacked_services/stacked_services.dart';
 class NotificationViewModel extends BaseViewModel {
   final log = getLogger("NotificationViewModel");
   TextEditingController upiController = TextEditingController();
+  var deleteNotificationCallBack;
 
   ///Paste your code here
   late final CustomNotification notification;
-  void onModelReady(CustomNotification notification) {
+  void onModelReady(
+      CustomNotification notification, var deleteNotificationCallBack) {
     this.notification = notification;
+    this.deleteNotificationCallBack = deleteNotificationCallBack;
   }
 
-  Future<void> initiateTransaction() async {
+  Future<void> initiateTransaction(List<PaymentMethods> paymentMethods) async {
     setBusy(true);
+    var map = await locator<TransactionsDataHandler>().getTransactionData(
+      transactionId: notification.transactionId,
+      fromLocalStorage: false,
+    );
+    CustomTransaction transaction = CustomTransaction.fromJson(map);
+    if (transaction.transactionStatus.lenderSentMoney) {
+      setBusy(false);
+      showCustomDialog(
+        title: "Request Satisfied already",
+        description: "Someone in you community have already lent money",
+      );
+      return;
+    }
     RazorpayService _razorpayService =
         RazorpayService(callback: (String paymentId) async {
       await handshake(
         notification,
         razorpayTransactionId: paymentId,
+        paymentMethods: paymentMethods,
+        transaction: transaction,
       );
     });
     await _razorpayService.createOrderInServer(
@@ -47,147 +66,143 @@ class NotificationViewModel extends BaseViewModel {
   Future<void> handshake(
     CustomNotification notification, {
     required String razorpayTransactionId,
+    required List<PaymentMethods> paymentMethods,
+    required CustomTransaction transaction,
   }) async {
     log.w("Executing handshake");
 
-    /// Fetch transaction
-    List<Future<Map<String, dynamic>>> futures =
-        <Future<Map<String, dynamic>>>[];
-    futures.add(locator<TransactionsDataHandler>().getTransactionData(
-      transactionId: notification.transactionId,
-      fromLocalStorage: false,
-    ));
-    Future.wait(futures).then((transactionFetched) {
-      CustomTransaction newTransaction =
-          CustomTransaction.fromJson(transactionFetched[0]);
+    /// add lender's info and update transaction status
+    transaction.lenderInformation = LenderInformation(
+      contact: upiController.text.trim(),
+      lenderReferralCode:
+          locator<UserDataProvider>().platformData!.referralCode,
+      lenderName: locator<UserDataProvider>().personalData!.name,
+      paymentMethods: paymentMethods,
+    );
+    transaction.transactionStatus.approvedStatus = true;
+    transaction.transactionStatus.lenderSentMoney = true;
+    transaction.transactionStatus.lenderSentMoneyAt = DateTime.now();
+    transaction.razorpayInformation.lenderRazorpayPaymentId =
+        razorpayTransactionId;
+    locator<UserDataProvider>().transactionData!.totalLent +=
+        transaction.genericInformation.amount;
 
-      /// add lender's info and update transaction status
-      newTransaction.lenderInformation = LenderInformation(
-        // TODO:  add the list fetched from bottom sheet
-        upiId: upiController.text.trim(),
-        lenderReferralCode:
-            locator<UserDataProvider>().platformData!.referralCode,
-        lenderName: locator<UserDataProvider>().personalData!.name,
-      );
-      newTransaction.transactionStatus.approvedStatus = true;
-      newTransaction.transactionStatus.lenderSentMoney = true;
-      newTransaction.transactionStatus.lenderSentMoneyAt = DateTime.now();
-      newTransaction.razorpayInformation.lenderRazorpayPaymentId =
-          razorpayTransactionId;
-      locator<UserDataProvider>().transactionData!.totalLent +=
-          newTransaction.genericInformation.amount;
+    /// Add transaction in provider
+    locator<TransactionsDataProvider>().userTransactions == null
+        ? locator<TransactionsDataProvider>().userTransactions = [transaction]
+        : locator<TransactionsDataProvider>()
+            .userTransactions!
+            .add(transaction);
 
-      /// Add transaction in provider
-      locator<TransactionsDataProvider>().userTransactions == null
-          ? locator<TransactionsDataProvider>().userTransactions = [
-              newTransaction
-            ]
-          : locator<TransactionsDataProvider>()
-              .userTransactions!
-              .add(newTransaction);
-
-      /// update transaction in firestore
-
-      locator<TransactionsDataHandler>().updateTransaction(
-        data: {
-          "transactionStatus": newTransaction.transactionStatus.toJson(),
-          "lenderInformation": newTransaction.lenderInformation!.toJson(),
-          "razorpayInformation": newTransaction.razorpayInformation.toJson(),
-        },
-        transactionId: newTransaction.genericInformation.transactionId,
-        toLocalStorage: false,
-      );
-
-      /// update custom transaction list in hive
-      locator<TransactionsDataHandler>().updateTransactionListInHive(
-        locator<TransactionsDataProvider>().userTransactions!,
-      );
-
-      /// update lender's user info in firestore and hive
+    /// update transaction in firestore
+    paymentMethods.forEach((method) {
       locator<UserDataProvider>()
           .transactionData!
-          .transactionIds
-          .add(newTransaction.genericInformation.transactionId);
-      locator<UserDataProvider>()
-          .transactionData!
-          .activeTransactions
-          .add(newTransaction.genericInformation.transactionId);
+          .paymentMethodsUsed[PaymentMethodsMap[method]!] += 1;
+    });
+    locator<TransactionsDataHandler>().updateTransaction(
+      data: {
+        "transactionStatus": transaction.transactionStatus.toJson(),
+        "lenderInformation": transaction.lenderInformation!.toJson(),
+        "razorpayInformation": transaction.razorpayInformation.toJson(),
+      },
+      transactionId: transaction.genericInformation.transactionId,
+      toLocalStorage: false,
+    );
+
+    /// update custom transaction list in hive
+    locator<TransactionsDataHandler>().updateTransactionListInHive(
+      locator<TransactionsDataProvider>().userTransactions!,
+    );
+
+    /// update lender's user info in firestore and hive
+    locator<UserDataProvider>()
+        .transactionData!
+        .transactionIds
+        .add(transaction.genericInformation.transactionId);
+    locator<UserDataProvider>()
+        .transactionData!
+        .activeTransactions
+        .add(transaction.genericInformation.transactionId);
+    locator<ProfileDataHandler>().updateProfileData(
+      data: locator<UserDataProvider>().transactionData!.toJson(),
+      typeOfDocument: ProfileDocument.userTransactionsData,
+      userId: locator<UserDataProvider>().platformData!.referralCode,
+      toLocalDatabase: true,
+    );
+    locator<ProfileDataHandler>().updateProfileData(
+      data: locator<UserDataProvider>().transactionData!.toJson(),
+      typeOfDocument: ProfileDocument.userTransactionsData,
+      userId: locator<UserDataProvider>().platformData!.referralCode,
+      toLocalDatabase: false,
+    );
+
+    /// update borrower's data on firestore
+    locator<ProfileDataHandler>()
+        .getProfileData(
+      typeOfData: ProfileDocument.userTransactionsData,
+      userId: transaction.borrowerInformation.borrowerReferralCode,
+      fromLocalDatabase: false,
+    )
+        .then((value) {
+      TransactionData transactionData = TransactionData.fromJson(value);
+      transactionData.activeTransactions
+          .add(transaction.genericInformation.transactionId);
+      transactionData.totalBorrowed += transaction.genericInformation.amount;
+      transactionData.borrowingRequestInProcess = false;
       locator<ProfileDataHandler>().updateProfileData(
-        data: locator<UserDataProvider>().transactionData!.toJson(),
+        data: transactionData.toJson(),
         typeOfDocument: ProfileDocument.userTransactionsData,
-        userId: locator<UserDataProvider>().platformData!.referralCode,
-        toLocalDatabase: true,
-      );
-      locator<ProfileDataHandler>().updateProfileData(
-        data: locator<UserDataProvider>().transactionData!.toJson(),
-        typeOfDocument: ProfileDocument.userTransactionsData,
-        userId: locator<UserDataProvider>().platformData!.referralCode,
+        userId: transaction.borrowerInformation.borrowerReferralCode,
         toLocalDatabase: false,
       );
 
-      /// update borrower's data on firestore
-      locator<ProfileDataHandler>()
-          .getProfileData(
-        typeOfData: ProfileDocument.userTransactionsData,
-        userId: newTransaction.borrowerInformation.borrowerReferralCode,
+      /// Reward lender
+      locator<LimitsDataHandler>()
+          .getLimitsData(
+        typeOfLimit: LimitDocument.rewardsLimits,
         fromLocalDatabase: false,
       )
           .then((value) {
-        TransactionData transactionData = TransactionData.fromJson(value);
-        transactionData.activeTransactions
-            .add(newTransaction.genericInformation.transactionId);
-        transactionData.totalBorrowed +=
-            newTransaction.genericInformation.amount;
-        transactionData.borrowingRequestInProcess = false;
+        locator<LimitsDataProvider>().rewardsLimit =
+            RewardsLimit.fromJson(value);
+        locator<UserDataProvider>().platformRatingsData!.prestoCoins +=
+            (locator<LimitsDataProvider>()
+                        .rewardsLimit!
+                        .rewardPrestoCoinsPercent *
+                    (transaction.genericInformation.amount / 100))
+                .ceil();
         locator<ProfileDataHandler>().updateProfileData(
-          data: transactionData.toJson(),
-          typeOfDocument: ProfileDocument.userTransactionsData,
-          userId: newTransaction.borrowerInformation.borrowerReferralCode,
+          data: locator<UserDataProvider>().platformRatingsData!.toJson(),
+          typeOfDocument: ProfileDocument.userPlatformRatings,
+          userId: locator<UserDataProvider>().platformData!.referralCode,
+          toLocalDatabase: true,
+        );
+        locator<ProfileDataHandler>().updateProfileData(
+          data: locator<UserDataProvider>().platformRatingsData!.toJson(),
+          typeOfDocument: ProfileDocument.userPlatformRatings,
+          userId: locator<UserDataProvider>().platformData!.referralCode,
           toLocalDatabase: false,
         );
-
-        /// Reward lender
-        locator<LimitsDataHandler>()
-            .getLimitsData(
-          typeOfLimit: LimitDocument.rewardsLimits,
-          fromLocalDatabase: false,
-        )
-            .then((value) {
-          locator<LimitsDataProvider>().rewardsLimit =
-              RewardsLimit.fromJson(value);
-          locator<UserDataProvider>().platformRatingsData!.prestoCoins +=
-              (locator<LimitsDataProvider>()
-                          .rewardsLimit!
-                          .rewardPrestoCoinsPercent *
-                      (newTransaction.genericInformation.amount / 100))
-                  .ceil();
-          locator<ProfileDataHandler>().updateProfileData(
-            data: locator<UserDataProvider>().platformRatingsData!.toJson(),
-            typeOfDocument: ProfileDocument.userPlatformRatings,
-            userId: locator<UserDataProvider>().platformData!.referralCode,
-            toLocalDatabase: true,
-          );
-          locator<ProfileDataHandler>().updateProfileData(
-            data: locator<UserDataProvider>().platformRatingsData!.toJson(),
-            typeOfDocument: ProfileDocument.userPlatformRatings,
-            userId: locator<UserDataProvider>().platformData!.referralCode,
-            toLocalDatabase: false,
-          );
-        });
-
-        FirestoreService().deleteData(
-          document: FirebaseFirestore.instance
-              .collection("notifications")
-              .doc(newTransaction.borrowerInformation.borrowerReferralCode),
-        );
-        setBusy(false);
-        locator<NavigationService>().back();
-        showCustomDialog(
-          title: "Success",
-          description: "Lend Successful!!",
-        );
-        log.w("handshake finished");
       });
+
+      FirestoreService().deleteData(
+        document: FirebaseFirestore.instance
+            .collection("notifications")
+            .doc(transaction.borrowerInformation.borrowerReferralCode),
+      );
+      setBusy(false);
+      locator<NavigationService>().back();
+      showCustomDialog(
+        title: "Success",
+        description:
+            "Payment is successful! You have been awarded Presto Coins for successful Payment",
+      );
+      log.w("handshake finished");
+      if (deleteNotificationCallBack != null)
+        deleteNotificationCallBack(notification.transactionId);
     });
   }
+
+  void cancel() {}
 }

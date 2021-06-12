@@ -134,6 +134,7 @@ class StackedRouter extends RouterBase {
         builder: (context) => NotificationView(
           key: args.key,
           notification: args.notification,
+          deleteNotificationCallBack: args.deleteNotificationCallBack,
         ),
         settings: data,
       );
@@ -193,7 +194,12 @@ class PhoneVerificationViewArguments {
 class NotificationViewArguments {
   final Key? key;
   final CustomNotification notification;
-  NotificationViewArguments({this.key, required this.notification});
+  final deleteNotificationCallBack;
+  NotificationViewArguments({
+    this.key,
+    required this.notification,
+    required this.deleteNotificationCallBack,
+  });
 }
 
 /// TransactionView arguments holder class

@@ -4,19 +4,41 @@ enum PaymentMethods {
   upi,
   creditCard,
   debitCard,
+  paypal,
+  phonePay,
+  amazonPay,
+  unKnown,
 }
 
-String paymentMethodsToString(PaymentMethods methods) {
-  switch (methods) {
-    case PaymentMethods.googlePay:
-      return "GooglePay";
-    case PaymentMethods.payTm:
-      return "PayTm";
-    case PaymentMethods.upi:
-      return "upi";
-    case PaymentMethods.creditCard:
-      return "creditCard";
-    case PaymentMethods.debitCard:
-      return "debitCard";
+const Map<PaymentMethods, String> PaymentMethodsMap = {
+  PaymentMethods.googlePay: 'googlePay',
+  PaymentMethods.payTm: 'payTm',
+  PaymentMethods.upi: 'upi',
+  PaymentMethods.creditCard: 'creditCard',
+  PaymentMethods.debitCard: 'debitCard',
+  PaymentMethods.paypal: 'paypal',
+  PaymentMethods.phonePay: 'phonePay',
+  PaymentMethods.amazonPay: 'amazonPay',
+};
+
+PaymentMethods paymentEnumDecode(
+  String? object,
+) {
+  print("\n\n");
+  print(object);
+  print(PaymentMethodsMap.keys.firstWhere(
+    (element) => PaymentMethodsMap[element] == object,
+    orElse: () => PaymentMethods.unKnown,
+  ));
+  print("\n\n");
+  if (object == null) {
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${PaymentMethodsMap.values.join(', ')}',
+    );
   }
+  return PaymentMethodsMap.keys.firstWhere(
+    (element) => PaymentMethodsMap[element] == object,
+    orElse: () => PaymentMethods.unKnown,
+  );
 }

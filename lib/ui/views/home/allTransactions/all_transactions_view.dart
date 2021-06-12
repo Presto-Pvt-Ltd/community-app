@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:presto/ui/widgets/transactionCard.dart';
@@ -128,14 +129,14 @@ class AllTransactionsView extends StatelessWidget {
                                     )
                                   : ListView.builder(
                                       itemCount: model.transactions.length,
-                                      reverse: true,
                                       itemBuilder: (context, index) {
+                                      
                                         return mixedCard(
                                           transaction:
-                                              model.transactions[index],
+                                              model.transactions[model.transactions.length -1-index],
                                           key: Key(
                                             model
-                                                .transactions[index]
+                                                .transactions[model.transactions.length-1-index]
                                                 .genericInformation
                                                 .transactionId,
                                           ),
@@ -147,7 +148,7 @@ class AllTransactionsView extends StatelessWidget {
                                               arguments:
                                                   TransactionViewArguments(
                                                 customTransaction:
-                                                    model.transactions[index],
+                                                    model.transactions[model.transactions.length-1-index],
                                               ),
                                             );
                                             print("Mujhe dabaya gaya hai");

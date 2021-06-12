@@ -78,8 +78,7 @@ class RefereesView extends StatelessWidget {
                                         title: Text(
                                           ///Display name of Referees
                                           model.refereeList[index].name!,
-                                          style:
-                                              TextStyle(fontSize: width / 25),
+                                          style: TextStyle(fontSize: 22),
                                         ),
                                         children: [
                                           SizedBox(
@@ -92,7 +91,12 @@ class RefereesView extends StatelessWidget {
                                               Padding(
                                                 padding: EdgeInsets.only(
                                                     left: width / 20),
-                                                child: Text("Email"),
+                                                child: Text(
+                                                  "Email",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
@@ -101,6 +105,9 @@ class RefereesView extends StatelessWidget {
                                                   ///Displaying referee email
                                                   model.refereeList[index]
                                                       .email!,
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
                                                 ),
                                               )
                                             ],
@@ -112,7 +119,12 @@ class RefereesView extends StatelessWidget {
                                               Padding(
                                                 padding: EdgeInsets.only(
                                                     left: width / 20),
-                                                child: Text("Contact"),
+                                                child: Text(
+                                                  "Contact",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
@@ -121,10 +133,14 @@ class RefereesView extends StatelessWidget {
                                                   ///Displaying Referee Contact
                                                   model.refereeList[index]
                                                       .contact!,
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
                                                 ),
                                               )
                                             ],
                                           ),
+
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -132,18 +148,51 @@ class RefereesView extends StatelessWidget {
                                               Padding(
                                                 padding: EdgeInsets.only(
                                                     left: width / 20),
-                                                child: Text("Referral Code"),
+                                                child: Text(
+                                                  "Score",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
                                                     right: width / 20),
                                                 child: Text(
-                                                  model.refereeList[index]
-                                                      .referralCode!,
+                                                  ///Displaying Referee Contact
+                                                  model
+                                                      .refereeList[index].score!
+                                                      .toStringAsPrecision(3),
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
                                                 ),
                                               )
                                             ],
-                                          )
+                                          ),
+
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          // Row(
+                                          //   mainAxisAlignment:
+                                          //       MainAxisAlignment.spaceBetween,
+                                          //   children: [
+                                          //     Padding(
+                                          //       padding: EdgeInsets.only(
+                                          //           left: width / 20),
+                                          //       child: Text("Referral Code"),
+                                          //     ),
+                                          //     Padding(
+                                          //       padding: EdgeInsets.only(
+                                          //           right: width / 20),
+                                          //       child: Text(
+                                          //         model.refereeList[index]
+                                          //             .referralCode!,
+                                          //       ),
+                                          //     )
+                                          //   ],
+                                          // )
                                         ],
                                       ),
                                     ),

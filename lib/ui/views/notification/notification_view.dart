@@ -8,8 +8,12 @@ import 'notification_viewModel.dart';
 
 class NotificationView extends StatelessWidget {
   final CustomNotification notification;
-  const NotificationView({Key? key, required this.notification})
-      : super(key: key);
+  final deleteNotificationCallBack;
+  const NotificationView({
+    Key? key,
+    required this.notification,
+    required this.deleteNotificationCallBack,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +21,15 @@ class NotificationView extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     List<PaymentMethods> paymentMethods = notification.paymentMethods;
     String paymentMethodsString = '';
-    for (int i = 0; i < paymentMethods.length; i++) {
-      paymentMethodsString = paymentMethodsToString(paymentMethods[i]);
-    }
+    paymentMethods.forEach((element) {
+      paymentMethodsString += PaymentMethodsMap[element]!;
+    });
     return ViewModelBuilder<NotificationViewModel>.reactive(
       viewModelBuilder: () => NotificationViewModel(),
-      onModelReady: (model) => model.onModelReady(notification),
+      onModelReady: (model) => model.onModelReady(
+        notification,
+        deleteNotificationCallBack,
+      ),
       disposeViewModel: false,
       // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,
@@ -115,15 +122,15 @@ class NotificationView extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) => paymentSheet(
-                                    height: height,
-                                    width: width,
-                                    upiController: model.upiController,
-                                  onCompleteCallBack: model.initiateTransaction,
-                                )
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => paymentSheet(
+                                height: height,
+                                width: width,
+                                onCompleteCallBack: model.initiateTransaction,
+                                onCancel: model.cancel,
+                              ),
                             );
                             print(
                                 "Notification yes card button dabaya gaya hai");

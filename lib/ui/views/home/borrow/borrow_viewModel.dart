@@ -64,8 +64,6 @@ class BorrowViewModel extends BaseViewModel {
 
   bool inProcess = false;
 
-  TextEditingController upiController = TextEditingController();
-
   void checkCurrentStatus({required double height, required double width}) {
     inProcess = true;
     notifyListeners();
@@ -246,8 +244,11 @@ class BorrowViewModel extends BaseViewModel {
                       builder: (context) => paymentSheet(
                         height: height,
                         width: width,
-                        upiController: upiController,
                         onCompleteCallBack: startTransaction,
+                        onCancel: () {
+                          inProcess = false;
+                          notifyListeners();
+                        },
                       ),
                     );
                   },
@@ -259,7 +260,7 @@ class BorrowViewModel extends BaseViewModel {
       );
   }
 
-  void startTransaction() {
+  void startTransaction(List<PaymentMethods> methods) {
     DateTime currentTime = DateTime.now();
 
     /// initiate the process
@@ -291,7 +292,7 @@ class BorrowViewModel extends BaseViewModel {
           initiationAt: currentTime,
         ),
         borrowerInformation: BorrowerInformation(
-          upiId: upiController.text.trim(),
+          contact: locator<UserDataProvider>().personalData!.contact,
           borrowerCreditScore:
               (locator<UserDataProvider>().platformRatingsData!.communityScore +
                       locator<UserDataProvider>()
@@ -301,6 +302,7 @@ class BorrowViewModel extends BaseViewModel {
           borrowerReferralCode:
               locator<UserDataProvider>().platformData!.referralCode,
           borrowerName: locator<UserDataProvider>().personalData!.name,
+          paymentMethods: methods,
         ),
         transactionStatus: TransactionStatus(
           borrowerSentMoneyAt: null,
@@ -314,7 +316,8 @@ class BorrowViewModel extends BaseViewModel {
         lenderInformation: LenderInformation(
           lenderReferralCode: null,
           lenderName: null,
-          upiId: null,
+          contact: null,
+          paymentMethods: null,
         ),
       ),
     )

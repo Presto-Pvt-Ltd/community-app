@@ -320,11 +320,14 @@ class RegisterViewModel extends FormViewModel {
                     platformRatings;
                 TransactionData transactionData = TransactionData(
                   paymentMethodsUsed: <String, dynamic>{
-                    paymentMethodsToString(PaymentMethods.creditCard): 0,
-                    paymentMethodsToString(PaymentMethods.debitCard): 0,
-                    paymentMethodsToString(PaymentMethods.googlePay): 0,
-                    paymentMethodsToString(PaymentMethods.payTm): 0,
-                    paymentMethodsToString(PaymentMethods.upi): 0,
+                    PaymentMethodsMap[PaymentMethods.amazonPay]! : 0,
+                    PaymentMethodsMap[PaymentMethods.creditCard]! : 0,
+                    PaymentMethodsMap[PaymentMethods.debitCard]! : 0,
+                    PaymentMethodsMap[PaymentMethods.googlePay]! : 0,
+                    PaymentMethodsMap[PaymentMethods.payTm]! : 0,
+                    PaymentMethodsMap[PaymentMethods.paypal]! : 0,
+                    PaymentMethodsMap[PaymentMethods.phonePay]! : 0,
+                    PaymentMethodsMap[PaymentMethods.upi]! : 0,
                   },
                   transactionIds: <String>[],
                   totalBorrowed: 0,

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:presto/models/enums.dart';
 part 'lender_data_model.g.dart';
 
 /// [lenderSentMoneyAt] gives the Time stamp at which borrower paid back.
@@ -7,11 +8,13 @@ part 'lender_data_model.g.dart';
 class LenderInformation {
   String? lenderReferralCode;
   String? lenderName;
-  String? upiId;
+  String? contact;
+  List<PaymentMethods>? paymentMethods;
   LenderInformation({
     required this.lenderReferralCode,
     required this.lenderName,
-    required this.upiId,
+    required this.contact,
+    required this.paymentMethods,
   });
   factory LenderInformation.fromJson(Map<String, dynamic> json) =>
       _$LenderInformationFromJson(json);

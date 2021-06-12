@@ -86,26 +86,23 @@ class ProfileViewModel extends BaseViewModel {
         );
   }
 
-  void goToMyReferees() {
+  void goToMyReferees() async {
     setBusy(true);
-    locator<ProfileDataHandler>()
-        .getProfileData(
+    var value = await locator<ProfileDataHandler>().getProfileData(
       typeOfData: ProfileDocument.userPlatformData,
       userId: locator<UserDataProvider>().platformData!.referralCode,
       fromLocalDatabase: false,
-    )
-        .then((value) {
-      PlatformData platformData = PlatformData.fromJson(value);
-      locator<UserDataProvider>().platformData = platformData;
-      locator<ProfileDataHandler>().updateProfileData(
-        data: platformData.toJson(),
-        typeOfDocument: ProfileDocument.userPlatformData,
-        userId: locator<UserDataProvider>().platformData!.referralCode,
-        toLocalDatabase: true,
-      );
-    }).whenComplete(() {
-      locator<NavigationService>().navigateTo(Routes.refereesView);
-      setBusy(false);
-    });
+    );
+    PlatformData platformData = PlatformData.fromJson(value);
+    locator<UserDataProvider>().platformData = platformData;
+    locator<ProfileDataHandler>().updateProfileData(
+      data: platformData.toJson(),
+      typeOfDocument: ProfileDocument.userPlatformData,
+      userId: locator<UserDataProvider>().platformData!.referralCode,
+      toLocalDatabase: true,
+    );
+    locator<UserDataProvider>().platformData = platformData;
+    locator<NavigationService>().navigateTo(Routes.refereesView);
+    setBusy(false);
   }
 }

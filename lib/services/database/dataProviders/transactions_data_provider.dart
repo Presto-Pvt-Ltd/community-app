@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
+import 'package:presto/models/enums.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/transactionsDataHandler.dart';
@@ -186,6 +187,11 @@ class TransactionsDataProvider {
     );
 
     log.v("Created transaction in firebase");
+    transaction.borrowerInformation.paymentMethods?.forEach((method) {
+      locator<UserDataProvider>()
+          .transactionData!
+          .paymentMethodsUsed[PaymentMethodsMap[method]!] += 1;
+    });
 
     /// Update User document
     /// Adds new [transactionId] in user Transaction Data

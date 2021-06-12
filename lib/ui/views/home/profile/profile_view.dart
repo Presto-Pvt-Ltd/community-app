@@ -62,7 +62,7 @@ class ProfileView extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -144,17 +144,27 @@ class ProfileView extends StatelessWidget {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      top: height / 25,
-                                      bottom: height / 25,
-                                      left: height / 75,
-                                      right: height / 75),
-                                  child: CircleAvatar(
-                                    radius: width / 6.5,
-                                    backgroundColor: Colors.white,
-                                    child: Image.asset(
-                                      'assets/images/PrestoLogo.png',
+                                    top: height * 0.09,
+                                    bottom: height / 25,
+                                    left: width * 0.05,
+                                    right: width * 0.06,
+                                  ),
+                                  child: Text(
+                                    "Presto",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: height * 0.04,
                                     ),
                                   ),
+                                  // child: CircleAvatar(
+                                  //   radius: width / 6.5,
+                                  //   backgroundColor: Colors.white,
+                                  //   child: Image.asset(
+                                  //     'assets/images/PrestoLogo.png',
+                                  //   ),
+
+                                  // ),
                                 )
                               ],
                             ),
