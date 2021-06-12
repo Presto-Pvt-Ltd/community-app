@@ -176,6 +176,7 @@ class ProfileViewModel extends BaseViewModel {
                           description:
                               "Sorry ! :(\nCurrently there are no redeemable codes present. Please try again later.",
                         );
+                        setBusy(false);
                       } else {
                         await locator<FirestoreService>().deleteData(
                           document: FirebaseFirestore.instance
@@ -187,6 +188,7 @@ class ProfileViewModel extends BaseViewModel {
                           description:
                               "Your Code is : ${querySnapshot.docs[0].id}\n Please Take a screenshot and show the code to vendor",
                         );
+                        setBusy(false);
                       }
 
                       /// do redeem
