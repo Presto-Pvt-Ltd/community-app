@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
-import 'package:presto/services/error/error.dart';
 import 'package:presto/ui/widgets/dialogBox.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -33,7 +32,7 @@ class ContactUsViewModel extends BaseViewModel {
         description:
             "Your message has been recieved by Presto. Please wait for follow up",
       );
-      // locator<NavigationService>().back();
+      locator<NavigationService>().back();
     } catch (e) {
       setBusy(false);
       showCustomDialog(
