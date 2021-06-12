@@ -21,7 +21,6 @@ class ContactUsViewModel extends BaseViewModel {
           'kushgupta410@gmail.com',
           'jainshubham1007@gmail.com',
           'reshubolla@gmail.com',
-          'sushrutpatwardhan@gmail.com',
         ],
         isHTML: false,
       );
