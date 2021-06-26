@@ -118,10 +118,11 @@ class TransactionView extends StatelessWidget {
                             Radius.circular(width / 15),
                           ),
                         ),
-                        onPressed: () {
-                          if (model.buttonText == "Pay Back")
-                            model.initiateTransaction();
-                        },
+                        onPressed: (model.buttonText == "Pay Back")
+                            ? () {
+                                model.initiateTransaction();
+                              }
+                            : null,
                         textColor: Colors.white,
                       ),
                     ],

@@ -37,7 +37,20 @@ class TransactionViewModel extends BaseViewModel {
     this.buttonColor = Colors.grey;
     this.buttonText = "In Process";
     this.transactionStatus = "Searching for Lenders";
+    int hours = locator<LimitsDataProvider>()
+        .transactionLimits!
+        .keepTransactionActiveForHours;
+    int minutes = locator<LimitsDataProvider>()
+        .transactionLimits!
+        .keepTransactionActiveForMinutes;
+    int minutesPassed = DateTime.now()
+        .difference(transaction.genericInformation.initiationAt)
+        .inMinutes;
     if (this.isBorrowed) {
+      if (minutesPassed >= (minutes + (hours * 60))) {
+        this.buttonText = "No Lenders Found";
+        this.transactionStatus = "Failed";
+      }
       if (!transaction.razorpayInformation.sentMoneyToBorrower &&
           transaction.transactionStatus.lenderSentMoney) {
         this.transactionStatus = "Processing money";
