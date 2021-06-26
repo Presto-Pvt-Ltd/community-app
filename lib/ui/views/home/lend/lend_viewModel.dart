@@ -112,7 +112,7 @@ class LendViewModel extends StreamViewModel {
 
     /// add lender's info and update transaction status
     transaction.lenderInformation = LenderInformation(
-      contact: upiController.text.trim(),
+      contact: locator<UserDataProvider>().personalData!.contact.trim(),
       lenderReferralCode:
           locator<UserDataProvider>().platformData!.referralCode,
       lenderName: locator<UserDataProvider>().personalData!.name,

@@ -27,6 +27,7 @@ class AllTransactionsViewModel extends BaseViewModel {
   late void Function(bool) callback;
   bool gotData = false;
   void onModelReady(void Function(bool) callback) {
+    setBusy(true);
     DateTime currentTime = DateTime.now();
     this.callback = callback;
     List<String> active =
@@ -138,6 +139,7 @@ class AllTransactionsViewModel extends BaseViewModel {
                       locator<UserDataProvider>().platformData!.referredBy
                 }),
               );
+              setBusy(false);
             }
 
             /// If user is Lender
@@ -188,6 +190,7 @@ class AllTransactionsViewModel extends BaseViewModel {
                   userId: transaction.borrowerInformation.borrowerReferralCode,
                   toLocalDatabase: false,
                 );
+                setBusy(false);
               });
 
               /// Update transaction status to borrower penalised
@@ -223,6 +226,7 @@ class AllTransactionsViewModel extends BaseViewModel {
                       locator<UserDataProvider>().platformData!.referredBy
                 }),
               );
+              setBusy(false);
               showCustomDialog(
                 title: "Default",
                 description:
@@ -250,11 +254,13 @@ class AllTransactionsViewModel extends BaseViewModel {
                     "You have borrowed money from lender: ${transaction.lenderInformation!.lenderName}. You still have ${(differenceInHours / 24).floor()} days ${differenceInHours % 24} hours to payback.",
               );
             }
+            setBusy(false);
           }
         }
         if (active.contains(transaction.genericInformation.transactionId)) {
           activeTransactions.add(transaction);
           notifyListeners();
+          setBusy(false);
         }
       });
   }

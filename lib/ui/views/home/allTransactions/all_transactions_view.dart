@@ -49,63 +49,6 @@ class AllTransactionsView extends StatelessWidget {
                             SizedBox(
                               height: height * 0.04,
                             ),
-                            // Align(
-                            //   alignment: Alignment.topCenter,
-                            //   child: Text(
-                            //     "Active Transactions",
-                            //     style: TextStyle(
-                            //       fontSize: height * 0.045,
-                            //       color: Colors.black,
-                            //       fontFamily: "Oswald",
-                            //     ),
-                            //   ),
-                            // ),
-                            // SizedBox(
-                            //   height: height * 0.04,
-                            // ),
-                            // Container(
-                            //   height: model.activeTransactions.length == 0
-                            //       ? height * 0.05
-                            //       : (height *
-                            //           0.135 *
-                            //           model.activeTransactions.length),
-                            //   child: model.activeTransactions.length == 0
-                            //       ? Text(
-                            //           "No Active Transactions to Display",
-                            //           style: TextStyle(
-                            //               fontSize: height * 0.022,
-                            //               color: Colors.black),
-                            //         )
-                            //       : ListView.builder(
-                            //           itemCount:
-                            //               model.activeTransactions.length,
-                            //           itemBuilder: (context, index) {
-                            //             return mixedCard(
-                            //               transaction:
-                            //                   model.activeTransactions[index],
-                            //               key: Key(
-                            //                 "Active$index",
-                            //               ),
-                            //               height: height,
-                            //               width: width,
-                            //               onTap: () {
-                            //                 model.navigationService.navigateTo(
-                            //                   Routes.transactionView,
-                            //                   arguments:
-                            //                       TransactionViewArguments(
-                            //                     customTransaction: model
-                            //                         .activeTransactions[index],
-                            //                   ),
-                            //                 );
-                            //                 print("Mujhe dabaya gaya hai");
-                            //               },
-                            //             );
-                            //           },
-                            //         ),
-                            // ),
-                            // SizedBox(
-                            //   height: height * 0.04,
-                            // ),
                             Center(
                               child: Text(
                                 "All Transactions",

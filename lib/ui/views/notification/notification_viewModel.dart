@@ -73,7 +73,7 @@ class NotificationViewModel extends BaseViewModel {
 
     /// add lender's info and update transaction status
     transaction.lenderInformation = LenderInformation(
-      contact: upiController.text.trim(),
+      contact: locator<UserDataProvider>().personalData!.contact.trim(),
       lenderReferralCode:
           locator<UserDataProvider>().platformData!.referralCode,
       lenderName: locator<UserDataProvider>().personalData!.name,
@@ -98,7 +98,7 @@ class NotificationViewModel extends BaseViewModel {
     paymentMethods.forEach((method) {
       if (locator<UserDataProvider>()
               .transactionData!
-              .paymentMethodsUsed[PaymentMethodsMap[method]!] ==
+              .paymentMethodsUsed[PaymentMethodsMap[method]] ==
           null) {
         locator<UserDataProvider>()
             .transactionData!
