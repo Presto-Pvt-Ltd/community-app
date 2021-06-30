@@ -23,6 +23,7 @@ Color textGreyShade = Color.fromARGB(102, 7, 14, 44);
 Color textHighlightLight = Colors.blue;
 Color inputFieldIconLight = Colors.black;
 Color inputFieldFocusedColorLight = Colors.white;
+Color shadowLight = Color(0xff070F2C).withOpacity(0.4);
 
 Color primaryDarkColor = Color(0xFF132776);
 Color authButtonColorDark = Color(0xff070F2C);
@@ -31,6 +32,5 @@ Color textGreyShadeDark = Color.fromARGB(102, 7, 14, 44);
 Color textHighlightDark = Colors.blue;
 Color inputFieldIconDark = Colors.black;
 Color inputFieldFocusedColorDark = Colors.white;
-
 
 Color neonGreen = Color(0xFF50C878);

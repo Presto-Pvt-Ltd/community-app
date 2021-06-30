@@ -3,6 +3,7 @@ import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.router.dart';
 import 'package:presto/ui/shared/colors.dart';
+import 'package:presto/ui/shared/ui_helpers.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:presto/ui/widgets/inputTextField.dart';
 import 'package:stacked/stacked.dart';
@@ -22,7 +23,10 @@ class LoginView extends StatelessWidget {
         return KeyboardDismisser(
           child: Scaffold(
             backgroundColor: Colors.white,
-            body: SafeArea(
+            body: Container(
+              height: height - MediaQuery.of(context).viewInsets.vertical,
+              width: width,
+              alignment: Alignment.center,
               child: Padding(
                 padding: EdgeInsets.only(
                   left: width * 0.05,
@@ -35,7 +39,7 @@ class LoginView extends StatelessWidget {
                       child: Text(
                         "Welcome Back",
                         style: TextStyle(
-                          fontSize: 44,
+                          fontSize: banner_font_size,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -46,7 +50,7 @@ class LoginView extends StatelessWidget {
                         Text(
                           "New to Presto?",
                           style: TextStyle(
-                            fontSize: 17,
+                            fontSize: default_normal_font_size,
                             color: Colors.black,
                           ),
                         ),
@@ -55,7 +59,7 @@ class LoginView extends StatelessWidget {
                           child: Text(
                             " Register ",
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: default_normal_font_size,
                               color: textHighlightLight,
                             ),
                           ),
@@ -73,10 +77,13 @@ class LoginView extends StatelessWidget {
                       controller: model.email,
                       validator: model.emailValidator,
                       fieldKey: model.emailFieldKey,
-                      hintText: "abc@xyz.com",
+                      hintText: "Mail",
                       helperText: "Enter your email here",
                       validationSuccessCallBack: model.onEmailValidationSuccess,
                       validationFailureCallBack: model.onEmailValidationFailure,
+                    ),
+                    SizedBox(
+                      height: height * 0.03,
                     ),
                     InputField(
                       prefixWidget: Icon(
@@ -108,7 +115,7 @@ class LoginView extends StatelessWidget {
                           Text(
                             "Forgot Password?",
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: default_normal_font_size,
                               color: textGreyShade,
                             ),
                           )
@@ -138,28 +145,24 @@ class LoginView extends StatelessWidget {
                     SizedBox(
                       height: height * 0.04,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      direction: Axis.horizontal,
                       children: <Widget>[
                         Text(
                           "Or build your own community! ",
                           style: TextStyle(
-                            fontSize: 17,
+                            fontSize: default_normal_font_size,
                             color: Colors.black,
                           ),
                         ),
                         Text(
                           "Become a",
                           style: TextStyle(
-                            fontSize: 17,
+                            fontSize: default_normal_font_size,
                             color: Colors.black,
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
                         GestureDetector(
                           onTap: () => model.navigateToRegister(
                             isRegistrationAsCommunityManager: true,
@@ -167,20 +170,13 @@ class LoginView extends StatelessWidget {
                           child: Text(
                             " Community Manager ",
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: default_normal_font_size,
                               color: textHighlightLight,
                             ),
                           ),
                         ),
-                        Text(
-                          "Now.",
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.black,
-                          ),
-                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

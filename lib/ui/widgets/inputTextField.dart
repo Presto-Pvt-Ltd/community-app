@@ -164,7 +164,7 @@ class _InputFieldState extends State<InputField> {
                 : widget.suffixWidget),
         errorText: error,
         hintText: widget.hintText,
-        helperText: validated == null ? widget.helperText : null,
+        helperText: validated == null ? null : null,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.transparent,

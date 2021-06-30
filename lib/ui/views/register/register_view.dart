@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:presto/ui/shared/colors.dart';
+import 'package:presto/ui/shared/ui_helpers.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:presto/ui/widgets/inputTextField.dart';
 import 'package:stacked/stacked.dart';
@@ -44,7 +45,7 @@ class RegisterView extends StatelessWidget {
                           child: Text(
                             "Create Account",
                             style: TextStyle(
-                              fontSize: 44,
+                              fontSize: banner_font_size,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -57,7 +58,7 @@ class RegisterView extends StatelessWidget {
                           Text(
                             "Already have an Account?",
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: default_normal_font_size,
                             ),
                           ),
                           GestureDetector(
@@ -65,7 +66,7 @@ class RegisterView extends StatelessWidget {
                             child: Text(
                               " Sign in",
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: default_normal_font_size,
                                 color: textHighlightLight,
                               ),
                             ),
@@ -85,7 +86,7 @@ class RegisterView extends StatelessWidget {
                           ),
                           validator: model.nameValidator,
                           fieldKey: model.nameFieldKey,
-                          hintText: "abc xyz",
+                          hintText: "Name",
                           helperText: "Enter your name here",
                           validationSuccessCallBack:
                               model.onNameValidationSuccess,
@@ -93,7 +94,9 @@ class RegisterView extends StatelessWidget {
                               model.onNameValidationFailure,
                         ),
                       ),
-
+                      SizedBox(
+                        height: height * 0.02,
+                      ),
                       Container(
                         width: width * 0.9,
                         child: InputField(
@@ -103,7 +106,7 @@ class RegisterView extends StatelessWidget {
                           ),
                           validator: model.emailValidator,
                           fieldKey: model.emailFieldKey,
-                          hintText: "abc@xyz.com",
+                          hintText: "Mail",
                           helperText: "Enter your email here",
                           validationSuccessCallBack:
                               model.onEmailValidationSuccess,
@@ -111,7 +114,9 @@ class RegisterView extends StatelessWidget {
                               model.onEmailValidationFailure,
                         ),
                       ),
-
+                      SizedBox(
+                        height: height * 0.02,
+                      ),
                       Container(
                         width: width * 0.9,
                         child: InputField(
@@ -121,7 +126,7 @@ class RegisterView extends StatelessWidget {
                           ),
                           validator: model.contactValidator,
                           fieldKey: model.contactFieldKey,
-                          hintText: "10 digit mobile Number",
+                          hintText: "Phone Number",
                           helperText: "Enter your mobile number here",
                           validationSuccessCallBack:
                               model.onContactValidationSuccess,
@@ -130,7 +135,9 @@ class RegisterView extends StatelessWidget {
                           keyboardType: TextInputType.number,
                         ),
                       ),
-
+                      SizedBox(
+                        height: height * 0.02,
+                      ),
                       Container(
                         width: width * 0.9,
                         child: InputField(
@@ -149,7 +156,9 @@ class RegisterView extends StatelessWidget {
                               model.onPasswordValidationFailure,
                         ),
                       ),
-
+                      SizedBox(
+                        height: height * 0.02,
+                      ),
                       Container(
                         width: width * 0.9,
                         child: InputField(
@@ -161,13 +170,15 @@ class RegisterView extends StatelessWidget {
                           fieldKey: model.referralCodeOrCommunityNameFieldKey,
                           hintText: model.isRegistrationAsCommunityManager
                               ? "New Community"
-                              : "ABC12390",
+                              : "Referral Code",
                           helperText: model.isRegistrationAsCommunityManager
                               ? "Enter your community name"
                               : "Enter your Referral Code",
                         ),
                       ),
-
+                      SizedBox(
+                        height: height * 0.02,
+                      ),
                       Container(
                         width: width * 0.9,
                         child: Row(
@@ -183,7 +194,7 @@ class RegisterView extends StatelessWidget {
                               'I Accept all the ',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 17,
+                                fontSize: default_normal_font_size,
                               ),
                             ),
                             InkWell(
@@ -191,7 +202,7 @@ class RegisterView extends StatelessWidget {
                                 'Terms and Conditions',
                                 style: TextStyle(
                                   color: textHighlightLight,
-                                  fontSize: 17,
+                                  fontSize: default_normal_font_size,
                                 ),
                               ),
                               onTap: () {
