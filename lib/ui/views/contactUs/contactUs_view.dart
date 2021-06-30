@@ -18,7 +18,9 @@ class ContactUsView extends StatelessWidget {
           child: SafeArea(
             child: Column(
               children: [
-                SizedBox(height: height*0.1,),
+                SizedBox(
+                  height: height * 0.1,
+                ),
                 Container(
                   alignment: Alignment.center,
                   child: Text(
@@ -50,7 +52,7 @@ class ContactUsView extends StatelessWidget {
                   ),
                   child: BusyButton(
                     textColor: Colors.white,
-                    buttonColor: primaryColor,
+                    buttonColor: primaryLightSwatch[900],
                     title: "Send",
                     busy: model.isBusy,
                     onPressed: model.sendMessage,

@@ -54,7 +54,7 @@ class ProfileView extends StatelessWidget {
                             //height: MediaQuery.of(context).size.height/4,
                             width: width,
                             decoration: BoxDecoration(
-                              color: primaryColor,
+                              color: primaryLightSwatch[900],
                               borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(width / 15),
                                   bottomRight: Radius.circular(width / 15)),
@@ -230,7 +230,7 @@ class ProfileView extends StatelessWidget {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: primaryColor,
+                            color: primaryLightSwatch[900],
                             borderRadius: BorderRadius.all(
                               Radius.circular(width / 15),
                             ),

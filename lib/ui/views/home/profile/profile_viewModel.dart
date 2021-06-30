@@ -155,7 +155,7 @@ class ProfileViewModel extends BaseViewModel {
                   ),
                   clipBehavior: Clip.hardEdge,
                   child: MaterialButton(
-                    color: primaryColor,
+                    color: primaryLightSwatch[900],
                     child: Text(
                       "Proceed",
                       style: TextStyle(

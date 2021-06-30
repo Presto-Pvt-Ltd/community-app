@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:presto/app/app.router.dart';
@@ -104,9 +105,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Presto',
       debugShowCheckedModeBanner: false,
+      darkTheme: ThemeData(),
       theme: ThemeData(
-        primarySwatch: primarySwatch,
-        primaryColor: primaryColor,
+        primarySwatch: primaryLightSwatch,
+        primaryColor: primaryLightColor,
+        textTheme: GoogleFonts.interTextTheme(),
       ),
       navigatorKey: StackedService.navigatorKey,
       onGenerateRoute: StackedRouter().onGenerateRoute,

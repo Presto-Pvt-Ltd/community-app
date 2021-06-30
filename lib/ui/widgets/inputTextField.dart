@@ -130,18 +130,29 @@ class _InputFieldState extends State<InputField> {
       obscureText: obscureText,
       focusNode: widget.focusNode,
       decoration: InputDecoration(
+        filled: true,
+        fillColor: inputFieldColorLight,
+        hoverColor: inputFieldColorLight,
+        focusColor: inputFieldFocusedColorLight,
         prefixIcon: widget.prefixWidget,
         suffixIcon: widget.shouldObscure
             ? (obscureText
                 ? IconButton(
-                    icon: Icon(Icons.visibility_off_rounded),
+                    icon: Icon(
+                      Icons.visibility_off_rounded,
+                      color: Colors.black,
+                    ),
                     onPressed: () {
                       setState(() {
                         obscureText = false;
                       });
-                    })
+                    },
+                  )
                 : IconButton(
-                    icon: Icon(Icons.visibility),
+                    icon: Icon(
+                      Icons.visibility,
+                      color: Colors.black,
+                    ),
                     onPressed: () {
                       setState(() {
                         obscureText = true;
@@ -156,22 +167,22 @@ class _InputFieldState extends State<InputField> {
         helperText: validated == null ? widget.helperText : null,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: primaryColor,
+            color: Colors.transparent,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: getBorderColor(validated),
+            color: Colors.transparent,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: widget.failure,
+            color: Colors.transparent,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: widget.failure,
+            color: Colors.transparent,
           ),
         ),
       ),

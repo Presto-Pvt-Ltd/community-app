@@ -43,7 +43,7 @@ class BorrowView extends StatelessWidget {
               body: model.isBusy
                   ? Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                        valueColor: AlwaysStoppedAnimation<Color>(primaryLightColor),
                       ),
                     )
                   : SingleChildScrollView(
@@ -55,7 +55,7 @@ class BorrowView extends StatelessWidget {
                             width: width,
                             height: height / 3.7,
                             decoration: BoxDecoration(
-                                color: primaryColor,
+                                color: primaryLightColor,
                                 borderRadius: BorderRadius.only(
                                     bottomRight: Radius.circular(width / 15),
                                     bottomLeft: Radius.circular(width / 15))),
@@ -159,10 +159,10 @@ class BorrowView extends StatelessWidget {
                               children: <Widget>[
                                 SliderTheme(
                                   data: SliderTheme.of(context).copyWith(
-                                    activeTrackColor: primaryColor,
+                                    activeTrackColor: primaryLightColor,
                                     inactiveTrackColor: Color(0xFF8D8E98),
                                     overlayColor: Color(0x29EB1555),
-                                    thumbColor: primaryColor,
+                                    thumbColor: primaryLightColor,
                                     thumbShape: RoundSliderThumbShape(
                                         enabledThumbRadius: height / 45),
                                     overlayShape: RoundSliderOverlayShape(
@@ -212,7 +212,7 @@ class BorrowView extends StatelessWidget {
                             width: width / 3,
                             title: "Get Paid!",
                             decoration: BoxDecoration(
-                              color: primaryColor,
+                              color: primaryLightColor,
                               borderRadius: BorderRadius.all(
                                   Radius.circular(width / 15.0)),
                             ),

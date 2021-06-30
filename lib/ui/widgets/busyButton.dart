@@ -51,7 +51,7 @@ class _BusyButtonState extends State<BusyButton> {
           )
         : Center(
             child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+            valueColor: AlwaysStoppedAnimation<Color>(primaryLightColor),
           ));
   }
 }

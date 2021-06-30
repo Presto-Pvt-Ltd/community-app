@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/views/home/profile/profile_view.dart';
 import 'package:presto/ui/views/home/allTransactions/all_transactions_view.dart';
@@ -130,9 +131,7 @@ class HomeView extends StatelessWidget {
         return model.isBusy
             ? Scaffold(
                 body: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                  ),
+                  child: loader,
                 ),
               )
             : Scaffold(
@@ -162,7 +161,7 @@ class HomeView extends StatelessWidget {
                   type: BottomNavigationBarType.fixed,
                   currentIndex: model.currentIndex,
                   onTap: model.setIndex,
-                  selectedItemColor: primaryColor,
+                  selectedItemColor: primaryLightColor,
                   items: model.isCM ? bottomListCM : bottomListRU,
                 ),
               );

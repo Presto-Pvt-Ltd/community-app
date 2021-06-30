@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presto/ui/shared/colors.dart';
+
 class AmountButton extends StatelessWidget {
   final String text;
   final Function onTap;
@@ -11,13 +12,15 @@ class AmountButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: GestureDetector(
-        onTap: (){onTap();},
+        onTap: () {
+          onTap();
+        },
         child: Container(
           height: height / 20,
           width: width / 5,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(width/17)),
-              color: primaryColor),
+              borderRadius: BorderRadius.all(Radius.circular(width / 17)),
+              color: primaryLightSwatch[900]),
           child: Center(
             child: Text(
               text,

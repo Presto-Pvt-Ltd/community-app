@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
+import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:stacked/stacked.dart';
 import '../../../models/enums.dart';
@@ -37,9 +38,7 @@ class NotificationView extends StatelessWidget {
         child: Scaffold(
           body: model.isBusy
               ? Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                  ),
+                  child: loader,
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +95,7 @@ class NotificationView extends StatelessWidget {
                     SizedBox(
                       width: width / 2,
                       child: Divider(
-                        color: primaryColor,
+                        color: primaryLightColor,
                         thickness: height / 100,
                       ),
                     ),

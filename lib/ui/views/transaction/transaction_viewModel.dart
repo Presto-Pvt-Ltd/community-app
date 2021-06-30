@@ -58,7 +58,7 @@ class TransactionViewModel extends BaseViewModel {
           !transaction.transactionStatus.borrowerSentMoney) {
         this.transactionStatus = "Your turn to pay back";
         this.buttonText = "Pay Back";
-        this.buttonColor = primaryColor;
+        this.buttonColor = primaryLightColor;
       } else if (transaction.transactionStatus.borrowerSentMoney &&
           !transaction.razorpayInformation.sentMoneyToLender) {
         this.transactionStatus = "Processing money";

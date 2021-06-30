@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presto/models/transactions/custom_transaction_data_model.dart';
+import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/views/transaction/transaction_viewModel.dart';
 import 'package:presto/ui/widgets/ListToken.dart';
@@ -28,9 +29,7 @@ class TransactionView extends StatelessWidget {
         return Scaffold(
           body: model.isBusy
               ? Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                  ),
+                  child: loader,
                 )
               : SafeArea(
                   child: Column(
@@ -45,7 +44,7 @@ class TransactionView extends StatelessWidget {
                           '₹ ${customTransaction.genericInformation.amount}',
                           style: TextStyle(
                             fontSize: height / 15,
-                            color: primaryColor,
+                            color: primaryLightColor,
                           ),
                         ),
                       ),
@@ -69,7 +68,7 @@ class TransactionView extends StatelessWidget {
                                           .lenderInformation!.lenderName ==
                                       null
                                   ? Colors.orangeAccent
-                                  : primaryColor,
+                                  : primaryLightColor,
                             ),
                           ),
                         ],

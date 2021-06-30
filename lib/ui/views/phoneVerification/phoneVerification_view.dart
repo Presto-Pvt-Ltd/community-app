@@ -60,7 +60,7 @@ class PhoneVerificationView extends StatelessWidget {
                       ),
                       clipBehavior: Clip.hardEdge,
                       child: MaterialButton(
-                        color: primaryColor,
+                        color: primaryLightSwatch[900],
                         child: Text(
                           "Confirm",
                           style: TextStyle(
@@ -97,7 +97,7 @@ class PhoneVerificationView extends StatelessWidget {
                       'Verification Code',
                       style: TextStyle(
                         fontSize: height / 20,
-                        color: primaryColor,
+                        color: primaryLightSwatch[900],
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -131,12 +131,12 @@ class PhoneVerificationView extends StatelessWidget {
                         cursorColor: Colors.black,
                         animationType: AnimationType.fade,
                         pinTheme: PinTheme(
-                          activeFillColor: primarySwatch[400],
-                          selectedFillColor: primarySwatch[200],
+                          activeFillColor: primaryLightSwatch[400],
+                          selectedFillColor: primaryLightSwatch[200],
                           inactiveColor: Colors.white,
                           activeColor: Colors.white,
-                          selectedColor: primarySwatch[200],
-                          inactiveFillColor: primarySwatch[400],
+                          selectedColor: primaryLightSwatch[200],
+                          inactiveFillColor: primaryLightSwatch[400],
                           fieldHeight: height / 15,
                         ),
                         animationDuration: Duration(milliseconds: 300),
@@ -155,7 +155,7 @@ class PhoneVerificationView extends StatelessWidget {
                     BusyButton(
                       width: width * 0.5,
                       decoration: BoxDecoration(
-                        color: primaryColor,
+                        color: primaryLightSwatch[900],
                         borderRadius: BorderRadius.all(
                           Radius.circular(15),
                         ),
