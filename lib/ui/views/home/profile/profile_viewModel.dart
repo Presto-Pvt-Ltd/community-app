@@ -92,29 +92,7 @@ class ProfileViewModel extends BaseViewModel {
         );
   }
 
-  void goToMyReferees() async {
-    setBusy(true);
-    var value = await locator<ProfileDataHandler>().getProfileData(
-      typeOfData: ProfileDocument.userPlatformData,
-      userId: locator<UserDataProvider>().platformData!.referralCode,
-      fromLocalDatabase: false,
-    );
-    PlatformData platformData = PlatformData.fromJson(value);
-    locator<UserDataProvider>().platformData = platformData;
-    locator<ProfileDataHandler>().updateProfileData(
-      data: platformData.toJson(),
-      typeOfDocument: ProfileDocument.userPlatformData,
-      userId: locator<UserDataProvider>().platformData!.referralCode,
-      toLocalDatabase: true,
-    );
-    locator<UserDataProvider>().platformData = platformData;
-    locator<NavigationService>().navigateTo(Routes.refereesView);
-    setBusy(false);
-  }
 
-  void goToContactUs() {
-    locator<NavigationService>().navigateTo(Routes.contactUsView);
-  }
 
   void redeemCode(double height, double width) {
     try {

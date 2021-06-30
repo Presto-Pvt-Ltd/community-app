@@ -225,6 +225,9 @@ class RegisterView extends StatelessWidget {
                       BusyButton(
                         height: height / 13,
                         width: width * 0.5,
+                        fontSize:
+                            (default_normal_font_size + default_big_font_size) /
+                                2,
                         textColor: Colors.white,
                         decoration: BoxDecoration(
                           color: authButtonColorLight,

@@ -11,6 +11,7 @@ class BusyButton extends StatefulWidget {
   final double? width;
   final Color? buttonColor;
   final Color? textColor;
+  final double? fontSize;
   final BoxDecoration? decoration;
   BusyButton({
     Key? key,
@@ -18,6 +19,7 @@ class BusyButton extends StatefulWidget {
     required this.title,
     this.onPressed,
     this.enabled = true,
+    this.fontSize,
     this.width,
     this.height,
     this.buttonColor,
@@ -43,7 +45,7 @@ class _BusyButtonState extends State<BusyButton> {
               child: Text(
                 widget.title,
                 style: TextStyle(
-                  fontSize: 19,
+                  fontSize: widget.fontSize ?? 19,
                   color: widget.textColor,
                 ),
               ),

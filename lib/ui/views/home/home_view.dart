@@ -1,6 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:presto/app/app.locator.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/shared/ui_helpers.dart';
@@ -14,6 +16,8 @@ import 'lend/lend_view.dart';
 // ignore: must_be_immutable
 class HomeView extends StatelessWidget {
   int index;
+  final GlobalKey<ScaffoldState> scaffoldKey =
+      GlobalKey<ScaffoldState>(debugLabel: "RootScaffold");
   HomeView({Key? key, this.index = 1}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -23,6 +27,8 @@ class HomeView extends StatelessWidget {
         model.onModelReady(index);
       },
       builder: (context, model, child) {
+        double height = MediaQuery.of(context).size.height;
+        double width = MediaQuery.of(context).size.width;
         Widget getViewForIndexRU(int index) {
           switch (index) {
             case 0:
@@ -175,7 +181,7 @@ class HomeView extends StatelessWidget {
               case 0:
                 return "Home";
               case 1:
-                return "";
+                return "Amount Demanded";
               case 2:
                 return "Transaction History";
               case 3:
@@ -185,37 +191,47 @@ class HomeView extends StatelessWidget {
             }
         }
 
-        return model.isBusy
-            ? Scaffold(
-                body: Center(
-                  child: loader,
-                ),
-              )
-            : Scaffold(
-                appBar: AppBar(
+        return Scaffold(
+          key: scaffoldKey,
+          drawerEnableOpenDragGesture: false,
+          appBar: model.isBusy
+              ? null
+              : AppBar(
+                centerTitle:  !model.isCM && model.currentIndex == 1 ? true : false,
                   elevation: 0.0,
-                  backgroundColor: Colors.white,
+                  backgroundColor: !model.isCM && model.currentIndex == 1
+                      ? primaryLightColor
+                      : Colors.white,
                   title: Text(
                     getTitleForIndex(model.currentIndex),
                     style: TextStyle(
                       fontSize: default_headers,
-                      color: authButtonColorLight,
+                      color: !model.isCM && model.currentIndex == 1
+                          ? Colors.white
+                          : authButtonColorLight,
                     ),
                   ),
                   actions: model.currentIndex == 0
                       ? <Widget>[
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              print("helloo mujhe dabaing");
+                              scaffoldKey.currentState?.openEndDrawer();
+                            },
                             icon: Icon(
                               Icons.account_circle_outlined,
                               color: authButtonColorLight,
-                              size: bottom_nav_icon_size_expanded,
+                              size: actions_icon_size,
                             ),
                           ),
                         ]
                       : null,
                 ),
-                body: RefreshIndicator(
+          body: model.isBusy
+              ? Center(
+                  child: loader,
+                )
+              : RefreshIndicator(
                   onRefresh: model.refresh,
                   child: PageTransitionSwitcher(
                     duration: const Duration(milliseconds: 1000),
@@ -237,14 +253,113 @@ class HomeView extends StatelessWidget {
                         : getViewForIndexRU(model.currentIndex),
                   ),
                 ),
-                bottomNavigationBar: BottomNavigationBar(
+          bottomNavigationBar: model.isBusy
+              ? null
+              : BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
                   currentIndex: model.currentIndex,
                   onTap: model.setIndex,
                   selectedItemColor: primaryLightColor,
                   items: model.isCM ? bottomListCM : bottomListRU,
                 ),
-              );
+          endDrawerEnableOpenDragGesture: false,
+          endDrawer: model.isBusy
+              ? null
+              : model.currentIndex == 0
+                  ? Container(
+                      width: width * 0.5,
+                      child: Drawer(
+                        child: Container(
+                          color: primaryLightColor,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                height: height * 0.1,
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.account_circle,
+                                  color: Colors.white,
+                                  size: banner_font_size,
+                                ),
+                                title: Text(
+                                  locator<UserDataProvider>()
+                                      .personalData!
+                                      .name,
+                                  style: TextStyle(
+                                    fontSize: default_normal_font_size,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: height * 0.05,
+                              ),
+                              ListTile(
+                                dense: true,
+                                title: Text(
+                                  "Profile",
+                                  style: TextStyle(
+                                    fontSize: default_normal_font_size,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  model.goToProfileDetails();
+                                },
+                              ),
+                              ListTile(
+                                dense: true,
+                                title: Text(
+                                  "Invitees List",
+                                  style: TextStyle(
+                                    fontSize: default_normal_font_size,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  model.goToMyReferees();
+                                },
+                              ),
+                              ListTile(
+                                dense: true,
+                                title: Text(
+                                  "Dark Mode",
+                                  style: TextStyle(
+                                    fontSize: default_normal_font_size,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                dense: true,
+                                title: Text(
+                                  "Contact Us",
+                                  style: TextStyle(
+                                    fontSize: default_normal_font_size,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  model.goToContactUs();
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : null,
+        );
       },
     );
   }

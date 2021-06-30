@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/widgets/transactionCard.dart';
 import 'package:stacked/stacked.dart';
 import '../../../../app/app.router.dart';
@@ -35,83 +36,44 @@ class AllTransactionsView extends StatelessWidget {
             }
             print('end');
           },
-          child: Scaffold(
-            body: model.isBusy
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : SafeArea(
-                    child: Scaffold(
-                      body: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
-                            Center(
-                              child: Text(
-                                "All Transactions",
-                                style: TextStyle(
-                                    fontSize: height * 0.045,
-                                    color: Colors.black),
+          child: model.isBusy
+              ? Center(
+                  child: loader,
+                )
+              : model.transactions.length == 0
+                  ? Text(
+                      "No Transactions to Display",
+                      style: TextStyle(
+                          fontSize: height * 0.022, color: Colors.black),
+                    )
+                  : ListView.builder(
+                      itemCount: model.transactions.length,
+                      itemBuilder: (context, index) {
+                        return mixedCard(
+                          transaction: model.transactions[
+                              model.transactions.length - 1 - index],
+                          key: Key(
+                            model
+                                .transactions[
+                                    model.transactions.length - 1 - index]
+                                .genericInformation
+                                .transactionId,
+                          ),
+                          height: height,
+                          width: width,
+                          onTap: () {
+                            model.navigationService.navigateTo(
+                              Routes.transactionView,
+                              arguments: TransactionViewArguments(
+                                customTransaction: model.transactions[
+                                    model.transactions.length - 1 - index],
                               ),
-                            ),
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
-                            Container(
-                              height: height * 0.745,
-                              child: model.transactions.length == 0
-                                  ? Text(
-                                      "No Transactions to Display",
-                                      style: TextStyle(
-                                          fontSize: height * 0.022,
-                                          color: Colors.black),
-                                    )
-                                  : ListView.builder(
-                                      itemCount: model.transactions.length,
-                                      itemBuilder: (context, index) {
-                                        return mixedCard(
-                                          transaction: model.transactions[
-                                              model.transactions.length -
-                                                  1 -
-                                                  index],
-                                          key: Key(
-                                            model
-                                                .transactions[
-                                                    model.transactions.length -
-                                                        1 -
-                                                        index]
-                                                .genericInformation
-                                                .transactionId,
-                                          ),
-                                          height: height,
-                                          width: width,
-                                          onTap: () {
-                                            model.navigationService.navigateTo(
-                                              Routes.transactionView,
-                                              arguments:
-                                                  TransactionViewArguments(
-                                                customTransaction: model
-                                                        .transactions[
-                                                    model.transactions.length -
-                                                        1 -
-                                                        index],
-                                              ),
-                                            );
-                                            print("Mujhe dabaya gaya hai");
-                                          },
-                                        );
-                                      },
-                                    ),
-                            ),
-                          ],
-                        ),
-                      ),
+                            );
+                            print("Mujhe dabaya gaya hai");
+                          },
+                        );
+                      },
                     ),
-                  ),
-          ),
         );
       },
     );

@@ -1,8 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:presto/app/app.logger.dart';
 import 'package:presto/models/limits/reward_limit_model.dart';
 import 'package:presto/models/limits/transaction_limit_model.dart';
 import 'package:presto/models/user/notification_data_model.dart';
+import 'package:presto/models/user/platform_data_model.dart';
 import 'package:presto/services/database/dataHandlers/communityTreeDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/limitsDataHandler.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
@@ -32,6 +34,34 @@ class HomeViewModel extends IndexTrackingViewModel {
   final TransactionsDataProvider _transactionsDataProvider =
       locator<TransactionsDataProvider>();
 
+  void goToMyReferees() async {
+    setBusy(true);
+    var value = await locator<ProfileDataHandler>().getProfileData(
+      typeOfData: ProfileDocument.userPlatformData,
+      userId: locator<UserDataProvider>().platformData!.referralCode,
+      fromLocalDatabase: false,
+    );
+    PlatformData platformData = PlatformData.fromJson(value);
+    locator<UserDataProvider>().platformData = platformData;
+    locator<ProfileDataHandler>().updateProfileData(
+      data: platformData.toJson(),
+      typeOfDocument: ProfileDocument.userPlatformData,
+      userId: locator<UserDataProvider>().platformData!.referralCode,
+      toLocalDatabase: true,
+    );
+    locator<UserDataProvider>().platformData = platformData;
+    locator<NavigationService>().navigateTo(Routes.refereesView);
+    setBusy(false);
+  }
+
+  void goToContactUs() {
+    locator<NavigationService>().navigateTo(Routes.contactUsView);
+  }
+
+  void goToProfileDetails() {
+    locator<NavigationService>().navigateTo(Routes.profileDetailsView);
+  }
+
   Future<void> refresh() async {
     locator<UserDataProvider>().dispose();
     locator<TransactionsDataProvider>().dispose();
@@ -42,7 +72,9 @@ class HomeViewModel extends IndexTrackingViewModel {
       onModelReady(1);
   }
 
-  Future<void> onModelReady(int index) async {
+  Future<void> onModelReady(
+    int index,
+  ) async {
     setBusy(true);
     await locator<HiveDatabaseService>()
         .openBox(uid: locator<AuthenticationService>().uid!)

@@ -263,5 +263,7 @@ class AllTransactionsViewModel extends BaseViewModel {
           setBusy(false);
         }
       });
+
+    setBusy(false);
   }
 }

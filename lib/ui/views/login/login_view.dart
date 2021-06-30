@@ -129,6 +129,7 @@ class LoginView extends StatelessWidget {
                       height: height / 14,
                       width: width * 0.4,
                       textColor: Colors.white,
+                       fontSize: (default_normal_font_size + default_big_font_size)/2,
                       decoration: BoxDecoration(
                         color: authButtonColorLight,
                         borderRadius: BorderRadius.all(

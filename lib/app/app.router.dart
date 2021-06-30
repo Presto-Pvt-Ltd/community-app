@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
+import 'package:presto/ui/views/profileDetails/profileDetailsView.dart';
 import 'package:stacked/stacked.dart';
 
 import '../models/notification/notification_data_model.dart';
@@ -37,6 +38,7 @@ class Routes {
   static const String refereesView = '/referees-view';
   static const String forgetPasswordView = '/forget-password-view';
   static const String contactUsView = '/contact-us-view';
+  static const String profileDetailsView = '/profile-details-view';
   static const all = <String>{
     startUpView,
     dummyView,
@@ -50,6 +52,7 @@ class Routes {
     refereesView,
     forgetPasswordView,
     contactUsView,
+    profileDetailsView,
   };
 }
 
@@ -69,6 +72,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.refereesView, page: RefereesView),
     RouteDef(Routes.forgetPasswordView, page: ForgetPasswordView),
     RouteDef(Routes.contactUsView, page: ContactUsView),
+    RouteDef(Routes.profileDetailsView, page: ProfileDetailsView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -168,6 +172,12 @@ class StackedRouter extends RouterBase {
     ContactUsView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const ContactUsView(),
+        settings: data,
+      );
+    },
+    ProfileDetailsView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const ProfileDetailsView(),
         settings: data,
       );
     },

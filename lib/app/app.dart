@@ -18,6 +18,7 @@ import 'package:presto/ui/views/login/login_view.dart';
 import 'package:presto/ui/views/no-internet/no-internet_view.dart';
 import 'package:presto/ui/views/notification/notification_view.dart';
 import 'package:presto/ui/views/phoneVerification/phoneVerification_view.dart';
+import 'package:presto/ui/views/profileDetails/profileDetailsView.dart';
 import 'package:presto/ui/views/referees/referees_view.dart';
 import 'package:presto/ui/views/register/register_view.dart';
 import 'package:presto/ui/views/startup/startup_view.dart';
@@ -39,6 +40,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: RefereesView),
     MaterialRoute(page: ForgetPasswordView),
     MaterialRoute(page: ContactUsView),
+    MaterialRoute(page: ProfileDetailsView),
   ],
   dependencies: [
     /// Stacked Services
