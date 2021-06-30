@@ -25,6 +25,9 @@ class AllTransactionsViewModel extends BaseViewModel {
           <CustomTransaction>[];
   List<CustomTransaction> activeTransactions = <CustomTransaction>[];
   late void Function(bool) callback;
+  double amountBorrowed = 0.0;
+  double amountLent = 0.0;
+
   bool gotData = false;
   void onModelReady(void Function(bool) callback) {
     setBusy(true);
@@ -37,6 +40,16 @@ class AllTransactionsViewModel extends BaseViewModel {
       transactions.forEach((transaction) {
         log.wtf(jsonEncode(transaction));
         i++;
+        if (transaction.transactionStatus.approvedStatus) {
+          if (transaction.transactionStatus.lenderSentMoney &&
+              !transaction.transactionStatus.borrowerSentMoney) {
+            if (transaction.borrowerInformation.borrowerReferralCode ==
+                locator<UserDataProvider>().platformData!.referralCode)
+              amountBorrowed += transaction.genericInformation.amount;
+            else
+              amountLent += transaction.genericInformation.amount;
+          }
+        }
 
         /// Check if borrower have not sent money
         /// Borrower is not penalised

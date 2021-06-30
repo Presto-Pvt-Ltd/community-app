@@ -1,5 +1,5 @@
 const double default_helper_font_size = 14;
-const double default_headers = 24;
+const double default_headers = 29;
 const double default_normal_font_size = 16;
 const double default_small_font_size = 10;
 const double default_big_font_size = 20;

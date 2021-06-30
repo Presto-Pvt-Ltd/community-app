@@ -205,7 +205,7 @@ class HomeView extends StatelessWidget {
                   title: Text(
                     getTitleForIndex(model.currentIndex),
                     style: TextStyle(
-                      fontSize: default_headers,
+                      fontSize: default_headers ,
                       color: !model.isCM && model.currentIndex == 1
                           ? Colors.white
                           : authButtonColorLight,

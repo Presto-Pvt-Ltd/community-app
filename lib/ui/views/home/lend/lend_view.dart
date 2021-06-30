@@ -36,86 +36,89 @@ class LendView extends StatelessWidget {
             print('end');
           },
           child: model.dataReady || !model.isBusy
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: height * 0.04,
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        'All Notifications',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: height * 0.045,
+              ? Container(
+                color: Colors.white,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: height * 0.04,
+                      ),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          'All Notifications',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: height * 0.045,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: height * 0.033,
-                    ),
-                    model.notifications.length == 0
-                        ? Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              'No new notifications',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: height * 0.022,
+                      SizedBox(
+                        height: height * 0.033,
+                      ),
+                      model.notifications.length == 0
+                          ? Align(
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                'No new notifications',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: height * 0.022,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              height: height * 0.6,
+                              child: ListView.builder(
+                                itemCount: model.notifications.length,
+                                itemBuilder: (context, index) {
+                                  return notificationCard(
+                                      // paymentOptions: model
+                                      //     .notifications[index]
+                                      //     .paymentMethods,
+                                      amount: model.notifications[index].amount
+                                          .toString(),
+                                      score: model
+                                          .notifications[index].borrowerRating
+                                          .toStringAsPrecision(3),
+                                      height: height,
+                                      width: width,
+                                      handShakeCallBack: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          builder: (context) => paymentSheet(
+                                            customNotification:
+                                                model.notifications[index],
+                                            height: height,
+                                            width: width,
+                                            onCompleteCallBack:
+                                                model.initiateTransaction,
+                                            onCancel: model.cancel,
+                                          ),
+                                        );
+                                        print("Trying handshake");
+                                      },
+                                      onTap: () {
+                                        model.navigationService.navigateTo(
+                                          Routes.notificationView,
+                                          arguments: NotificationViewArguments(
+                                              notification:
+                                                  model.notifications[index],
+                                              deleteNotificationCallBack:
+                                                  model.deleteNotification),
+                                        );
+                                        print('Mujhe Dabaya Gaya Hai');
+                                      });
+                                },
                               ),
                             ),
-                          )
-                        : Container(
-                            height: height * 0.6,
-                            child: ListView.builder(
-                              itemCount: model.notifications.length,
-                              itemBuilder: (context, index) {
-                                return notificationCard(
-                                    // paymentOptions: model
-                                    //     .notifications[index]
-                                    //     .paymentMethods,
-                                    amount: model.notifications[index].amount
-                                        .toString(),
-                                    score: model
-                                        .notifications[index].borrowerRating
-                                        .toStringAsPrecision(3),
-                                    height: height,
-                                    width: width,
-                                    handShakeCallBack: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        builder: (context) => paymentSheet(
-                                          customNotification:
-                                              model.notifications[index],
-                                          height: height,
-                                          width: width,
-                                          onCompleteCallBack:
-                                              model.initiateTransaction,
-                                          onCancel: model.cancel,
-                                        ),
-                                      );
-                                      print("Trying handshake");
-                                    },
-                                    onTap: () {
-                                      model.navigationService.navigateTo(
-                                        Routes.notificationView,
-                                        arguments: NotificationViewArguments(
-                                            notification:
-                                                model.notifications[index],
-                                            deleteNotificationCallBack:
-                                                model.deleteNotification),
-                                      );
-                                      print('Mujhe Dabaya Gaya Hai');
-                                    });
-                              },
-                            ),
-                          ),
-                    // notificationListCard( , height, width),
-                  ],
-                )
+                      // notificationListCard( , height, width),
+                    ],
+                  ),
+              )
               : Center(
                   child: CircularProgressIndicator(),
                 ),

@@ -243,7 +243,7 @@ class ProfileView extends StatelessWidget {
                             width: width * 0.37,
                             child: Center(
                               child: Text(
-                                "Invite (${(locator<LimitsDataProvider>().referralLimit?.refereeLimit ?? 15) - (locator<UserDataProvider>().platformData?.referredTo?.length ?? 0)})",
+                                "Invite (${(locator<LimitsDataProvider>().referralLimit?.refereeLimit ?? 15) - (locator<UserDataProvider>().platformData?.referredTo.length ?? 0)})",
                                 style: TextStyle(
                                   fontSize: (default_big_font_size +
                                           default_normal_font_size) /

@@ -27,6 +27,11 @@ class TransactionViewModel extends BaseViewModel {
   late String transactionStatus;
   late Color buttonColor;
   late final CustomTransaction transaction;
+
+  void pop() {
+    locator<NavigationService>().back();
+  }
+
   void onModelReady(CustomTransaction transaction) {
     this.transaction = transaction;
     this.isBorrowed = transaction.borrowerInformation.borrowerReferralCode ==
@@ -34,7 +39,7 @@ class TransactionViewModel extends BaseViewModel {
     this.isTransactionIncomplete =
         transaction.razorpayInformation.sentMoneyToBorrower &&
             transaction.razorpayInformation.sentMoneyToLender;
-    this.buttonColor = Colors.grey;
+    this.buttonColor = primaryLightColor.withOpacity(0.4);
     this.buttonText = "In Process";
     this.transactionStatus = "Searching for Lenders";
     int hours = locator<LimitsDataProvider>()
@@ -47,22 +52,31 @@ class TransactionViewModel extends BaseViewModel {
         .difference(transaction.genericInformation.initiationAt)
         .inMinutes;
     if (this.isBorrowed) {
+      log.v("Borrowed");
       if (minutesPassed >= (minutes + (hours * 60))) {
-        this.buttonText = "No Lenders Found";
-        this.transactionStatus = "Failed";
+        if (!transaction.transactionStatus.lenderSentMoney) {
+          log.v("Failed");
+          this.buttonText = "No Lenders Found";
+          this.transactionStatus = "Failed";
+          return;
+        }
       }
       if (!transaction.razorpayInformation.sentMoneyToBorrower &&
           transaction.transactionStatus.lenderSentMoney) {
+        log.v("In Process");
         this.transactionStatus = "Processing money";
       } else if (transaction.razorpayInformation.sentMoneyToBorrower &&
           !transaction.transactionStatus.borrowerSentMoney) {
+        log.v("Pay Back");
         this.transactionStatus = "Your turn to pay back";
         this.buttonText = "Pay Back";
         this.buttonColor = primaryLightColor;
       } else if (transaction.transactionStatus.borrowerSentMoney &&
           !transaction.razorpayInformation.sentMoneyToLender) {
+        log.v("In Process");
         this.transactionStatus = "Processing money";
       } else {
+        log.v("Success");
         this.transactionStatus = "Success";
         this.buttonText = "Paid Back";
       }

@@ -24,6 +24,7 @@ Color textHighlightLight = Colors.blue;
 Color inputFieldIconLight = Colors.black;
 Color inputFieldFocusedColorLight = Colors.white;
 Color shadowLight = Color(0xff070F2C).withOpacity(0.4);
+Color blue98 = Color.fromRGBO(246, 248, 254, 1);
 
 Color primaryDarkColor = Color(0xFF132776);
 Color authButtonColorDark = Color(0xff070F2C);
