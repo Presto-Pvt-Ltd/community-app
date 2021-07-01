@@ -14,6 +14,7 @@ class NoInternetView extends StatelessWidget {
       builder: (context, model, child) {
         return Scaffold(
           appBar: AppBar(
+            toolbarHeight: 60,
             title: Text("Error"),
           ),
           body: Center(

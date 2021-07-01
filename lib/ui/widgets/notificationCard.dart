@@ -81,7 +81,7 @@ Widget notificationCard({
                           'Lend',
                           style: TextStyle(
                             fontSize: default_normal_font_size,
-                            color: Colors.white,
+                            color: busyButtonTextColorLight,
                           ),
                         ),
                       ),

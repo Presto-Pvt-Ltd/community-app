@@ -29,7 +29,8 @@ class TransactionView extends StatelessWidget {
       builder: (context, model, child) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            toolbarHeight: 60,
+            backgroundColor: backgroundColorLight,
             elevation: 0.0,
             leading: GestureDetector(
               onTap: () {
@@ -55,7 +56,7 @@ class TransactionView extends StatelessWidget {
                 )
               : Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
-                  color: Colors.white,
+                  color: backgroundColorLight,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -206,7 +207,7 @@ class TransactionView extends StatelessWidget {
                                 model.initiateTransaction();
                               }
                             : null,
-                        textColor: Colors.white,
+                        textColor: busyButtonTextColorLight,
                       ),
                     ],
                   ),

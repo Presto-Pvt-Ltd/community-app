@@ -11,6 +11,10 @@ class ContactUsViewModel extends BaseViewModel {
 
   final TextEditingController message = TextEditingController();
 
+  void pop() {
+    locator<NavigationService>().back();
+  }
+
   void sendMessage() async {
     try {
       setBusy(true);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:presto/ui/shared/colors.dart';
+import 'package:presto/ui/shared/ui_helpers.dart';
 import 'package:presto/ui/widgets/busyButton.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -29,22 +30,34 @@ class PhoneVerificationView extends StatelessWidget {
               context: StackedService.navigatorKey!.currentContext!,
               builder: (context) {
                 return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15.0),
+                    ),
+                  ),
                   title: Text(
                     "Check!!",
+                    style: TextStyle(
+                      fontSize: default_big_font_size,
+                    ),
                   ),
                   content: Text(
                     "Are you sure you don't want to continue?",
+                    style: TextStyle(
+                      fontSize: default_normal_font_size,
+                    ),
                   ),
                   actions: [
                     Container(
                       height: height * 0.05,
                       width: width * 0.22,
-                      color: Colors.white24,
+                      color: primaryLightColor,
                       child: MaterialButton(
                         child: Text(
                           "Cancel",
                           style: TextStyle(
                             color: Colors.black,
+                            fontSize: default_normal_font_size,
                           ),
                         ),
                         onPressed: () {
@@ -60,11 +73,11 @@ class PhoneVerificationView extends StatelessWidget {
                       ),
                       clipBehavior: Clip.hardEdge,
                       child: MaterialButton(
-                        color: primaryLightSwatch[900],
                         child: Text(
                           "Confirm",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: primaryLightColor,
+                            fontSize: default_normal_font_size,
                           ),
                         ),
                         onPressed: () {
@@ -86,6 +99,7 @@ class PhoneVerificationView extends StatelessWidget {
           },
           child: SafeArea(
             child: Scaffold(
+              backgroundColor: backgroundColorLight,
               body: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -133,8 +147,8 @@ class PhoneVerificationView extends StatelessWidget {
                         pinTheme: PinTheme(
                           activeFillColor: primaryLightSwatch[400],
                           selectedFillColor: primaryLightSwatch[200],
-                          inactiveColor: Colors.white,
-                          activeColor: Colors.white,
+                          inactiveColor: busyButtonTextColorLight,
+                          activeColor: busyButtonTextColorLight,
                           selectedColor: primaryLightSwatch[200],
                           inactiveFillColor: primaryLightSwatch[400],
                           fieldHeight: height / 15,
@@ -160,7 +174,7 @@ class PhoneVerificationView extends StatelessWidget {
                           Radius.circular(15),
                         ),
                       ),
-                      textColor: Colors.white,
+                      textColor: busyButtonTextColorLight,
                       title: "Verify",
                       height: height / 13,
                       busy: model.isBusy,

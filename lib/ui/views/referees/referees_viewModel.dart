@@ -4,6 +4,7 @@ import 'package:presto/models/user/platform_ratings_data.dart';
 import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class RefereesViewModel extends BaseViewModel {
   final log = getLogger("RefereesViewModel");
@@ -39,6 +40,10 @@ class RefereesViewModel extends BaseViewModel {
       setBusy(false);
       notifyListeners();
     });
+  }
+
+  void pop() {
+    locator<NavigationService>().back();
   }
 }
 

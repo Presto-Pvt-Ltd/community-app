@@ -191,7 +191,7 @@ class NotificationView extends StatelessWidget {
                                 child: Text(
                                   'Accept',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: busyButtonTextColorLight,
                                     fontSize: (default_big_font_size +
                                             default_headers) /
                                         2,

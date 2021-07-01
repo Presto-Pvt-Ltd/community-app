@@ -6,16 +6,20 @@ import '../../../app/app.locator.dart';
 import '../../../app/app.logger.dart';
 import '../../../services/authentication.dart';
 
-class ForgotPasswordViewModel extends BaseViewModel{
+class ForgotPasswordViewModel extends BaseViewModel {
   final log = getLogger("ForgotPasswordView");
   final NavigationService _navigationService = locator<NavigationService>();
   final AuthenticationService _authenticationService =
-  locator<AuthenticationService>();
+      locator<AuthenticationService>();
   String finalEmail = '';
 
   final TextEditingController email = TextEditingController();
   final Key emailFieldKey = Key("email");
   bool emailValidated = false;
+  void pop() {
+    locator<NavigationService>().back();
+  }
+
   Future<String?> emailValidator(String? email) async {
     if (RegExp(
       r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
@@ -41,7 +45,7 @@ class ForgotPasswordViewModel extends BaseViewModel{
     print("Not ready to go with email");
   }
 
-  void onPressingGetLink(){
+  void onPressingGetLink() {
     _authenticationService.sendResetPasswordLink(email: finalEmail);
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presto/models/enums.dart';
+import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/paymentCard.dart';
 
 Widget paymentSheet({
@@ -27,9 +28,11 @@ Widget paymentSheet({
     builder: (context, controller) {
       return Container(
         decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius:
-                BorderRadius.vertical(top: Radius.circular(width / 15))),
+          color: backgroundColorLight,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(width / 15),
+          ),
+        ),
         child: ListView(
           controller: controller,
           children: <Widget>[
@@ -65,7 +68,7 @@ Widget paymentSheet({
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
+                  padding: const EdgeInsets.only(right: 20.0),
                   child: Align(
                     alignment: Alignment.topRight,
                     child: GestureDetector(

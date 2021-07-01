@@ -26,7 +26,7 @@ class RegisterView extends StatelessWidget {
       builder: (context, model, child) {
         return KeyboardDismisser(
           child: Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor:backgroundColorLight,
             body: Container(
               height: height - MediaQuery.of(context).viewInsets.vertical,
               width: width,
@@ -228,7 +228,7 @@ class RegisterView extends StatelessWidget {
                         fontSize:
                             (default_normal_font_size + default_big_font_size) /
                                 2,
-                        textColor: Colors.white,
+                        textColor: busyButtonTextColorLight,
                         decoration: BoxDecoration(
                           color: authButtonColorLight,
                           borderRadius: BorderRadius.all(

@@ -22,7 +22,7 @@ class LoginView extends StatelessWidget {
       builder: (context, model, child) {
         return KeyboardDismisser(
           child: Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: backgroundColorLight,
             body: Container(
               height: height - MediaQuery.of(context).viewInsets.vertical,
               width: width,
@@ -128,7 +128,7 @@ class LoginView extends StatelessWidget {
                     BusyButton(
                       height: height / 14,
                       width: width * 0.4,
-                      textColor: Colors.white,
+                      textColor: busyButtonTextColorLight,
                        fontSize: (default_normal_font_size + default_big_font_size)/2,
                       decoration: BoxDecoration(
                         color: authButtonColorLight,

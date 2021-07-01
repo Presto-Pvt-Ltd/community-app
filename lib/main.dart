@@ -110,6 +110,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: primaryLightSwatch,
         primaryColor: primaryLightColor,
         textTheme: GoogleFonts.interTextTheme(),
+        backgroundColor:backgroundColorLight,
       ),
       navigatorKey: StackedService.navigatorKey,
       onGenerateRoute: StackedRouter().onGenerateRoute,

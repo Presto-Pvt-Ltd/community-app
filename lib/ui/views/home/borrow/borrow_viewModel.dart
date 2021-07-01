@@ -190,72 +190,33 @@ class BorrowViewModel extends BaseViewModel {
     }
     log.wtf("Sheet please");
     if (amount != 0)
-      showDialog(
-        barrierDismissible: false,
-        context: StackedService.navigatorKey!.currentContext!,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Confirmation"),
-            content: Text(
-              "Are you sure you want to borrow and amount of \u20B9 $amount",
+      showCustomConfirmationDialog(
+        confirmTitle: "YES",
+        cancelTitle: "NO",
+        title: "Confirmation",
+        description:
+            "Are you sure you want to borrow and amount of \u20B9 $amount",
+        cancelCallback: () {
+          inProcess = false;
+          notifyListeners();
+        },
+        confirmCallback: () {
+          /// ask for upi ID
+          //print("Confirm CallBack");
+          showModalBottomSheet(
+            isDismissible: false,
+            context: StackedService.navigatorKey!.currentContext!,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => paymentSheet(
+              height: height,
+              width: width,
+              onCompleteCallBack: startTransaction,
+              onCancel: () {
+                inProcess = false;
+                notifyListeners();
+              },
             ),
-            actions: [
-              Container(
-                height: height * 0.05,
-                width: width * 0.22,
-                color: Colors.white24,
-                child: MaterialButton(
-                  child: Text(
-                    "Cancel",
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  onPressed: () {
-                    inProcess = false;
-                    notifyListeners();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-              Container(
-                height: height * 0.05,
-                width: width * 0.22,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: MaterialButton(
-                  color: primaryLightSwatch[900],
-                  child: Text(
-                    "Proceed",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-
-                    /// ask for upi ID
-                    showModalBottomSheet(
-                      isDismissible: false,
-                      context: StackedService.navigatorKey!.currentContext!,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => paymentSheet(
-                        height: height,
-                        width: width,
-                        onCompleteCallBack: startTransaction,
-                        onCancel: () {
-                          inProcess = false;
-                          notifyListeners();
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
           );
         },
       );

@@ -43,13 +43,17 @@ class AllTransactionsView extends StatelessWidget {
                   child: loader,
                 )
               : model.transactions.length == 0
-                  ? Text(
-                      "No Transactions to Display",
-                      style: TextStyle(
-                          fontSize: height * 0.022, color: Colors.black),
-                    )
+                  ? Container(
+                    color: backgroundColorLight,
+                    alignment: Alignment.center,
+                    child: Text(
+                        "No Transactions to Display",
+                        style: TextStyle(
+                            fontSize: height * 0.022, color: Colors.black),
+                      ),
+                  )
                   : Container(
-                      color: Colors.white,
+                      color: backgroundColorLight,
                       child: Column(
                         children: [
                           Padding(

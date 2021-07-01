@@ -3,7 +3,7 @@ import 'package:presto/ui/shared/colors.dart';
 
 // ignore: must_be_immutable
 class BusyButton extends StatefulWidget {
-  bool busy;
+  bool busy = false;
   final String title;
   final void Function()? onPressed;
   final bool enabled;
@@ -53,7 +53,8 @@ class _BusyButtonState extends State<BusyButton> {
           )
         : Center(
             child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(primaryLightColor),
-          ));
+              valueColor: AlwaysStoppedAnimation<Color>(primaryLightColor),
+            ),
+          );
   }
 }

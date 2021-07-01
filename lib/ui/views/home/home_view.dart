@@ -142,25 +142,50 @@ class HomeView extends StatelessWidget {
 
         List<BottomNavigationBarItem> bottomListCM = [
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-            activeIcon: Icon(
-              Icons.person,
-              size: 40.0,
+            icon: SvgPicture.asset(
+              "assets/icons/home.svg",
+              height: bottom_nav_icon_size_normal,
+              width: bottom_nav_icon_size_normal,
+            ),
+            activeIcon: SvgPicture.asset(
+              "assets/icons/home_filled.svg",
+              height: bottom_nav_icon_size_expanded,
+              width: bottom_nav_icon_size_expanded,
+              color: authButtonColorLight,
+            ),
+            label: "",
+
+            // label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              "assets/icons/history.svg",
+              height: bottom_nav_icon_size_normal,
+              width: bottom_nav_icon_size_normal,
+            ),
+            label: "",
+            // label: 'Transactions',
+            activeIcon: SvgPicture.asset(
+              "assets/icons/history_filled.svg",
+              height: bottom_nav_icon_size_expanded,
+              width: bottom_nav_icon_size_expanded,
+              color: authButtonColorLight,
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.monetization_on),
-            label: 'Transactions',
-            activeIcon: Icon(
-              Icons.monetization_on,
-              size: 40.0,
+            icon: SvgPicture.asset(
+              "assets/icons/bell.svg",
+              height: bottom_nav_icon_size_normal,
+              width: bottom_nav_icon_size_normal,
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset("assets/icons/bell.svg"),
-            label: 'Notifications',
-            activeIcon: SvgPicture.asset("assets/icons/bell_filled.svg"),
+            activeIcon: SvgPicture.asset(
+              "assets/icons/bell_filled.svg",
+              height: bottom_nav_icon_size_expanded,
+              width: bottom_nav_icon_size_expanded,
+              color: authButtonColorLight,
+            ),
+            label: "",
+            // label: 'Notifications',
           ),
         ];
 
@@ -168,7 +193,7 @@ class HomeView extends StatelessWidget {
           if (model.isCM)
             switch (index) {
               case 0:
-                return "Home";
+                return "";
               case 1:
                 return "Transaction History";
               case 2:
@@ -179,7 +204,7 @@ class HomeView extends StatelessWidget {
           else
             switch (index) {
               case 0:
-                return "Home";
+                return "";
               case 1:
                 return "Amount Demanded";
               case 2:
@@ -192,31 +217,33 @@ class HomeView extends StatelessWidget {
         }
 
         return Scaffold(
+          backgroundColor: backgroundColorLight,
           key: scaffoldKey,
           drawerEnableOpenDragGesture: false,
           appBar: model.isBusy
               ? null
               : AppBar(
-                centerTitle:  !model.isCM && model.currentIndex == 1 ? true : false,
+                  toolbarHeight: 60,
                   elevation: 0.0,
-                  backgroundColor: !model.isCM && model.currentIndex == 1
-                      ? primaryLightColor
-                      : Colors.white,
-                  title: Text(
-                    getTitleForIndex(model.currentIndex),
-                    style: TextStyle(
-                      fontSize: default_headers ,
-                      color: !model.isCM && model.currentIndex == 1
-                          ? Colors.white
-                          : authButtonColorLight,
+                  backgroundColor: appBarColorLight,
+                  title: Padding(
+                    padding: const EdgeInsets.all(horizontal_padding),
+                    child: Text(
+                      getTitleForIndex(model.currentIndex),
+                      style: TextStyle(
+                        fontSize: default_headers,
+                        color: authButtonColorLight,
+                      ),
                     ),
                   ),
-                  actions: model.currentIndex == 0
-                      ? <Widget>[
-                          IconButton(
+                  leading: model.currentIndex == 0
+                      ? Padding(
+                          padding:
+                              const EdgeInsets.only(left: horizontal_padding),
+                          child: IconButton(
                             onPressed: () {
                               print("helloo mujhe dabaing");
-                              scaffoldKey.currentState?.openEndDrawer();
+                              scaffoldKey.currentState?.openDrawer();
                             },
                             icon: Icon(
                               Icons.account_circle_outlined,
@@ -224,7 +251,7 @@ class HomeView extends StatelessWidget {
                               size: actions_icon_size,
                             ),
                           ),
-                        ]
+                        )
                       : null,
                 ),
           body: model.isBusy
@@ -242,6 +269,7 @@ class HomeView extends StatelessWidget {
                       Animation<double> secondaryAnimation,
                     ) {
                       return SharedAxisTransition(
+                        fillColor: backgroundColorLight,
                         child: child,
                         animation: animation,
                         secondaryAnimation: secondaryAnimation,
@@ -256,14 +284,14 @@ class HomeView extends StatelessWidget {
           bottomNavigationBar: model.isBusy
               ? null
               : BottomNavigationBar(
+                  backgroundColor: bottomNavBarColorLight,
                   type: BottomNavigationBarType.fixed,
                   currentIndex: model.currentIndex,
                   onTap: model.setIndex,
                   selectedItemColor: primaryLightColor,
                   items: model.isCM ? bottomListCM : bottomListRU,
                 ),
-          endDrawerEnableOpenDragGesture: false,
-          endDrawer: model.isBusy
+          drawer: model.isBusy
               ? null
               : model.currentIndex == 0
                   ? Container(
@@ -280,7 +308,7 @@ class HomeView extends StatelessWidget {
                               ListTile(
                                 leading: Icon(
                                   Icons.account_circle,
-                                  color: Colors.white,
+                                  color: busyButtonTextColorLight,
                                   size: banner_font_size,
                                 ),
                                 title: Text(
@@ -289,7 +317,7 @@ class HomeView extends StatelessWidget {
                                       .name,
                                   style: TextStyle(
                                     fontSize: default_normal_font_size,
-                                    color: Colors.white,
+                                    color: busyButtonTextColorLight,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -303,7 +331,7 @@ class HomeView extends StatelessWidget {
                                   "Profile",
                                   style: TextStyle(
                                     fontSize: default_normal_font_size,
-                                    color: Colors.white,
+                                    color: busyButtonTextColorLight,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -319,7 +347,7 @@ class HomeView extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: default_normal_font_size,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                    color: busyButtonTextColorLight,
                                   ),
                                 ),
                                 onTap: () {
@@ -327,24 +355,24 @@ class HomeView extends StatelessWidget {
                                   model.goToMyReferees();
                                 },
                               ),
-                              ListTile(
-                                dense: true,
-                                title: Text(
-                                  "Dark Mode",
-                                  style: TextStyle(
-                                    fontSize: default_normal_font_size,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                              // ListTile(
+                              //   dense: true,
+                              //   title: Text(
+                              //     "Dark Mode",
+                              //     style: TextStyle(
+                              //       fontSize: default_normal_font_size,
+                              //       color: busyButtonTextColorLight,
+                              //       fontWeight: FontWeight.w600,
+                              //     ),
+                              //   ),
+                              // ),
                               ListTile(
                                 dense: true,
                                 title: Text(
                                   "Contact Us",
                                   style: TextStyle(
                                     fontSize: default_normal_font_size,
-                                    color: Colors.white,
+                                    color: busyButtonTextColorLight,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

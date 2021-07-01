@@ -25,11 +25,22 @@ class ProfileView extends StatelessWidget {
       // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,
       builder: (context, model, child) {
-        print("-----------------------------------\n\n");
-        print(!model.gotData || model.isBusy);
-        print(model.gotData);
-        print(model.isBusy);
-        print("\n\n-----------------------------------");
+        late String nameForCard;
+        if (locator<UserDataProvider>().personalData != null) {
+          int index =
+              locator<UserDataProvider>().personalData!.name.indexOf(" ");
+          if (index + 3 !=
+              locator<UserDataProvider>().personalData!.name.length) {
+            index += 2;
+            nameForCard = locator<UserDataProvider>()
+                .personalData!
+                .name
+                .substring(0, index);
+          } else {
+            nameForCard = locator<UserDataProvider>().personalData!.name;
+          }
+          print(nameForCard);
+        }
         return GestureDetector(
           onHorizontalDragEnd: (dragEndDetails) {
             print(dragEndDetails.velocity);
@@ -47,242 +58,265 @@ class ProfileView extends StatelessWidget {
               ? Center(
                   child: loader,
                 )
-              : ListView(
-                  padding: const EdgeInsets.only(
-                    left: horizontal_padding,
-                    right: horizontal_padding,
-                    top: vertical_padding,
-                  ),
-                  children: <Widget>[
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: 200,
-                        maxHeight:
-                            width / MediaQuery.of(context).size.aspectRatio,
-                        maxWidth: width * 0.9,
-                      ),
-                      child: Container(
-                        height: height * 0.3,
-                        width: width - 2 * horizontal_padding,
-                        decoration: BoxDecoration(
-                          color: primaryLightSwatch[900],
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
-                          ),
+              : Container(
+                  color: backgroundColorLight,
+                  child: ListView(
+                    padding: const EdgeInsets.only(
+                      left: horizontal_padding,
+                      right: horizontal_padding,
+                      top: vertical_padding,
+                    ),
+                    children: <Widget>[
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: 200,
+                          maxHeight:
+                              width / MediaQuery.of(context).size.aspectRatio,
+                          maxWidth: width * 0.9,
                         ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            // Column(
-                            //   mainAxisAlignment: MainAxisAlignment.start,
-                            //   crossAxisAlignment: CrossAxisAlignment.start,
-                            //   children: <Widget>[
-                            //     SizedBox(
-                            //       height: height / 30,
-                            //     ),
-                            //     Padding(
-                            //       padding: EdgeInsets.only(
-                            //           top: height / 75,
-                            //           left: width / 30,
-                            //           bottom: height / 150),
-                            //       child: Container(
-                            //         //height: MediaQuery.of(context).size.height/17,
-                            //         width: width / 1.7,
-                            //         child: Text(
-                            //           model.personalData.name,
-                            //           style: TextStyle(
-                            //               fontSize: height / 30,
-                            //               color: Colors.white),
-                            //         ),
-                            //       ),
-                            //     ),
-                            //     Padding(
-                            //       padding: EdgeInsets.only(
-                            //         top: height / 150,
-                            //         left: width / 30,
-                            //       ),
-                            //       child: Text(
-                            //         model.personalData.email,
-                            //         style: TextStyle(
-                            //             fontSize: height / 45,
-                            //             color: Colors.white),
-                            //       ),
-                            //     ),
-                            //     Row(
-                            //       children: [
-                            //         Padding(
-                            //             padding: EdgeInsets.only(
-                            //               top: height / 130,
-                            //               left: width / 20,
-                            //             ),
-                            //             child: IconButton(
-                            //               icon: Icon(
-                            //                 Icons.power_settings_new,
-                            //                 color: Colors.white,
-                            //               ),
-                            //               onPressed: () {
-                            //                 ///Sign Out
-                            //                 model.signOut();
-                            //               },
-                            //             )),
-                            //         Padding(
-                            //           padding: EdgeInsets.only(
-                            //             top: height / 130,
-                            //             left: width / 20,
-                            //           ),
-                            //           child: IconButton(
-                            //             icon: Icon(
-                            //               Icons.share,
-                            //               color: Colors.white,
-                            //             ),
-                            //             onPressed: () async {
-                            //               String text =
-                            //                   await model.getShareText();
-                            //               Share.share(
-                            //                 text +
-                            //                     "\nPlease enter this referral code ${locator<UserDataProvider>().platformData!.referralCode}",
-                            //                 subject:
-                            //                     "Download New Presto Mobile App Now!!",
-                            //               );
-                            //             },
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     )
-                            //   ],
-                            // ),
-                            Text(
-                              "Presto",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: height * 0.04,
+                        child: Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: [
+                            Container(
+                              height: height * 0.3,
+                              width: width - 2 * horizontal_padding,
+                              decoration: BoxDecoration(
+                                color: primaryLightColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15),
+                                ),
                               ),
-                            )
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: horizontal_padding,
+                                vertical: vertical_padding,
+                              ),
+                            ),
+                            Positioned(
+                              top: vertical_padding * 3,
+                              width: width - (horizontal_padding * 3),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: horizontal_padding,
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Text(
+                                      "Presto",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: busyButtonTextColorLight,
+                                        fontSize: default_headers,
+                                      ),
+                                    ),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          locator<UserDataProvider>()
+                                              .platformData!
+                                              .community,
+                                          style: TextStyle(
+                                            color: Colors.grey[200],
+                                            fontSize: default_normal_font_size,
+                                            fontWeight: FontWeight.w100,
+                                          ),
+                                        ),
+                                        Text(
+                                          "#" +
+                                              locator<UserDataProvider>()
+                                                  .platformData!
+                                                  .referralCode,
+                                          style: TextStyle(
+                                            color: Colors.grey[200],
+                                            fontWeight: FontWeight.w100,
+                                            fontSize: default_normal_font_size,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: -vertical_padding,
+                              right: 0,
+                              child: Container(
+                                child: Text(
+                                  nameForCard,
+                                  style: TextStyle(
+                                    fontSize: banner_font_size * 1.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: profileCardBackgroundTextColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: vertical_padding * 2,
+                              width: width - (horizontal_padding * 3),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: horizontal_padding,
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          locator<UserDataProvider>()
+                                              .personalData!
+                                              .name,
+                                          style: TextStyle(
+                                            color: Colors.grey[200],
+                                            fontSize: default_normal_font_size,
+                                            fontWeight: FontWeight.w100,
+                                          ),
+                                        ),
+                                        Text(
+                                          ((locator<UserDataProvider>()
+                                                          .platformRatingsData!
+                                                          .communityScore +
+                                                      locator<UserDataProvider>()
+                                                          .platformRatingsData!
+                                                          .personalScore) /
+                                                  2)
+                                              .toStringAsPrecision(3),
+                                          style: TextStyle(
+                                            color: Colors.grey[200],
+                                            fontSize: (default_big_font_size +
+                                                    default_headers) /
+                                                2,
+                                            fontWeight: FontWeight.w100,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Credit Score",
+                                          style: TextStyle(
+                                            color: Colors.grey[200],
+                                            fontWeight: FontWeight.w100,
+                                            fontSize: default_small_font_size,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          locator<UserDataProvider>()
+                                              .platformRatingsData!
+                                              .prestoCoins
+                                              .toInt()
+                                              .toString(),
+                                          style: TextStyle(
+                                            color: Colors.grey[200],
+                                            fontSize: (default_big_font_size +
+                                                    default_headers) /
+                                                2,
+                                            fontWeight: FontWeight.w100,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Presto Coins",
+                                          style: TextStyle(
+                                            color: Colors.grey[200],
+                                            fontWeight: FontWeight.w100,
+                                            fontSize: default_small_font_size,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: height / 15,
-                    ),
-                    // Column(
-                    //   children: <Widget>[
-                    //     ListToken(
-                    //       name: 'Contact Number',
-                    //       icon: Icons.phone,
-                    //       trailName: model.personalData.contact,
-                    //     ),
-                    //     ListToken(
-                    //       name: 'Community Name',
-                    //       icon: Icons.people,
-                    //       trailName: model.platformData.community,
-                    //     ),
-                    //     ListToken(
-                    //       name: 'Total Amount Borrowed',
-                    //       icon: Icons.attach_money,
-                    //       trailName: '₹' +
-                    //           model.transactionData.totalBorrowed.toString(),
-                    //     ),
-                    //     ListToken(
-                    //       name: 'Total Amount Lent',
-                    //       icon: Icons.monetization_on,
-                    //       trailName: '₹' +
-                    //           model.transactionData.totalLent.toString(),
-                    //     ),
-                    //     ListToken(
-                    //       name: 'Most Used Mode',
-                    //       icon: Icons.chrome_reader_mode,
-                    //       trailName: 'Paytm',
-                    //     ),
-                    //     ListToken(
-                    //       name: 'Community Code',
-                    //       icon: Icons.info,
-                    //       trailName: model.platformData.referralCode,
-                    //     ),
-                    //     ListToken(
-                    //       name: 'Creditworthy score',
-                    //       icon: Icons.credit_card_rounded,
-                    //       trailName: ((model.platformRatings.communityScore +
-                    //                   model.platformRatings.personalScore) *
-                    //               0.5)
-                    //           .toStringAsPrecision(3),
-                    //     ),
-                    //     ListToken(
-                    //       name: 'Presto Coins',
-                    //       icon: Icons.money,
-                    //       trailName:
-                    //           model.platformRatings.prestoCoins.toString(),
-                    //     ),
-                    //     SizedBox(
-                    //       height: height / 18,
-                    //     ),
-                    //   ],
-                    // ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            String text = await model.getShareText();
-                            Share.share(
-                              text +
-                                  "\nPlease enter this referral code ${locator<UserDataProvider>().platformData!.referralCode}",
-                              subject: "Download New Presto Mobile App Now!!",
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: primaryLightSwatch[900],
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12),
+                      SizedBox(
+                        height: height / 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              String text = await model.getShareText();
+                              Share.share(
+                                text +
+                                    "\nPlease enter this referral code ${locator<UserDataProvider>().platformData!.referralCode}",
+                                subject: "Download New Presto Mobile App Now!!",
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: primaryLightSwatch[900],
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12),
+                                ),
                               ),
-                            ),
-                            height: height * 0.08,
-                            width: width * 0.37,
-                            child: Center(
-                              child: Text(
-                                "Invite (${(locator<LimitsDataProvider>().referralLimit?.refereeLimit ?? 15) - (locator<UserDataProvider>().platformData?.referredTo.length ?? 0)})",
-                                style: TextStyle(
-                                  fontSize: (default_big_font_size +
-                                          default_normal_font_size) /
-                                      2,
-                                  color: Colors.white,
+                              height: height * 0.08,
+                              width: width * 0.37,
+                              child: Center(
+                                child: Text(
+                                  "Invite (${(locator<LimitsDataProvider>().referralLimit?.refereeLimit ?? 15) - (locator<UserDataProvider>().platformData?.referredTo.length ?? 0)})",
+                                  style: TextStyle(
+                                    fontSize: (default_big_font_size +
+                                            default_normal_font_size) /
+                                        2,
+                                    color: busyButtonTextColorLight,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            model.redeemCode(height, width);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: primaryLightSwatch[900],
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12),
+                          GestureDetector(
+                            onTap: () {
+                              model.redeemCode(height, width);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: primaryLightSwatch[900],
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12),
+                                ),
                               ),
-                            ),
-                            height: height * 0.08,
-                            width: width * 0.37,
-                            child: Center(
-                              child: Text(
-                                "Redeem",
-                                style: TextStyle(
-                                  fontSize: (default_big_font_size +
-                                          default_normal_font_size) /
-                                      2,
-                                  color: Colors.white,
+                              height: height * 0.08,
+                              width: width * 0.37,
+                              child: Center(
+                                child: Text(
+                                  "Redeem",
+                                  style: TextStyle(
+                                    fontSize: (default_big_font_size +
+                                            default_normal_font_size) /
+                                        2,
+                                    color: busyButtonTextColorLight,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
         );
       },

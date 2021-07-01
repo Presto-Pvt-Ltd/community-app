@@ -24,7 +24,10 @@ class AmountButton extends StatelessWidget {
           child: Center(
             child: Text(
               text,
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: TextStyle(
+                fontSize: 20,
+                color: busyButtonTextColorLight,
+              ),
             ),
           ),
         ),

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:presto/ui/shared/colors.dart';
+import 'package:presto/ui/shared/ui_helpers.dart';
 import 'package:presto/ui/views/referees/referees_viewModel.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:stacked/stacked.dart';
@@ -14,99 +17,137 @@ class RefereesView extends StatelessWidget {
       onModelReady: (model) => model.onModelReady(),
       viewModelBuilder: () => RefereesViewModel(),
       builder: (context, model, child) {
-        return model.isBusy
-            ? Scaffold(
-                body: Center(
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0.0,
+            toolbarHeight: 60,
+            centerTitle: true,
+            title: Text(
+              "Referees List",
+              style: TextStyle(
+                fontSize: default_headers,
+                fontWeight: FontWeight.bold,
+                color: authButtonColorLight,
+              ),
+            ),
+            backgroundColor: appBarColorLight,
+            leading: GestureDetector(
+              onTap: () {
+                model.pop();
+              },
+              child: Center(
+                child: Container(
+                  alignment: Alignment.center,
+                  width: actions_icon_size,
+                  height: actions_icon_size * 0.7,
+                  child: SvgPicture.asset(
+                    "assets/icons/left-arrow.svg",
+                    fit: BoxFit.fitHeight,
+                    color: authButtonColorLight,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          backgroundColor: backgroundColorLight,
+          body: model.isBusy
+              ? Center(
                   child: Container(
                     child: FadingText(
                       'Loading list...',
                       style: TextStyle(
-                        fontSize: 20.0,
-                      ),
+                          fontSize: default_big_font_size,
+                          color: authButtonColorLight),
                     ),
                   ),
-                ),
-              )
-            : SafeArea(
-                child: Scaffold(
-                  backgroundColor: Colors.white,
-                  body: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(height: height * 0.05
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: height / 35,
+                      ),
 
-                            ///Height according to Referees List
-                            // model.refereeListManager.refereeList.length == 0
-                            //     ? height / 3.0
-                            //     : height / 20.0,
-                            ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Referees List",
-                            style: TextStyle(
-                                color: Colors.black, fontSize: width / 10),
-                          ),
-                        ),
-                        SizedBox(
-                          height: height / 35,
-                        ),
-
-                        ///A bool to check if there are any referees
-                        model.refereeList.length == 0
-                            ? Center(
-                                child: Text(
-                                  "You haven't referred us to anyone!! \nRefer Someone and view them here.",
-                                  style: TextStyle(
-                                      fontSize: width / 20,
-                                      color: Colors.black),
+                      ///A bool to check if there are any referees
+                      model.refereeList.length == 0
+                          ? Center(
+                              child: Text(
+                                "You haven't referred us to anyone!! \nRefer Someone and view them here.",
+                                style: TextStyle(
+                                  fontSize: default_big_font_size,
+                                  color: authButtonColorLight,
                                 ),
-                              )
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: model.refereeList.length,
+                              ),
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: model.refereeList.length,
 
-                                ///Enter item count
-                                //model.refereeListManager.refereeList.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Card(
+                              ///Enter item count
+                              //model.refereeListManager.refereeList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: horizontal_padding,
+                                    right: horizontal_padding,
+                                    bottom: vertical_padding,
+                                  ),
+                                  child: Card(
                                     elevation: 5.0,
+                                    color: blue98,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                     child: Padding(
-                                      padding: EdgeInsets.all(width / 45),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: horizontal_padding,
+                                        vertical: vertical_padding * 0.5,
+                                      ),
                                       child: ExpansionTile(
+                                        backgroundColor: blue98,
+                                        collapsedBackgroundColor: blue98,
                                         title: Text(
-                                          ///Display name of Referees
                                           model.refereeList[index].name!,
-                                          style: TextStyle(fontSize: 22),
+                                          style: TextStyle(
+                                            fontSize: default_big_font_size,
+                                            color: Colors.black,
+                                          ),
                                         ),
                                         children: [
-                                          SizedBox(
-                                            height: height / 60,
-                                          ),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    left: width / 20),
+                                                  left: width / 20,
+                                                ),
                                                 child: Text(
                                                   "Email",
                                                   style: TextStyle(
-                                                    fontSize: 18,
+                                                    fontSize:
+                                                        (default_normal_font_size +
+                                                                default_big_font_size) /
+                                                            2,
                                                   ),
                                                 ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    right: width / 20),
+                                                  right: horizontal_padding,
+                                                ),
                                                 child: Text(
                                                   ///Displaying referee email
                                                   model.refereeList[index]
                                                       .email!,
                                                   style: TextStyle(
-                                                    fontSize: 18,
+                                                    color: primaryLightColor,
+                                                    fontSize:
+                                                        (default_normal_font_size +
+                                                                default_big_font_size) /
+                                                            2,
                                                   ),
                                                 ),
                                               )
@@ -118,92 +159,89 @@ class RefereesView extends StatelessWidget {
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    left: width / 20),
+                                                  left: width / 20,
+                                                ),
                                                 child: Text(
                                                   "Contact",
                                                   style: TextStyle(
-                                                    fontSize: 18,
+                                                    fontSize:
+                                                        (default_normal_font_size +
+                                                                default_big_font_size) /
+                                                            2,
                                                   ),
                                                 ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    right: width / 20),
+                                                  right: horizontal_padding,
+                                                ),
                                                 child: Text(
                                                   ///Displaying Referee Contact
                                                   model.refereeList[index]
                                                       .contact!,
                                                   style: TextStyle(
-                                                    fontSize: 18,
+                                                    color: primaryLightColor,
+                                                    fontSize:
+                                                        (default_normal_font_size +
+                                                                default_big_font_size) /
+                                                            2,
                                                   ),
                                                 ),
                                               )
                                             ],
                                           ),
-
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    left: width / 20),
+                                                  left: width / 20,
+                                                ),
                                                 child: Text(
                                                   "Score",
                                                   style: TextStyle(
-                                                    fontSize: 18,
+                                                    fontSize:
+                                                        (default_normal_font_size +
+                                                                default_big_font_size) /
+                                                            2,
                                                   ),
                                                 ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    right: width / 20),
+                                                  right: horizontal_padding,
+                                                ),
                                                 child: Text(
                                                   ///Displaying Referee Contact
                                                   model
                                                       .refereeList[index].score!
                                                       .toStringAsPrecision(3),
                                                   style: TextStyle(
-                                                    fontSize: 18,
+                                                    color: primaryLightColor,
+                                                    fontSize:
+                                                        (default_normal_font_size +
+                                                                default_big_font_size) /
+                                                            2,
                                                   ),
                                                 ),
                                               )
                                             ],
                                           ),
-
                                           SizedBox(
-                                            height: 10,
+                                            height: vertical_padding,
                                           ),
-                                          // Row(
-                                          //   mainAxisAlignment:
-                                          //       MainAxisAlignment.spaceBetween,
-                                          //   children: [
-                                          //     Padding(
-                                          //       padding: EdgeInsets.only(
-                                          //           left: width / 20),
-                                          //       child: Text("Referral Code"),
-                                          //     ),
-                                          //     Padding(
-                                          //       padding: EdgeInsets.only(
-                                          //           right: width / 20),
-                                          //       child: Text(
-                                          //         model.refereeList[index]
-                                          //             .referralCode!,
-                                          //       ),
-                                          //     )
-                                          //   ],
-                                          // )
                                         ],
                                       ),
                                     ),
-                                  );
-                                },
-                              ),
-                      ],
-                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ],
                   ),
                 ),
-              );
+        );
       },
     );
   }

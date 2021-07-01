@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
+import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/notificationCard.dart';
 import 'package:stacked/stacked.dart';
 import '../../../../app/app.router.dart';
@@ -37,26 +38,11 @@ class LendView extends StatelessWidget {
           },
           child: model.dataReady || !model.isBusy
               ? Container(
-                color: Colors.white,
+                color: backgroundColorLight,
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: height * 0.04,
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          'All Notifications',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: height * 0.045,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: height * 0.033,
-                      ),
+                      
                       model.notifications.length == 0
                           ? Align(
                               alignment: Alignment.topCenter,
