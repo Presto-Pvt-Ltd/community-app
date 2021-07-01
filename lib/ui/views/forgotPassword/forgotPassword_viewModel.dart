@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:presto/ui/widgets/dialogBox.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -45,8 +46,20 @@ class ForgotPasswordViewModel extends BaseViewModel {
     print("Not ready to go with email");
   }
 
-  void onPressingGetLink() {
-    _authenticationService.sendResetPasswordLink(email: finalEmail);
+  void onPressingGetLink() async {
+    setBusy(true);
+    bool result =
+        await _authenticationService.sendResetPasswordLink(email: finalEmail);
+    setBusy(false);
+    if (result) {
+      locator<NavigationService>().back();
+      showCustomDialog(
+        title: "Reset Link Sent.",
+        description:
+            "Password reset link has been sent to your email account. Please reset your password and try logging in.",
+        buttonTitle: "OK",
+      );
+    }
   }
 
   void onModelReady() {

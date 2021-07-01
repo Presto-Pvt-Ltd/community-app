@@ -26,7 +26,7 @@ class RegisterView extends StatelessWidget {
       builder: (context, model, child) {
         return KeyboardDismisser(
           child: Scaffold(
-            backgroundColor:backgroundColorLight,
+            backgroundColor: backgroundColorLight,
             body: Container(
               height: height - MediaQuery.of(context).viewInsets.vertical,
               width: width,
@@ -206,7 +206,7 @@ class RegisterView extends StatelessWidget {
                                 ),
                               ),
                               onTap: () {
-                                // model.termsAndConditions();
+                                model.termsAndConditions();
                               },
                             )
                           ],

@@ -99,6 +99,7 @@ class ForgetPasswordView extends StatelessWidget {
                   title: 'Get Link!',
                   height: height / 13,
                   width: width * 0.5,
+                  busy: model.isBusy,
                   fontSize: default_big_font_size,
                   textColor: busyButtonTextColorLight,
                   decoration: BoxDecoration(

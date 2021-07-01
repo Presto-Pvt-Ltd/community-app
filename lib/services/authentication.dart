@@ -78,7 +78,10 @@ class AuthenticationService {
 
   Future<bool> sendResetPasswordLink({required String email}) async {
     try {
-      return _auth.sendPasswordResetEmail(email: email).then((value) => true);
+      var result = await _auth
+          .sendPasswordResetEmail(email: email)
+          .then((value) => true);
+      return result;
     } catch (e) {
       _errorHandlingService.handleError(error: e);
       return false;
