@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:presto/app/app.locator.dart';
 import 'package:presto/models/notification/notification_data_model.dart';
+import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
+import 'package:presto/ui/shared/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 import '../../../models/enums.dart';
 import '../../widgets/paymentSheet.dart';
@@ -25,153 +28,184 @@ class NotificationView extends StatelessWidget {
     paymentMethods.forEach((element) {
       paymentMethodsString += PaymentMethodsMap[element]!;
     });
+    print(
+      width * 0.4,
+    );
     return ViewModelBuilder<NotificationViewModel>.reactive(
       viewModelBuilder: () => NotificationViewModel(),
       onModelReady: (model) => model.onModelReady(
         notification,
         deleteNotificationCallBack,
       ),
-      disposeViewModel: false,
-      // Indicate that we only want to initialise a specialty viewModel once
       initialiseSpecialViewModelsOnce: true,
-      builder: (context, model, child) => SafeArea(
-        child: Scaffold(
-          body: model.isBusy
-              ? Center(
-                  child: loader,
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: height / 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: width / 6.5,
-                            child: Image.asset('assets/images/PrestoLogo.png')),
-                        SizedBox(
-                          width: width / 50,
+      builder: (context, model, child) => Scaffold(
+        body: model.isBusy
+            ? Center(
+                child: loader,
+              )
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: horizontal_padding * 1.5,
+                    right: horizontal_padding * 1.5,
+                    top: vertical_padding * 4,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 200,
+                          minHeight: 120,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              'Creditworthy Score: ${notification.borrowerRating.toStringAsPrecision(3)}',
-                              style: TextStyle(
-                                fontSize: height / 45,
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 160,
+                                maxHeight: 160,
                               ),
-                            ),
-                            Container(
-                              height: height / 10,
-                              width: width / 2,
-                              child: Text(
-                                'Mode of payment: $paymentMethodsString',
-                                style: TextStyle(
-                                  fontSize: height / 45,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      'assets/images/PrestoLogo.png',
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: 170,
+                              ),
+                              child: Container(
+                                width: width * 0.5,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    RichText(
+                                      softWrap: true,
+                                      text: TextSpan(
+                                        style: TextStyle(
+                                          fontSize: (default_headers +
+                                                  default_big_font_size) /
+                                              2,
+                                          color: Colors.black,
+                                        ),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: "Creditworthy Score: ",
+                                          ),
+                                          TextSpan(
+                                            text: notification.borrowerRating
+                                                .toStringAsPrecision(3),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: height / 15,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: width / 25),
-                      child: Text(
-                        //'Amount Requested : ${widget.notification.amount}',
-                        'Amount Requested : ${notification.amount}',
+                        ),
+                      ),
+                      SizedBox(
+                        height: height * 0.04,
+                      ),
+                      Text(
+                        'Amount Requested : \u20B9${notification.amount}',
                         style: TextStyle(
-                            fontSize: height / 20, fontWeight: FontWeight.bold),
+                          fontSize: (default_headers + banner_font_size) / 2,
+                          fontWeight: FontWeight.bold,
+                          color: authButtonColorLight,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: width / 2,
-                      child: Divider(
-                        color: primaryLightColor,
-                        thickness: height / 100,
+                      SizedBox(
+                        height: height * 0.05,
                       ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.only(left: width / 20, top: width / 19),
-                      child: Container(
-                        width: width / 2,
+                      Container(
+                        alignment: Alignment.centerLeft,
                         child: Text(
-                          'A fellow RVCE\'ian is calling...',
+                          'A fellow \n${locator<UserDataProvider>().platformData!.community}\'ian is \ncalling...',
+                          softWrap: true,
                           style: TextStyle(
-                            fontSize: height / 27,
+                            fontSize: default_headers,
+                            fontWeight: FontWeight.w600,
+                            color: authButtonColorLight,
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: height / 4,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => paymentSheet(
-                                height: height,
-                                width: width,
-                                onCompleteCallBack: model.initiateTransaction,
-                                onCancel: model.cancel,
-                              ),
-                            );
-                            print(
-                                "Notification yes card button dabaya gaya hai");
-                          },
-                          child: Container(
-                            width: width / 3.5,
-                            height: height / 12,
-                            decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.horizontal(
-                                    left: Radius.circular(width / 15))),
-                            child: Center(
-                              child: Text(
-                                'Accept',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: height / 45),
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          child: Container(
-                            width: width / 3.5,
-                            height: height / 12,
-                            decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.horizontal(
-                                    right: Radius.circular(width / 15))),
+                      SizedBox(
+                        height: height * 0.23,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
                             child: Center(
                               child: Text(
                                 'Decline',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: height / 45),
+                                  color: Colors.red,
+                                  fontSize: (default_big_font_size +
+                                          default_headers) /
+                                      2,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  ],
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => paymentSheet(
+                                  height: height,
+                                  width: width,
+                                  onCompleteCallBack: model.initiateTransaction,
+                                  onCancel: model.cancel,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: width / 3.5,
+                              height: 65,
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(30),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Accept',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: (default_big_font_size +
+                                            default_headers) /
+                                        2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-        ),
+              ),
       ),
     );
   }

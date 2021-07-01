@@ -83,119 +83,122 @@ Widget transactionCard({
       onTap();
     },
     child: Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: horizontal_padding * 1.5,
         vertical: vertical_padding,
       ),
-      child: Container(
-        key: key,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(19),
-          color: blue98,
-          boxShadow: [
-            BoxShadow(
-              color: authButtonColorLight.withOpacity(0.2),
-              blurRadius: 4,
-              spreadRadius: 1,
-              offset: Offset(2, 4),
-            )
-          ],
-        ),
-        height: height * 0.15,
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: horizontal_padding,
-            right: horizontal_padding,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '₹ ${transaction.genericInformation.amount}',
-                    style: TextStyle(
-                      fontSize: (default_headers + default_big_font_size) / 2,
-                      color: authButtonColorLight,
-                    ),
-                  ),
-                  transaction.lenderInformation!.lenderName == null
-                      ? Text(
-                          "Searching for lender",
-                          style: TextStyle(
-                            fontSize: (default_normal_font_size +
-                                    default_small_font_size) /
-                                2,
-                            color: primaryLightColor,
-                          ),
-                        )
-                      : Text(
-                          'Lender: ${transaction.lenderInformation!.lenderName}',
-                          style: TextStyle(
-                            fontSize: (default_normal_font_size +
-                                    default_small_font_size) /
-                                2,
-                            color: primaryLightColor,
-                          ),
-                        ),
-                  Text(
-                    'Txn Date:' +
-                        '${transaction.genericInformation.initiationAt.day}'
-                            '/${transaction.genericInformation.initiationAt.month}'
-                            '/${transaction.genericInformation.initiationAt.year}',
-                    style: TextStyle(
-                      fontSize:
-                          (default_normal_font_size + default_small_font_size) /
-                              2,
-                      color: primaryLightColor,
-                    ),
-                  ),
-                  transaction.lenderInformation!.lenderName == null
-                      ? Text(
-                          "Searching for lender",
-                          style: TextStyle(
-                            fontSize: (default_normal_font_size +
-                                    default_small_font_size) /
-                                2,
-                            color: primaryLightColor,
-                          ),
-                        )
-                      : Text(
-                          'Due Date:' +
-                              '${dueDate.day}'
-                                  '/${dueDate.month}'
-                                  '/${dueDate.year}',
-                          style: TextStyle(
-                            fontSize: (default_normal_font_size +
-                                    default_small_font_size) /
-                                2,
-                            color: primaryLightColor,
-                          ),
-                        ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Status",
-                    style: TextStyle(
-                      fontSize: default_normal_font_size,
-                      color: primaryLightColor,
-                    ),
-                  ),
-                  Text(
-                    status,
-                    style: TextStyle(
-                      fontSize: default_normal_font_size,
-                      color: textColor,
-                    ),
-                  ),
-                ],
-              ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: 125),
+        child: Container(
+          key: key,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(19),
+            color: blue98,
+            boxShadow: [
+              BoxShadow(
+                color: authButtonColorLight.withOpacity(0.2),
+                blurRadius: 4,
+                spreadRadius: 0,
+                offset: Offset(0, 4),
+              )
             ],
+          ),
+          height: height * 0.15,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: horizontal_padding,
+              right: horizontal_padding,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '₹ ${transaction.genericInformation.amount}',
+                      style: TextStyle(
+                        fontSize: (default_headers + default_big_font_size) / 2,
+                        color: authButtonColorLight,
+                      ),
+                    ),
+                    transaction.lenderInformation!.lenderName == null
+                        ? Text(
+                            "Searching for lender",
+                            style: TextStyle(
+                              fontSize: (default_normal_font_size +
+                                      default_small_font_size) /
+                                  2,
+                              color: primaryLightColor,
+                            ),
+                          )
+                        : Text(
+                            'Lender: ${transaction.lenderInformation!.lenderName}',
+                            style: TextStyle(
+                              fontSize: (default_normal_font_size +
+                                      default_small_font_size) /
+                                  2,
+                              color: primaryLightColor,
+                            ),
+                          ),
+                    Text(
+                      'Txn Date:' +
+                          '${transaction.genericInformation.initiationAt.day}'
+                              '/${transaction.genericInformation.initiationAt.month}'
+                              '/${transaction.genericInformation.initiationAt.year}',
+                      style: TextStyle(
+                        fontSize: (default_normal_font_size +
+                                default_small_font_size) /
+                            2,
+                        color: primaryLightColor,
+                      ),
+                    ),
+                    transaction.lenderInformation!.lenderName == null
+                        ? Text(
+                            "Searching for lender",
+                            style: TextStyle(
+                              fontSize: (default_normal_font_size +
+                                      default_small_font_size) /
+                                  2,
+                              color: primaryLightColor,
+                            ),
+                          )
+                        : Text(
+                            'Due Date:' +
+                                '${dueDate.day}'
+                                    '/${dueDate.month}'
+                                    '/${dueDate.year}',
+                            style: TextStyle(
+                              fontSize: (default_normal_font_size +
+                                      default_small_font_size) /
+                                  2,
+                              color: primaryLightColor,
+                            ),
+                          ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Status",
+                      style: TextStyle(
+                        fontSize: default_normal_font_size,
+                        color: primaryLightColor,
+                      ),
+                    ),
+                    Text(
+                      status,
+                      style: TextStyle(
+                        fontSize: default_normal_font_size,
+                        color: textColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
