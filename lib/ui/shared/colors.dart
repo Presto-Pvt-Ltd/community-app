@@ -16,27 +16,27 @@ MaterialColor primaryLightSwatch = MaterialColor(900, {
   50: Color(0xFFe7eaf5),
 });
 
-Color primaryLightColor = Color(0xFF132776);
-Color authButtonColorLight = Color(0xff070F2C);
-Color inputFieldColorLight = Color(0xffF6F8FE);
-Color textGreyShade = Color.fromARGB(102, 7, 14, 44);
-Color textHighlightLight = Colors.blue;
-Color inputFieldIconLight = Colors.black;
-Color inputFieldFocusedColorLight = Colors.white;
-Color busyButtonTextColorLight = Colors.white;
+const Color primaryLightColor = Color(0xFF132776);
+const Color authButtonColorLight = Color(0xff070F2C);
+const Color inputFieldColorLight = Color(0xffF6F8FE);
+const Color textGreyShade = Color.fromARGB(102, 7, 14, 44);
+const Color textHighlightLight = Colors.blue;
+const Color inputFieldIconLight = Colors.black;
+const Color inputFieldFocusedColorLight = Colors.white;
+const Color busyButtonTextColorLight = Colors.white;
 Color shadowLight = Color(0xff070F2C).withOpacity(0.4);
-Color blue98 = Color.fromRGBO(246, 248, 254, 1);
-Color backgroundColorLight = Colors.white;
-Color appBarColorLight = Colors.white;
-Color bottomNavBarColorLight = Colors.white;
-Color profileCardBackgroundTextColor = Color(0xff283774);
+const Color blue98 = Color.fromRGBO(246, 248, 254, 1);
+const Color backgroundColorLight = Colors.white;
+const Color appBarColorLight = Colors.white;
+const Color bottomNavBarColorLight = Colors.white;
+const Color profileCardBackgroundTextColor = Color(0xff283774);
 
-Color primaryDarkColor = Color(0xFF132776);
-Color authButtonColorDark = Color(0xff070F2C);
-Color inputFieldColorDark = Color(0xffF6F8FE);
-Color textGreyShadeDark = Color.fromARGB(102, 7, 14, 44);
-Color textHighlightDark = Colors.blue;
-Color inputFieldIconDark = Colors.black;
-Color inputFieldFocusedColorDark = Colors.white;
+const Color primaryDarkColor = Color(0xFF132776);
+const Color authButtonColorDark = Color(0xff070F2C);
+const Color inputFieldColorDark = Color(0xffF6F8FE);
+const Color textGreyShadeDark = Color.fromARGB(102, 7, 14, 44);
+const Color textHighlightDark = Colors.blue;
+const Color inputFieldIconDark = Colors.black;
+const Color inputFieldFocusedColorDark = Colors.white;
 
-Color neonGreen = Color(0xFF50C878);
+const Color neonGreen = Color(0xFF50C878);

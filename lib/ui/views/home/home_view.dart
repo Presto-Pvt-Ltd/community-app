@@ -381,6 +381,21 @@ class HomeView extends StatelessWidget {
                                   model.goToContactUs();
                                 },
                               ),
+                              ListTile(
+                                dense: true,
+                                title: Text(
+                                  "Help",
+                                  style: TextStyle(
+                                    fontSize: default_normal_font_size,
+                                    color: busyButtonTextColorLight,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  model.goToHelp();
+                                },
+                              ),
                             ],
                           ),
                         ),

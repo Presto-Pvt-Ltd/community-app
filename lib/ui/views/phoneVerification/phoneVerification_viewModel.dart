@@ -235,7 +235,12 @@ class PhoneVerificationViewModel extends BaseViewModel {
                 token: _userDataProvider.token!.notificationToken,
               );
         setBusy(false);
-        _navigationService.clearStackAndShow(Routes.homeView);
+        _navigationService.clearStackAndShow(
+          Routes.introductionView,
+          arguments: IntroductionViewArguments(
+            isFromDrawer: false,
+          ),
+        );
       }
     });
   }

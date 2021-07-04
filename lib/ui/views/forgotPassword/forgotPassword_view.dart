@@ -97,13 +97,13 @@ class ForgetPasswordView extends StatelessWidget {
                 ),
                 BusyButton(
                   title: 'Get Link!',
-                  height: height / 13,
-                  width: width * 0.5,
+                  height: 60,
+                  width: width * 0.4,
                   busy: model.isBusy,
                   fontSize: default_big_font_size,
                   textColor: busyButtonTextColorLight,
                   decoration: BoxDecoration(
-                    color: primaryLightSwatch[900],
+                    color: authButtonColorLight,
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     ),

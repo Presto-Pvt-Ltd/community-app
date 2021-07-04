@@ -151,25 +151,27 @@ class BorrowView extends StatelessWidget {
                         SizedBox(
                           height: vertical_padding * 6,
                         ),
-                        BusyButton(
-                          busy: model.inProcess,
-                          fontSize: (default_normal_font_size +
-                                  default_big_font_size) /
-                              2,
-                          textColor: busyButtonTextColorLight,
-                          height: 50,
-                          title: "Borrow money",
+                        Container(
+                          clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
-                            color: primaryLightColor,
                             borderRadius: BorderRadius.circular(25),
                           ),
-                          buttonColor: primaryLightColor,
-                          onPressed: () {
-                            model.checkCurrentStatus(
-                              height: height,
-                              width: width,
-                            );
-                          },
+                          child: BusyButton(
+                            busy: model.inProcess,
+                            fontSize: (default_normal_font_size +
+                                    default_big_font_size) /
+                                2,
+                            textColor: busyButtonTextColorLight,
+                            height: 50,
+                            title: "Borrow money",
+                            buttonColor: primaryLightColor,
+                            onPressed: () {
+                              model.checkCurrentStatus(
+                                height: height,
+                                width: width,
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),

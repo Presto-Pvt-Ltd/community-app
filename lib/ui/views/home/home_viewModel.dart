@@ -58,6 +58,13 @@ class HomeViewModel extends IndexTrackingViewModel {
     locator<NavigationService>().navigateTo(Routes.contactUsView);
   }
 
+  void goToHelp() {
+    locator<NavigationService>().navigateTo(Routes.introductionView,
+        arguments: IntroductionViewArguments(
+          isFromDrawer: true,
+        ));
+  }
+
   void goToProfileDetails() {
     locator<NavigationService>().navigateTo(Routes.profileDetailsView);
   }

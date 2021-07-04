@@ -40,7 +40,6 @@ class _BusyButtonState extends State<BusyButton> {
             height: widget.height,
             width: widget.width,
             decoration: widget.decoration,
-            clipBehavior: Clip.hardEdge,
             child: MaterialButton(
               color: widget.buttonColor,
               onPressed: widget.onPressed,

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
+import 'package:presto/ui/views/introduction/introduction_view.dart';
 import 'package:presto/ui/views/profileDetails/profileDetailsView.dart';
 import 'package:stacked/stacked.dart';
 
@@ -39,6 +40,7 @@ class Routes {
   static const String forgetPasswordView = '/forget-password-view';
   static const String contactUsView = '/contact-us-view';
   static const String profileDetailsView = '/profile-details-view';
+  static const String introductionView = '/iIntroduction-view';
   static const all = <String>{
     startUpView,
     dummyView,
@@ -53,6 +55,7 @@ class Routes {
     forgetPasswordView,
     contactUsView,
     profileDetailsView,
+    introductionView,
   };
 }
 
@@ -73,6 +76,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.forgetPasswordView, page: ForgetPasswordView),
     RouteDef(Routes.contactUsView, page: ContactUsView),
     RouteDef(Routes.profileDetailsView, page: ProfileDetailsView),
+    RouteDef(Routes.introductionView, page: IntroductionView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -181,6 +185,16 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    IntroductionView: (data) {
+      var args = data.getArgs<IntroductionViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => IntroductionView(
+          key: args.key,
+          isFromDrawer: args.isFromDrawer,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -226,4 +240,11 @@ class TransactionViewArguments {
   final Key? key;
   final CustomTransaction customTransaction;
   TransactionViewArguments({this.key, required this.customTransaction});
+}
+
+/// IntroductionView arguments holder class
+class IntroductionViewArguments {
+  final Key? key;
+  final bool isFromDrawer;
+  IntroductionViewArguments({this.key, required this.isFromDrawer});
 }
