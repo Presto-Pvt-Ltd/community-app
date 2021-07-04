@@ -50,6 +50,10 @@ Widget transactionCard({
           !transaction.transactionStatus.borrowerSentMoney) {
         status = "Your turn to pay back";
         textColor = primaryLightColor;
+      }  else if (transaction.lenderInformation == null ||
+          transaction.lenderInformation!.lenderName == null) {
+        status = "Pending";
+        textColor = Colors.orange;
       } else if (transaction.transactionStatus.borrowerSentMoney &&
           !transaction.razorpayInformation.sentMoneyToLender) {
         status = "Processing money";

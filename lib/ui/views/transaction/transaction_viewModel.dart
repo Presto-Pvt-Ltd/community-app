@@ -65,6 +65,9 @@ class TransactionViewModel extends BaseViewModel {
           transaction.transactionStatus.lenderSentMoney) {
         log.v("In Process");
         this.transactionStatus = "Processing money";
+      } else if (transaction.lenderInformation == null ||
+          transaction.lenderInformation!.lenderName == null) {
+        this.transactionStatus = "Pending";
       } else if (transaction.razorpayInformation.sentMoneyToBorrower &&
           !transaction.transactionStatus.borrowerSentMoney) {
         log.v("Pay Back");
