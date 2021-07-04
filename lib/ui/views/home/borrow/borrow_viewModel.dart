@@ -336,6 +336,11 @@ class BorrowViewModel extends BaseViewModel {
                 .toSet()
                 .toList(),
           );
+          showCustomDialog(
+            title: "Request Sent",
+            description:
+                "Your request has been sent. Please wait while we search for lenders in your community.",
+          );
           inProcess = false;
           notifyListeners();
         } on FirebaseFunctionsException catch (e) {
