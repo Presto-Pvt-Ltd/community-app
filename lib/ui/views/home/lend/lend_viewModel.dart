@@ -109,6 +109,24 @@ class LendViewModel extends StreamViewModel {
     required CustomTransaction transaction,
   }) async {
     log.w("Executing handshake");
+    CustomTransaction currentTransaction =
+        await locator<TransactionsDataHandler>()
+            .getTransactionData(
+              transactionId: transaction.genericInformation.transactionId,
+              fromLocalStorage: false,
+            )
+            .then((value) => CustomTransaction.fromJson(value));
+    if (currentTransaction.lenderInformation != null &&
+        currentTransaction.razorpayInformation.lenderRazorpayPaymentId !=
+            null) {
+      showCustomDialog(
+        title: "Sorry",
+        description:
+            "Someone has already serviced the request. Refund will be initiated. in case you dont recieve your refund within 2-4 business days please contact customer care..",
+      );
+      setBusy(false);
+      return;
+    }
 
     /// add lender's info and update transaction status
     transaction.lenderInformation = LenderInformation(

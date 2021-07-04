@@ -50,7 +50,7 @@ Widget transactionCard({
           !transaction.transactionStatus.borrowerSentMoney) {
         status = "Your turn to pay back";
         textColor = primaryLightColor;
-      }  else if (transaction.lenderInformation == null ||
+      } else if (transaction.lenderInformation == null ||
           transaction.lenderInformation!.lenderName == null) {
         status = "Pending";
         textColor = Colors.orange;
@@ -167,28 +167,20 @@ Widget transactionCard({
                     SizedBox(
                       height: 2,
                     ),
-                    transaction.lenderInformation!.lenderName == null
-                        ? Text(
-                            "Searching for lender",
-                            style: TextStyle(
-                              fontSize: (default_normal_font_size +
-                                      default_small_font_size) /
-                                  2,
-                              color: primaryLightColor,
-                            ),
-                          )
-                        : Text(
-                            'Due Date:' +
-                                '${dueDate.day}'
-                                    '/${dueDate.month}'
-                                    '/${dueDate.year}',
-                            style: TextStyle(
-                              fontSize: (default_normal_font_size +
-                                      default_small_font_size) /
-                                  2,
-                              color: primaryLightColor,
-                            ),
-                          ),
+                    Text(
+                      'Due Date:' +
+                          (transaction.lenderInformation!.lenderName == null
+                              ? ("NA")
+                              : ('${dueDate.day}'
+                                  '/${dueDate.month}'
+                                  '/${dueDate.year}')),
+                      style: TextStyle(
+                        fontSize: (default_normal_font_size +
+                                default_small_font_size) /
+                            2,
+                        color: primaryLightColor,
+                      ),
+                    ),
                   ],
                 ),
                 Column(
