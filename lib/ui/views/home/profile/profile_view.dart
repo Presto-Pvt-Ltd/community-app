@@ -273,7 +273,7 @@ class ProfileView extends StatelessWidget {
                                 ),
                               ),
                               height: height * 0.08,
-                              width: width * 0.37,
+                              width: width * 0.39,
                               child: Center(
                                 child: Text(
                                   "Invite (${(locator<LimitsDataProvider>().referralLimit?.refereeLimit ?? 15) - (locator<UserDataProvider>().platformData?.referredTo.length ?? 0)})",
@@ -299,7 +299,7 @@ class ProfileView extends StatelessWidget {
                                 ),
                               ),
                               height: height * 0.08,
-                              width: width * 0.37,
+                              width: width * 0.39,
                               child: Center(
                                 child: Text(
                                   "Redeem",

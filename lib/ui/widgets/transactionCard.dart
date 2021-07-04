@@ -123,6 +123,9 @@ Widget transactionCard({
                         color: authButtonColorLight,
                       ),
                     ),
+                    SizedBox(
+                      height: 2,
+                    ),
                     transaction.lenderInformation!.lenderName == null
                         ? Text(
                             "Searching for lender",
@@ -142,6 +145,9 @@ Widget transactionCard({
                               color: primaryLightColor,
                             ),
                           ),
+                    SizedBox(
+                      height: 2,
+                    ),
                     Text(
                       'Txn Date:' +
                           '${transaction.genericInformation.initiationAt.day}'
@@ -153,6 +159,9 @@ Widget transactionCard({
                             2,
                         color: primaryLightColor,
                       ),
+                    ),
+                    SizedBox(
+                      height: 2,
                     ),
                     transaction.lenderInformation!.lenderName == null
                         ? Text(
