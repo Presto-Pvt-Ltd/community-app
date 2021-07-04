@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:presto/ui/shared/colors.dart';
+import 'package:presto/ui/shared/ui_helpers.dart';
 
 class AmountButton extends StatelessWidget {
   final String text;
   final Function onTap;
-  AmountButton({required this.text, required this.onTap});
+  final Color? buttonColor;
+  AmountButton({required this.text, required this.onTap, this.buttonColor});
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -12,21 +14,20 @@ class AmountButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: GestureDetector(
-        onTap: () {
-          onTap();
-        },
+        onTap: () => onTap(),
         child: Container(
-          height: height / 20,
-          width: width / 5,
+          height: 50,
+          width: 80,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(width / 17)),
-              color: primaryLightSwatch[900]),
+            borderRadius: BorderRadius.circular(25),
+            color: buttonColor ?? primaryLightColor,
+          ),
           child: Center(
             child: Text(
-              text,
+               text,
               style: TextStyle(
-                fontSize: 20,
-                color: busyButtonTextColorLight,
+                fontSize: default_normal_font_size,
+                color: authButtonColorLight,
               ),
             ),
           ),

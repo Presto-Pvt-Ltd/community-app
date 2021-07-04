@@ -206,7 +206,7 @@ class HomeView extends StatelessWidget {
               case 0:
                 return "";
               case 1:
-                return "Amount Demanded";
+                return "";
               case 2:
                 return "Transaction History";
               case 3:

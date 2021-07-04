@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
 
 // ignore: must_be_immutable
@@ -39,6 +40,7 @@ class _BusyButtonState extends State<BusyButton> {
             height: widget.height,
             width: widget.width,
             decoration: widget.decoration,
+            clipBehavior: Clip.hardEdge,
             child: MaterialButton(
               color: widget.buttonColor,
               onPressed: widget.onPressed,
@@ -52,9 +54,7 @@ class _BusyButtonState extends State<BusyButton> {
             ),
           )
         : Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(primaryLightColor),
-            ),
+            child: loader,
           );
   }
 }
