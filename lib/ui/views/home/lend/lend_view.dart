@@ -38,11 +38,9 @@ class LendView extends StatelessWidget {
           },
           child: model.dataReady || !model.isBusy
               ? Container(
-                color: backgroundColorLight,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  color: backgroundColorLight,
+                  child: Column(
                     children: [
-                      
                       model.notifications.length == 0
                           ? Align(
                               alignment: Alignment.topCenter,
@@ -104,7 +102,7 @@ class LendView extends StatelessWidget {
                       // notificationListCard( , height, width),
                     ],
                   ),
-              )
+                )
               : Center(
                   child: CircularProgressIndicator(),
                 ),

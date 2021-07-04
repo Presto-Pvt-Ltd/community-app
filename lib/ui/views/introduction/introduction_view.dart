@@ -15,32 +15,154 @@ class IntroductionView extends StatelessWidget {
   final bool isFromDrawer;
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     List<PageViewModel> listOfPages = [
       PageViewModel(
-        title: "Get Started",
-        body:
-            "We are committed to build strong communities on mutual trust and support.",
-        image: const Center(child: Icon(Icons.android)),
+        titleWidget: Container(),
+        bodyWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: Container(
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  "assets/images/get_started.svg",
+                  fit: BoxFit.fill,
+                  height: height * 0.45,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: vertical_padding,
+            ),
+            Text(
+              "Get Started",
+              style: TextStyle(
+                fontSize: default_headers,
+                fontWeight: FontWeight.bold,
+                color: authButtonColorLight,
+              ),
+            ),
+            SizedBox(
+              height: vertical_padding * 2,
+            ),
+            Container(
+              width: width * 0.8,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "We are committed to build strong communities on mutual trust and support.",
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: default_big_font_size,
+                  fontWeight: FontWeight.w500,
+                  color: authButtonColorLight,
+                ),
+              ),
+            ),
+          ],
+        ),
         decoration: const PageDecoration(
           titleTextStyle: TextStyle(color: Colors.orange),
           bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
         ),
       ),
       PageViewModel(
-        title: "Forget Credit Cards",
-        body:
-            "A highly innovative invite-only community-based P2P Lending platform serving all your credit needs with the click of a button.",
-        image: const Center(child: Icon(Icons.android)),
+        titleWidget: Container(),
+        bodyWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: Container(
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  "assets/images/forget_credit_card.svg",
+                  height: height * 0.45,
+                  width: width,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: vertical_padding,
+            ),
+            Text(
+              "Forget Credit Cards",
+              style: TextStyle(
+                fontSize: default_headers,
+                fontWeight: FontWeight.bold,
+                color: authButtonColorLight,
+              ),
+            ),
+            SizedBox(
+              height: vertical_padding * 2,
+            ),
+            Container(
+              width: width * 0.8,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "A highly innovative invite-only community-based P2P Lending platform serving all your credit needs with the click of a button.",
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: default_big_font_size,
+                  fontWeight: FontWeight.w500,
+                  color: authButtonColorLight,
+                ),
+              ),
+            ),
+          ],
+        ),
         decoration: const PageDecoration(
           titleTextStyle: TextStyle(color: Colors.orange),
           bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
         ),
       ),
       PageViewModel(
-        title: "Innovative Credit Profiling",
-        body:
-            "Coming with an intelligent credit profiling algorithm to connect with the most creditworthy members of your community.",
-        image: const Center(child: Icon(Icons.android)),
+        titleWidget: Container(),
+        bodyWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: Container(
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  "assets/images/innovative_profiling.svg",
+                  fit: BoxFit.fill,
+                  height: height * 0.45,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: vertical_padding,
+            ),
+            Text(
+              "Innovative Credit Profiling",
+              style: TextStyle(
+                fontSize: default_headers,
+                fontWeight: FontWeight.bold,
+                color: authButtonColorLight,
+              ),
+            ),
+            SizedBox(
+              height: vertical_padding * 2,
+            ),
+            Container(
+              width: width * 0.8,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Coming with an intelligent credit profiling algorithm to connect with the most creditworthy members of your community.",
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: default_big_font_size,
+                  fontWeight: FontWeight.w500,
+                  color: authButtonColorLight,
+                ),
+              ),
+            ),
+          ],
+        ),
         decoration: const PageDecoration(
           titleTextStyle: TextStyle(color: Colors.orange),
           bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
