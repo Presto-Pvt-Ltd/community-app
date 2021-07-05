@@ -1,11 +1,9 @@
 name: presto
-description: A new Flutter project.
+description: Fin-tech application for community transactions.
 
-# The following line prevents the package from being accidentally published to
-# pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: "none"
 
-version: 1.0.1+1
+version: 1.0.0
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
