@@ -78,6 +78,8 @@ Future _initHive() async {
 }
 
 class MyApp extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     FirebaseMessaging.onMessage.listen((event) {
@@ -110,7 +112,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: primaryLightSwatch,
         primaryColor: primaryLightColor,
         textTheme: GoogleFonts.interTextTheme(),
-        backgroundColor:backgroundColorLight,
+        backgroundColor: backgroundColorLight,
       ),
       navigatorKey: StackedService.navigatorKey,
       onGenerateRoute: StackedRouter().onGenerateRoute,

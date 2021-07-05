@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/app/app.logger.dart';
@@ -65,11 +66,16 @@ class RazorpayService {
   }
 
   /// [amount] must be in rupees
-  Future<void> createOrderInServer(
-      {required double amount, required String transactionId}) async {
+  Future<void> createOrderInServer({
+    required double amount,
+    required String transactionId,
+  }) async {
     amount = amount * 100.0;
-    var uname = 'rzp_live_czsnnKwmX3ZSff';
-    var pword = 'L0naRRqpYhrtlyxjple9E3Bo';
+    final remoteConfig = RemoteConfig.instance;
+    await remoteConfig.fetchAndActivate();
+    final uname = remoteConfig.getValue('user').asString();
+    final pword = remoteConfig.getValue('password').asString();
+    final key = remoteConfig.getValue('key').asString();
     var authn = 'Basic ' + base64Encode(utf8.encode('$uname:$pword'));
     var headers = {
       'content-type': 'application/json',
@@ -83,8 +89,11 @@ class RazorpayService {
     });
     log.wtf(data);
     await http
-        .post(Uri.parse('https://api.razorpay.com/v1/orders'),
-            headers: headers, body: data)
+        .post(
+      Uri.parse('https://api.razorpay.com/v1/orders'),
+      headers: headers,
+      body: data,
+    )
         .then((res) {
       if (res.statusCode != 200)
         throw Exception(
@@ -92,7 +101,7 @@ class RazorpayService {
       var map = jsonDecode(res.body);
       log.wtf(map);
       var options = {
-        'key': 'rzp_live_czsnnKwmX3ZSff',
+        'key': key,
         'amount':
             amount.toInt().toString(), //in the smallest currency sub-unit.
         'name': 'Presto Private Ltd',

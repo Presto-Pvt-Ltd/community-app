@@ -32,6 +32,7 @@ dependencies:
   firebase_messaging: ^10.0.2
   cloud_functions: ^1.0.7
   flutter_local_notifications: ^5.0.0+4
+  firebase_remote_config: ^0.10.0+2
 
   # UI
   keyboard_dismisser: ^2.0.0
