@@ -27,7 +27,9 @@ class TransactionViewModel extends BaseViewModel {
   late String transactionStatus;
   late Color buttonColor;
   late final CustomTransaction transaction;
-
+  late String lenderOrBorrower;
+  late String lenderOrBorrowerName;
+  late Color textColor;
   void pop() {
     locator<NavigationService>().back();
   }
@@ -51,13 +53,22 @@ class TransactionViewModel extends BaseViewModel {
     int minutesPassed = DateTime.now()
         .difference(transaction.genericInformation.initiationAt)
         .inMinutes;
+    textColor = primaryLightColor;
     if (this.isBorrowed) {
+      lenderOrBorrower = transaction.lenderInformation!.lenderName == null
+          ? "Searching for lenders"
+          : "Lender";
+      lenderOrBorrowerName = transaction.lenderInformation!.lenderName ?? "";
       log.v("Borrowed");
+      if (transaction.lenderInformation!.lenderName == null) {
+        this.textColor = Colors.orangeAccent;
+      }
       if (minutesPassed >= (minutes + (hours * 60))) {
         if (!transaction.transactionStatus.lenderSentMoney) {
           log.v("Failed");
           this.buttonText = "No Lenders Found";
           this.transactionStatus = "Failed";
+          this.textColor = Colors.red;
           return;
         }
       }
@@ -82,8 +93,11 @@ class TransactionViewModel extends BaseViewModel {
         log.v("Success");
         this.transactionStatus = "Success";
         this.buttonText = "Paid Back";
+        this.textColor = neonGreen;
       }
     } else {
+      lenderOrBorrower = "Borrower";
+      lenderOrBorrowerName = transaction.borrowerInformation.borrowerName;
       if (transaction.transactionStatus.lenderSentMoney &&
           !transaction.razorpayInformation.sentMoneyToBorrower) {
         this.transactionStatus = "Processing money";
@@ -91,6 +105,7 @@ class TransactionViewModel extends BaseViewModel {
       } else if (transaction.razorpayInformation.sentMoneyToLender) {
         this.buttonText = "Transaction Complete";
         this.transactionStatus = "Success";
+        this.textColor = neonGreen;
       } else if (transaction.transactionStatus.borrowerSentMoney &&
           !transaction.razorpayInformation.sentMoneyToLender) {
         this.transactionStatus = "Processing money";

@@ -31,12 +31,18 @@ Widget transactionCard({
   int minutesPassed = DateTime.now()
       .difference(transaction.genericInformation.initiationAt)
       .inMinutes;
+  late String name;
   void assign() {
     textColor = textGreyShade;
+
     if (locator<UserDataProvider>().platformData!.referralCode ==
         transaction.borrowerInformation.borrowerReferralCode) {
+      name = transaction.lenderInformation!.lenderName != null
+          ? "Lender: ${transaction.lenderInformation!.lenderName}"
+          : "Searching for lenders";
       if (minutesPassed >= (minutes + (hours * 60))) {
         if (!transaction.transactionStatus.lenderSentMoney) {
+          name = "Failed to fetch Lenders";
           status = "Failed";
           textColor = Colors.red;
           return;
@@ -44,11 +50,11 @@ Widget transactionCard({
       }
       if (!transaction.razorpayInformation.sentMoneyToBorrower &&
           transaction.transactionStatus.lenderSentMoney) {
-        status = "Processing money";
+        status = "Processing";
         textColor = Colors.orange;
       } else if (transaction.razorpayInformation.sentMoneyToBorrower &&
           !transaction.transactionStatus.borrowerSentMoney) {
-        status = "Your turn to pay back";
+        status = "Pay back";
         textColor = primaryLightColor;
       } else if (transaction.lenderInformation == null ||
           transaction.lenderInformation!.lenderName == null) {
@@ -56,26 +62,27 @@ Widget transactionCard({
         textColor = Colors.orange;
       } else if (transaction.transactionStatus.borrowerSentMoney &&
           !transaction.razorpayInformation.sentMoneyToLender) {
-        status = "Processing money";
+        status = "Processing";
         textColor = Colors.orange;
       } else {
         status = "Success";
         textColor = neonGreen;
       }
     } else {
+      name = "Borrower: ${transaction.borrowerInformation.borrowerName}";
       if (transaction.transactionStatus.lenderSentMoney &&
           !transaction.razorpayInformation.sentMoneyToBorrower) {
-        status = "Processing money";
+        status = "Processing";
         textColor = Colors.orange;
       } else if (transaction.razorpayInformation.sentMoneyToLender) {
         status = "Success";
         textColor = neonGreen;
       } else if (transaction.transactionStatus.borrowerSentMoney &&
           !transaction.razorpayInformation.sentMoneyToLender) {
-        status = "Processing money";
+        status = "Processing";
         textColor = Colors.orange;
       } else {
-        status = "Wait for Pay Back";
+        status = "Wait..";
       }
     }
     return;
@@ -130,25 +137,15 @@ Widget transactionCard({
                     SizedBox(
                       height: 2,
                     ),
-                    transaction.lenderInformation!.lenderName == null
-                        ? Text(
-                            "Searching for lender",
-                            style: TextStyle(
-                              fontSize: (default_normal_font_size +
-                                      default_small_font_size) /
-                                  2,
-                              color: primaryLightColor,
-                            ),
-                          )
-                        : Text(
-                            'Lender: ${transaction.lenderInformation!.lenderName}',
-                            style: TextStyle(
-                              fontSize: (default_normal_font_size +
-                                      default_small_font_size) /
-                                  2,
-                              color: primaryLightColor,
-                            ),
-                          ),
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: (default_normal_font_size +
+                                default_small_font_size) /
+                            2,
+                        color: primaryLightColor,
+                      ),
+                    ),
                     SizedBox(
                       height: 2,
                     ),

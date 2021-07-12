@@ -102,12 +102,11 @@ class RazorpayService {
       log.wtf(map);
       var options = {
         'key': key,
-        'amount':
-            amount.toInt().toString(), //in the smallest currency sub-unit.
+        'amount': amount.toInt().toString(),
         'name': 'Presto Private Ltd',
-        'order_id': map['id'].toString(), // Generate order_id using Orders API
+        'order_id': map['id'].toString(),
         'description': '',
-        'timeout': 60, // in seconds
+        'timeout': 180,
         'prefill': {
           'contact': '9887445671',
           'email': 'prestoprivatelimited@gmail.com'

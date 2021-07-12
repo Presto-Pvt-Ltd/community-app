@@ -5,7 +5,6 @@ import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/shared/ui_helpers.dart';
-import 'package:presto/ui/widgets/ListToken.dart';
 import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'profile_viewModel.dart';
@@ -39,7 +38,6 @@ class ProfileView extends StatelessWidget {
           } else {
             nameForCard = locator<UserDataProvider>().personalData!.name;
           }
-          print(nameForCard);
         }
         return GestureDetector(
           onHorizontalDragEnd: (dragEndDetails) {

@@ -295,7 +295,7 @@ class HomeView extends StatelessWidget {
               ? null
               : model.currentIndex == 0
                   ? Container(
-                      width: width * 0.5,
+                      width: width * 0.6,
                       child: Drawer(
                         child: Container(
                           color: primaryLightColor,

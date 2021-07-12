@@ -54,162 +54,171 @@ class TransactionView extends StatelessWidget {
               ? Center(
                   child: loader,
                 )
-              : Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  color: backgroundColorLight,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: height / 25,
-                      ),
-                      Center(
-                        child: Text(
-                          '₹ ${customTransaction.genericInformation.amount}',
-                          style: TextStyle(
-                            fontSize: height / 15,
-                            color: authButtonColorLight,
-                          ),
+              : SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    color: backgroundColorLight,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: height / 25,
                         ),
-                      ),
-                      SizedBox(
-                        height: height / 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            'Current Status:',
+                        Center(
+                          child: Text(
+                            '₹ ${customTransaction.genericInformation.amount}',
                             style: TextStyle(
-                              fontSize: default_big_font_size * 1.4,
-                              fontWeight: FontWeight.w500,
+                              fontSize: height / 15,
                               color: authButtonColorLight,
                             ),
                           ),
-                          Text(
-                            model.transactionStatus,
+                        ),
+                        SizedBox(
+                          height: height / 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: horizontal_padding * 0.5,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Current Status  ',
+                                style: TextStyle(
+                                  color: authButtonColorLight,
+                                  fontSize: (default_big_font_size +
+                                          default_normal_font_size) /
+                                      2,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                model.transactionStatus,
+                                style: TextStyle(
+                                  fontSize: (default_big_font_size +
+                                          default_normal_font_size) /
+                                      2,
+                                  fontWeight: FontWeight.w500,
+                                  color: model.textColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: vertical_padding,
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            'Transaction Id',
                             style: TextStyle(
-                              fontSize: default_big_font_size * 1.4,
-                              fontWeight: FontWeight.w500,
-                              color: model.transactionStatus == "Failed"
-                                  ? Colors.red
-                                  : customTransaction
-                                              .lenderInformation!.lenderName ==
-                                          null
-                                      ? Colors.orangeAccent
-                                      : primaryLightColor,
+                              fontSize: default_normal_font_size,
                             ),
                           ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: height / 15,
-                      ),
-                      ListTile(
-                        title: Text(
-                          'Transaction Id:',
-                          style: TextStyle(
-                            fontSize: (default_normal_font_size +
-                                    default_big_font_size) /
-                                2,
+                          trailing: Text(
+                            customTransaction.genericInformation.transactionId,
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: default_normal_font_size,
+                            ),
                           ),
                         ),
-                        trailing: Text(
-                          customTransaction.genericInformation.transactionId,
-                          style: TextStyle(
-                            color: primaryLightColor,
-                            fontSize: (default_normal_font_size +
-                                    default_big_font_size) /
-                                2,
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            model.lenderOrBorrower,
+                            style: TextStyle(
+                              fontSize: default_normal_font_size,
+                            ),
+                          ),
+                          trailing: Text(
+                            model.lenderOrBorrowerName,
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: default_normal_font_size,
+                            ),
                           ),
                         ),
-                      ),
-                      ListTile(
-                        title: Text(
-                          'Date of Transaction:',
-                          style: TextStyle(
-                            fontSize: (default_normal_font_size +
-                                    default_big_font_size) /
-                                2,
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            'Date of Transaction:',
+                            style: TextStyle(
+                              fontSize: default_normal_font_size,
+                            ),
+                          ),
+                          trailing: Text(
+                            '${customTransaction.genericInformation.initiationAt.day}'
+                            '/${customTransaction.genericInformation.initiationAt.month}'
+                            '/${customTransaction.genericInformation.initiationAt.year}',
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: default_normal_font_size,
+                            ),
                           ),
                         ),
-                        trailing: Text(
-                          '${customTransaction.genericInformation.initiationAt.day}'
-                          '/${customTransaction.genericInformation.initiationAt.month}'
-                          '/${customTransaction.genericInformation.initiationAt.year}',
-                          style: TextStyle(
-                            color: primaryLightColor,
-                            fontSize: (default_normal_font_size +
-                                    default_big_font_size) /
-                                2,
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            'Interest Rate',
+                            style: TextStyle(
+                              fontSize: default_normal_font_size,
+                            ),
+                          ),
+                          trailing: Text(
+                            '${customTransaction.genericInformation.interestRate}%',
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: default_normal_font_size,
+                            ),
                           ),
                         ),
-                      ),
-                      ListTile(
-                        title: Text(
-                          'Interest Rate',
-                          style: TextStyle(
-                            fontSize: (default_normal_font_size +
-                                    default_big_font_size) /
-                                2,
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            'Creditworthy Score',
+                            style: TextStyle(
+                              fontSize: default_normal_font_size,
+                            ),
+                          ),
+                          trailing: Text(
+                            customTransaction
+                                .borrowerInformation.borrowerCreditScore
+                                .toStringAsPrecision(3),
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: default_normal_font_size,
+                            ),
                           ),
                         ),
-                        trailing: Text(
-                          '${customTransaction.genericInformation.interestRate}%',
-                          style: TextStyle(
-                            color: primaryLightColor,
-                            fontSize: (default_normal_font_size +
-                                    default_big_font_size) /
-                                2,
-                          ),
+                        SizedBox(
+                          height: vertical_padding * 4,
                         ),
-                      ),
-                      ListTile(
-                        title: Text(
-                          'Creditworthy Score',
-                          style: TextStyle(
-                            fontSize: (default_normal_font_size +
-                                    default_big_font_size) /
-                                2,
+                        BusyButton(
+                          busy: model.isBusy,
+                          height: height * 0.08,
+                          title: model.buttonText,
+                          fontSize: (default_normal_font_size +
+                                  default_big_font_size) /
+                              2,
+                          decoration: BoxDecoration(
+                            color: model.buttonColor,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(width / 15),
+                            ),
                           ),
+                          onPressed: (model.buttonText == "Pay Back")
+                              ? () {
+                                  model.initiateTransaction();
+                                }
+                              : null,
+                          textColor: busyButtonTextColorLight,
                         ),
-                        trailing: Text(
-                          customTransaction
-                              .borrowerInformation.borrowerCreditScore
-                              .toStringAsPrecision(3),
-                          style: TextStyle(
-                            color: primaryLightColor,
-                            fontSize: (default_normal_font_size +
-                                    default_big_font_size) /
-                                2,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: height / 10,
-                      ),
-                      BusyButton(
-                        busy: model.isBusy,
-                        height: height * 0.08,
-                        title: model.buttonText,
-                        fontSize:
-                            (default_normal_font_size + default_big_font_size) /
-                                2,
-                        decoration: BoxDecoration(
-                          color: model.buttonColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(width / 15),
-                          ),
-                        ),
-                        onPressed: (model.buttonText == "Pay Back")
-                            ? () {
-                                model.initiateTransaction();
-                              }
-                            : null,
-                        textColor: busyButtonTextColorLight,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
         );
