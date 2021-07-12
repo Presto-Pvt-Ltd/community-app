@@ -17,7 +17,6 @@ import 'package:presto/services/database/dataHandlers/profileDataHandler.dart';
 import 'package:presto/services/database/dataProviders/limits_data_provider.dart';
 import 'package:presto/services/database/dataProviders/transactions_data_provider.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
-import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/dialogBox.dart';
 import 'package:presto/ui/widgets/paymentSheet.dart';
 import 'package:stacked/stacked.dart';

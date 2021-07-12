@@ -55,7 +55,7 @@ class IntroductionView extends StatelessWidget {
                 "We are committed to build strong communities on mutual trust and support.",
                 softWrap: true,
                 style: TextStyle(
-                  fontSize: default_big_font_size,
+                  fontSize: default_normal_font_size,
                   fontWeight: FontWeight.w500,
                   color: authButtonColorLight,
                 ),
@@ -105,7 +105,7 @@ class IntroductionView extends StatelessWidget {
                 "A highly innovative invite-only community-based P2P Lending platform serving all your credit needs with the click of a button.",
                 softWrap: true,
                 style: TextStyle(
-                  fontSize: default_big_font_size,
+                  fontSize: default_normal_font_size,
                   fontWeight: FontWeight.w500,
                   color: authButtonColorLight,
                 ),
@@ -155,7 +155,7 @@ class IntroductionView extends StatelessWidget {
                 "Coming with an intelligent credit profiling algorithm to connect with the most creditworthy members of your community.",
                 softWrap: true,
                 style: TextStyle(
-                  fontSize: default_big_font_size,
+                  fontSize: default_normal_font_size,
                   fontWeight: FontWeight.w500,
                   color: authButtonColorLight,
                 ),

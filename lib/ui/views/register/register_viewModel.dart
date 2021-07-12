@@ -20,7 +20,6 @@ import 'package:presto/services/database/hiveDatabase.dart';
 import 'package:presto/services/error/error.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/shared/ui_helpers.dart';
-import 'package:presto/ui/widgets/dialogBox.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked_services/stacked_services.dart';

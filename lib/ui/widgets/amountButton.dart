@@ -9,8 +9,8 @@ class AmountButton extends StatelessWidget {
   AmountButton({required this.text, required this.onTap, this.buttonColor});
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
+    // var height = MediaQuery.of(context).size.height;
+    // var width = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: GestureDetector(
@@ -24,7 +24,7 @@ class AmountButton extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-               text,
+              text,
               style: TextStyle(
                 fontSize: default_normal_font_size,
                 color: authButtonColorLight,

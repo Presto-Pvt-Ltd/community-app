@@ -6,7 +6,6 @@ import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/shared/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
-import '../../../models/enums.dart';
 import '../../widgets/paymentSheet.dart';
 import 'notification_viewModel.dart';
 
@@ -23,11 +22,7 @@ class NotificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    List<PaymentMethods> paymentMethods = notification.paymentMethods;
-    String paymentMethodsString = '';
-    paymentMethods.forEach((element) {
-      paymentMethodsString += PaymentMethodsMap[element]!;
-    });
+
     print(
       width * 0.4,
     );

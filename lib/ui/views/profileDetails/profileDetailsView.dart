@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart';
 import 'package:presto/app/app.locator.dart';
 import 'package:presto/services/database/dataProviders/user_data_provider.dart';
 import 'package:presto/ui/shared/circular_indicator.dart';
