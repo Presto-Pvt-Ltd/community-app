@@ -119,6 +119,8 @@ class LendViewModel extends StreamViewModel {
     if (currentTransaction.lenderInformation != null &&
         currentTransaction.razorpayInformation.lenderRazorpayPaymentId !=
             null) {
+      RazorpayService _razorpay = RazorpayService(callback: () {});
+      _razorpay.createRefundRequest(transactionId: razorpayTransactionId);
       showCustomDialog(
         title: "Sorry",
         description:

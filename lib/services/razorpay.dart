@@ -74,9 +74,9 @@ class RazorpayService {
     final remoteConfig = RemoteConfig.instance;
     await remoteConfig.fetchAndActivate();
     final uname = remoteConfig.getValue('user').asString();
-    final pword = remoteConfig.getValue('password').asString();
+    final password = remoteConfig.getValue('password').asString();
     final key = remoteConfig.getValue('key').asString();
-    var authn = 'Basic ' + base64Encode(utf8.encode('$uname:$pword'));
+    var authn = 'Basic ' + base64Encode(utf8.encode('$uname:$password'));
     var headers = {
       'content-type': 'application/json',
       'Authorization': authn,
@@ -113,6 +113,36 @@ class RazorpayService {
         }
       };
       _razorpay.open(options);
+    });
+  }
+
+  /// [amount] must be in rupees
+  Future<void> createRefundRequest({
+    required String transactionId,
+  }) async {
+    log.wtf("Creating refund ");
+    final remoteConfig = RemoteConfig.instance;
+    await remoteConfig.fetchAndActivate();
+    final uname = remoteConfig.getValue('user').asString();
+    final password = remoteConfig.getValue('password').asString();
+    final key = remoteConfig.getValue('key').asString();
+    var authn = 'Basic ' + base64Encode(utf8.encode('$uname:$password'));
+    var headers = {
+      'content-type': 'application/json',
+      'Authorization': authn,
+    };
+
+    await http
+        .post(
+      Uri.parse('https://api.razorpay.com/v1/payments/$transactionId/refund'),
+      headers: headers,
+    )
+        .then((res) {
+      if (res.statusCode != 200)
+        throw Exception(
+            'http.post error: statusCode= ${res.statusCode} \n ${res.body}');
+      var map = jsonDecode(res.body);
+      log.wtf(map);
     });
   }
 }
