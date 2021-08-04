@@ -161,17 +161,18 @@ class NotificationView extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) => paymentSheet(
-                                  height: height,
-                                  width: width,
-                                  onCompleteCallBack: model.initiateTransaction,
-                                  onCancel: model.cancel,
-                                ),
-                              );
+                              model.initiateTransaction([]);
+                              // showModalBottomSheet(
+                              //   context: context,
+                              //   isScrollControlled: true,
+                              //   backgroundColor: Colors.transparent,
+                              //   builder: (context) => paymentSheet(
+                              //     height: height,
+                              //     width: width,
+                              //     onCompleteCallBack: model.initiateTransaction,
+                              //     onCancel: model.cancel,
+                              //   ),
+                              // );
                             },
                             child: Container(
                               width: width / 3.5,

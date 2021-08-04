@@ -86,19 +86,25 @@ class LendViewModel extends StreamViewModel {
       );
       return;
     }
-    RazorpayService _razorpayService =
-        RazorpayService(callback: (String paymentId) async {
-      await handshake(
-        notification,
-        razorpayTransactionId: paymentId,
-        paymentMethods: paymentMethods,
-        transaction: transaction,
-      );
-    });
-    log.wtf(notification.amount.toDouble());
-    await _razorpayService.createOrderInServer(
-      amount: notification.amount.toDouble(),
-      transactionId: notification.transactionId,
+    // RazorpayService _razorpayService =
+    //     RazorpayService(callback: (String paymentId) async {
+    //   await handshake(
+    //     notification,
+    //     razorpayTransactionId: paymentId,
+    //     paymentMethods: paymentMethods,
+    //     transaction: transaction,
+    //   );
+    // });
+    // log.wtf(notification.amount.toDouble());
+    // await _razorpayService.createOrderInServer(
+    //   amount: notification.amount.toDouble(),
+    //   transactionId: notification.transactionId,
+    // );
+    handshake(
+      notification,
+      razorpayTransactionId: transaction.genericInformation.transactionId,
+      paymentMethods: paymentMethods,
+      transaction: transaction,
     );
   }
 

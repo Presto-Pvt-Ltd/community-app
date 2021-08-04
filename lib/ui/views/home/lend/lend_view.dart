@@ -69,19 +69,23 @@ class LendView extends StatelessWidget {
                                       height: height,
                                       width: width,
                                       handShakeCallBack: () {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) => paymentSheet(
-                                            customNotification:
-                                                model.notifications[index],
-                                            height: height,
-                                            width: width,
-                                            onCompleteCallBack:
-                                                model.initiateTransaction,
-                                            onCancel: model.cancel,
-                                          ),
+                                        // showModalBottomSheet(
+                                        //   context: context,
+                                        //   isScrollControlled: true,
+                                        //   backgroundColor: Colors.transparent,
+                                        //   builder: (context) => paymentSheet(
+                                        //     customNotification:
+                                        //         model.notifications[index],
+                                        //     height: height,
+                                        //     width: width,
+                                        //     onCompleteCallBack:
+                                        //         model.initiateTransaction,
+                                        //     onCancel: model.cancel,
+                                        //   ),
+                                        // );
+                                        model.initiateTransaction(
+                                          model.notifications[index],
+                                          [],
                                         );
                                         print("Trying handshake");
                                       },

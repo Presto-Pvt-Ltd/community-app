@@ -48,18 +48,24 @@ class NotificationViewModel extends BaseViewModel {
       );
       return;
     }
-    RazorpayService _razorpayService =
-        RazorpayService(callback: (String paymentId) async {
-      await handshake(
-        notification,
-        razorpayTransactionId: paymentId,
-        paymentMethods: paymentMethods,
-        transaction: transaction,
-      );
-    });
-    await _razorpayService.createOrderInServer(
-      amount: notification.amount.toDouble(),
-      transactionId: notification.transactionId,
+    // RazorpayService _razorpayService =
+    //     RazorpayService(callback: (String paymentId) async {
+    //   await handshake(
+    //     notification,
+    //     razorpayTransactionId: paymentId,
+    //     paymentMethods: paymentMethods,
+    //     transaction: transaction,
+    //   );
+    // });
+    // await _razorpayService.createOrderInServer(
+    //   amount: notification.amount.toDouble(),
+    //   transactionId: notification.transactionId,
+    // );
+    await handshake(
+      notification,
+      razorpayTransactionId: transaction.genericInformation.transactionId,
+      paymentMethods: paymentMethods,
+      transaction: transaction,
     );
   }
 
