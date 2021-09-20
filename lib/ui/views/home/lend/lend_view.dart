@@ -5,7 +5,6 @@ import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/widgets/notificationCard.dart';
 import 'package:stacked/stacked.dart';
 import '../../../../app/app.router.dart';
-import '../../../widgets/paymentSheet.dart';
 import 'lend_viewModel.dart';
 
 class LendView extends StatelessWidget {

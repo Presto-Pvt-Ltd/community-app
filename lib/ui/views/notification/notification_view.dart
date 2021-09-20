@@ -6,7 +6,6 @@ import 'package:presto/ui/shared/circular_indicator.dart';
 import 'package:presto/ui/shared/colors.dart';
 import 'package:presto/ui/shared/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
-import '../../widgets/paymentSheet.dart';
 import 'notification_viewModel.dart';
 
 class NotificationView extends StatelessWidget {

@@ -8,6 +8,7 @@ part of 'transaction_limit_model.dart';
 
 TransactionLimits _$TransactionLimitsFromJson(Map<String, dynamic> json) {
   return TransactionLimits(
+    interest: double.parse(json['interest'].toString()),
     borrowLowerLimit: json['borrowLowerLimit'] as int,
     borrowUpperLimit: json['borrowUpperLimit'] as int,
     keepTransactionActiveForMinutes:
@@ -39,4 +40,5 @@ Map<String, dynamic> _$TransactionLimitsToJson(TransactionLimits instance) =>
       'maxActiveTransactionsPerBorrowerForFreeVersion':
           instance.maxActiveTransactionsPerBorrowerForFreeVersion,
       'mediatorTokens': instance.mediatorTokens,
+      'interest': instance.interest,
     };

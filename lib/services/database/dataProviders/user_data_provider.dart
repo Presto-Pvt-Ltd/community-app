@@ -66,119 +66,44 @@ class UserDataProvider {
   Future<bool> loadData({
     required String referralCode,
     required ProfileDocument typeOfDocument,
-    bool dataIsLive = false,
+    bool dataIsLive = true,
   }) async {
     try {
       log.v("Trying to get data from local storage");
-      if (dataIsLive) {
-        return await _profileDataHandler
-            .getProfileData(
-          typeOfData: typeOfDocument,
-          userId: referralCode,
-          fromLocalDatabase: false,
-        )
-            .then((onlineDataMap) {
-          if (onlineDataMap == {} ||
-              onlineDataMap.isEmpty ||
-              onlineDataMap == <String, dynamic>{}) {
-            return locator<HiveDatabaseService>()
-                .deleteBox(uid: locator<AuthenticationService>().uid!)
-                .then((value) {
-              return locator<AuthenticationService>()
-                  .deleteUser()
-                  .then((value) {
-                locator<NavigationService>()
-                    .clearStackAndShow(Routes.startUpView);
-                return false;
-              });
-            });
-          } else {
-            log.v(
-                "Retrieved from online storage: $onlineDataMap \n${onlineDataMap.runtimeType}");
-
-            /// after fetching from online storage update local storage
-            _profileDataHandler.updateProfileData(
-              data: onlineDataMap,
-              typeOfDocument: typeOfDocument,
-              userId: referralCode,
-              toLocalDatabase: true,
-            );
-            setData(
-              dataMap: onlineDataMap,
-              typeOfDocument: typeOfDocument,
-            );
-            return true;
-          }
-        });
-      }
-
-      /// Fetch data from local storage
       return await _profileDataHandler
           .getProfileData(
         typeOfData: typeOfDocument,
         userId: referralCode,
-        fromLocalDatabase: true,
+        fromLocalDatabase: false,
       )
-          .then((dataMap) {
-        log.v("Local Storage Response : $dataMap \n${dataMap.runtimeType}");
-
-        /// Forcefully retrieve transactionData from firestore
-        if (typeOfDocument == ProfileDocument.userTransactionsData) {
-          dataMap = <String, dynamic>{};
-        }
-        if (dataMap == <String, dynamic>{} || dataMap.isEmpty) {
-          log.v("Local Storage is empty");
-
-          ///  if [dataMap] is empty i.e. local storage dont have data
-          /// fetch from online storage
-          return _profileDataHandler
-              .getProfileData(
-            typeOfData: typeOfDocument,
-            userId: referralCode,
-            fromLocalDatabase: false,
-          )
-              .then((onlineDataMap) {
-            if (onlineDataMap == {} ||
-                onlineDataMap.isEmpty ||
-                onlineDataMap == <String, dynamic>{}) {
-              return locator<HiveDatabaseService>()
-                  .deleteBox(uid: locator<AuthenticationService>().uid!)
-                  .then((value) {
-                return locator<AuthenticationService>()
-                    .deleteUser()
-                    .then((value) {
-                  locator<NavigationService>()
-                      .clearStackAndShow(Routes.startUpView);
-                  return false;
-                });
-              });
-            } else {
-              log.v(
-                  "Retrieved from online storage: $onlineDataMap \n${onlineDataMap.runtimeType}");
-
-              /// after fetching from online storage update local storage
-              _profileDataHandler.updateProfileData(
-                data: onlineDataMap,
-                typeOfDocument: typeOfDocument,
-                userId: referralCode,
-                toLocalDatabase: true,
-              );
-              setData(
-                dataMap: onlineDataMap,
-                typeOfDocument: typeOfDocument,
-              );
-              return true;
-            }
+          .then((onlineDataMap) {
+        if (onlineDataMap == {} ||
+            onlineDataMap.isEmpty ||
+            onlineDataMap == <String, dynamic>{}) {
+          return locator<HiveDatabaseService>()
+              .deleteBox(uid: locator<AuthenticationService>().uid!)
+              .then((value) {
+            return locator<AuthenticationService>().deleteUser().then((value) {
+              locator<NavigationService>()
+                  .clearStackAndShow(Routes.startUpView);
+              return false;
+            });
           });
         } else {
-          /// if [dataMap] is not empty fill the data
           log.v(
-              "Local Storage is not empty : $dataMap \n${dataMap.runtimeType}");
+              "Retrieved from online storage: $onlineDataMap \n${onlineDataMap.runtimeType}");
+
+          /// after fetching from online storage update local storage
+          _profileDataHandler.updateProfileData(
+            data: onlineDataMap,
+            typeOfDocument: typeOfDocument,
+            userId: referralCode,
+            toLocalDatabase: true,
+          );
           setData(
-            dataMap: dataMap,
+            dataMap: onlineDataMap,
             typeOfDocument: typeOfDocument,
           );
-
           return true;
         }
       });

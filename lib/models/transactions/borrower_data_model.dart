@@ -11,12 +11,14 @@ class BorrowerInformation {
   final double borrowerCreditScore;
   final String contact;
   final List<PaymentMethods>? paymentMethods;
+  final bool fullPayment;
   BorrowerInformation({
     required this.borrowerReferralCode,
     required this.borrowerName,
     required this.borrowerCreditScore,
     required this.contact,
     required this.paymentMethods,
+    required this.fullPayment,
   });
   factory BorrowerInformation.fromJson(Map<String, dynamic> json) =>
       _$BorrowerInformationFromJson(json);

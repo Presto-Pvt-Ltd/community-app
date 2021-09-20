@@ -202,14 +202,24 @@ class BorrowViewModel extends BaseViewModel {
         confirmCallback: () {
           /// ask for upi ID
           //print("Confirm CallBack");
+          amount = amount +
+              (amount *
+                      locator<LimitsDataProvider>()
+                          .transactionLimits!
+                          .interest /
+                      100)
+                  .ceil();
           showModalBottomSheet(
             isDismissible: false,
             context: StackedService.navigatorKey!.currentContext!,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
             builder: (context) => paymentSheet(
+              interest:
+                  locator<LimitsDataProvider>().transactionLimits!.interest,
               height: height,
               width: width,
+              amount: amount,
               onCompleteCallBack: startTransaction,
               onCancel: () {
                 inProcess = false;
@@ -221,7 +231,7 @@ class BorrowViewModel extends BaseViewModel {
       );
   }
 
-  void startTransaction(List<PaymentMethods> methods) {
+  void startTransaction(bool fullPayment) {
     DateTime currentTime = DateTime.now();
 
     /// initiate the process
@@ -263,7 +273,8 @@ class BorrowViewModel extends BaseViewModel {
           borrowerReferralCode:
               locator<UserDataProvider>().platformData!.referralCode,
           borrowerName: locator<UserDataProvider>().personalData!.name,
-          paymentMethods: methods,
+          paymentMethods: [],
+          fullPayment: fullPayment,
         ),
         transactionStatus: TransactionStatus(
           borrowerSentMoneyAt: null,

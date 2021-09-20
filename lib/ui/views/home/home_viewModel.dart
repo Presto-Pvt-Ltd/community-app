@@ -91,138 +91,125 @@ class HomeViewModel extends IndexTrackingViewModel {
         referralCode = _authenticationService.referralCode!;
 
         /// Trying to load data
-        await locator<LimitsDataHandler>()
-            .getLimitsData(
-          typeOfLimit: LimitDocument.rewardsLimits,
-          fromLocalDatabase: false,
-        )
-            .then((rewardsLimitsData) async {
-          log.v("Rewards Limits Data:" + rewardsLimitsData.toString());
-          locator<LimitsDataProvider>().rewardsLimit =
-              RewardsLimit.fromJson(rewardsLimitsData);
-          locator<LimitsDataHandler>()
-              .getLimitsData(
-            typeOfLimit: LimitDocument.transactionLimits,
-            fromLocalDatabase: false,
-          )
-              .then((transactionLimits) async {
-            log.v("Transaction Limits Data:" + transactionLimits.toString());
-            locator<LimitsDataProvider>().transactionLimits =
-                TransactionLimits.fromJson(transactionLimits);
-            final gotUserPersonalData = await _userDataProvider.loadData(
+        final rewardsLimitsData = await locator<LimitsDataHandler>()
+            .getLimitsData(typeOfLimit: LimitDocument.rewardsLimits);
+
+        final transactionLimits = await locator<LimitsDataHandler>()
+            .getLimitsData(typeOfLimit: LimitDocument.transactionLimits);
+        log.v("Rewards Limits Data:" + rewardsLimitsData.toString());
+        log.v("Transaction Limits Data:" + transactionLimits.toString());
+        locator<LimitsDataProvider>().rewardsLimit =
+            RewardsLimit.fromJson(rewardsLimitsData);
+        locator<LimitsDataProvider>().transactionLimits =
+            TransactionLimits.fromJson(transactionLimits);
+        final gotUserPersonalData = await _userDataProvider.loadData(
+          referralCode: referralCode,
+          typeOfDocument: ProfileDocument.userPersonalData,
+        );
+        log.v("gotUserPersonalData:" + gotUserPersonalData.toString());
+
+        if (gotUserPersonalData) {
+          final gotUserNotification = await _userDataProvider.loadData(
+            referralCode: referralCode,
+            typeOfDocument: ProfileDocument.userNotificationToken,
+          );
+          log.v("gotUserNotification:" + gotUserNotification.toString());
+          if (gotUserNotification) {
+            final gotTransactionData = await _userDataProvider.loadData(
               referralCode: referralCode,
-              typeOfDocument: ProfileDocument.userPersonalData,
+              typeOfDocument: ProfileDocument.userTransactionsData,
             );
-            log.v("gotUserPersonalData:" + gotUserPersonalData.toString());
+            log.v("gotTransactionData:" + gotTransactionData.toString());
 
-            if (gotUserPersonalData) {
-              final gotUserNotification = await _userDataProvider.loadData(
+            if (gotTransactionData) {
+              final gotPlatformData = await _userDataProvider.loadData(
                 referralCode: referralCode,
-                typeOfDocument: ProfileDocument.userNotificationToken,
+                typeOfDocument: ProfileDocument.userPlatformData,
               );
-              log.v("gotUserNotification:" + gotUserNotification.toString());
-              if (gotUserNotification) {
-                final gotTransactionData = await _userDataProvider.loadData(
-                  referralCode: referralCode,
-                  typeOfDocument: ProfileDocument.userTransactionsData,
-                );
-                log.v("gotTransactionData:" + gotTransactionData.toString());
-
-                if (gotTransactionData) {
-                  final gotPlatformData = await _userDataProvider.loadData(
-                    referralCode: referralCode,
-                    typeOfDocument: ProfileDocument.userPlatformData,
-                  );
-                  log.v("gotPlatformData:" + gotPlatformData.toString());
-                  if (gotPlatformData) {
-                    FirebaseMessaging.instance.getToken().then((value) async {
-                      if (value != _userDataProvider.token!.notificationToken &&
-                          value != null) {
-                        await locator<CommunityTreeDataHandler>()
-                            .updateNotificationTokenInTree(
-                          parentReferralId:
-                              _userDataProvider.platformData!.referredBy,
-                          currentReferralId:
-                              _userDataProvider.platformData!.referralCode,
-                          communityName:
-                              _userDataProvider.platformData!.community,
-                          newToken: value,
-                        )
-                            .then((value) async {
-                          await locator<CommunityTreeDataHandler>()
-                              .getLenderNotificationTokens(
-                            currentReferralId:
-                                _userDataProvider.platformData!.referralCode,
-                            levelCounter: locator<LimitsDataProvider>()
-                                .transactionLimits!
-                                .levelCounter,
-                            communityName:
-                                _userDataProvider.platformData!.community,
-                            downCounter: locator<LimitsDataProvider>()
-                                .transactionLimits!
-                                .downCounter,
-                            parentReferralID:
-                                _userDataProvider.platformData!.referredBy,
-                          );
-                        });
-                        await locator<ProfileDataHandler>().updateProfileData(
-                          data: NotificationToken(notificationToken: value)
-                              .toJson(),
-                          typeOfDocument: ProfileDocument.userNotificationToken,
-                          userId: _userDataProvider.platformData!.referralCode,
-                          toLocalDatabase: false,
-                        );
-                        await locator<ProfileDataHandler>().updateProfileData(
-                          data: NotificationToken(notificationToken: value)
-                              .toJson(),
-                          typeOfDocument: ProfileDocument.userNotificationToken,
-                          userId: _userDataProvider.platformData!.referralCode,
-                          toLocalDatabase: true,
-                        );
-                        _userDataProvider.token =
-                            NotificationToken(notificationToken: value);
-                        log.v("Update Notification token everywhere done");
-                      } else {
-                        await locator<CommunityTreeDataHandler>()
-                            .getLenderNotificationTokens(
-                          currentReferralId:
-                              _userDataProvider.platformData!.referralCode,
-                          levelCounter: locator<LimitsDataProvider>()
-                              .transactionLimits!
-                              .levelCounter,
-                          communityName:
-                              _userDataProvider.platformData!.community,
-                          downCounter: locator<LimitsDataProvider>()
-                              .transactionLimits!
-                              .downCounter,
-                          parentReferralID:
-                              _userDataProvider.platformData!.referredBy,
-                        );
-                      }
-                    });
-                    isCM = _userDataProvider.platformData!.isCommunityManager;
-                    await _userDataProvider.loadData(
-                      referralCode: referralCode,
-                      typeOfDocument: ProfileDocument.userPlatformRatings,
-                      dataIsLive: true,
-                    );
-                    if (_userDataProvider
-                            .transactionData!.transactionIds.length !=
-                        0) {
-                      _transactionsDataProvider.loadData(
-                        transactionIds:
-                            _userDataProvider.transactionData!.transactionIds,
-                        activeTransactions: _userDataProvider
-                            .transactionData!.activeTransactions,
+              log.v("gotPlatformData:" + gotPlatformData.toString());
+              if (gotPlatformData) {
+                FirebaseMessaging.instance.getToken().then((value) async {
+                  if (value != _userDataProvider.token!.notificationToken &&
+                      value != null) {
+                    await locator<CommunityTreeDataHandler>()
+                        .updateNotificationTokenInTree(
+                      parentReferralId:
+                          _userDataProvider.platformData!.referredBy,
+                      currentReferralId:
+                          _userDataProvider.platformData!.referralCode,
+                      communityName: _userDataProvider.platformData!.community,
+                      newToken: value,
+                    )
+                        .then((value) async {
+                      await locator<CommunityTreeDataHandler>()
+                          .getLenderNotificationTokens(
+                        currentReferralId:
+                            _userDataProvider.platformData!.referralCode,
+                        levelCounter: locator<LimitsDataProvider>()
+                            .transactionLimits!
+                            .levelCounter,
+                        communityName:
+                            _userDataProvider.platformData!.community,
+                        downCounter: locator<LimitsDataProvider>()
+                            .transactionLimits!
+                            .downCounter,
+                        parentReferralID:
+                            _userDataProvider.platformData!.referredBy,
                       );
-                    }
-                    setBusy(false);
+                    });
+                    await locator<ProfileDataHandler>().updateProfileData(
+                      data:
+                          NotificationToken(notificationToken: value).toJson(),
+                      typeOfDocument: ProfileDocument.userNotificationToken,
+                      userId: _userDataProvider.platformData!.referralCode,
+                      toLocalDatabase: false,
+                    );
+                    await locator<ProfileDataHandler>().updateProfileData(
+                      data:
+                          NotificationToken(notificationToken: value).toJson(),
+                      typeOfDocument: ProfileDocument.userNotificationToken,
+                      userId: _userDataProvider.platformData!.referralCode,
+                      toLocalDatabase: true,
+                    );
+                    _userDataProvider.token =
+                        NotificationToken(notificationToken: value);
+                    log.v("Update Notification token everywhere done");
+                  } else {
+                    await locator<CommunityTreeDataHandler>()
+                        .getLenderNotificationTokens(
+                      currentReferralId:
+                          _userDataProvider.platformData!.referralCode,
+                      levelCounter: locator<LimitsDataProvider>()
+                          .transactionLimits!
+                          .levelCounter,
+                      communityName: _userDataProvider.platformData!.community,
+                      downCounter: locator<LimitsDataProvider>()
+                          .transactionLimits!
+                          .downCounter,
+                      parentReferralID:
+                          _userDataProvider.platformData!.referredBy,
+                    );
                   }
+                });
+                isCM = _userDataProvider.platformData!.isCommunityManager;
+                await _userDataProvider.loadData(
+                  referralCode: referralCode,
+                  typeOfDocument: ProfileDocument.userPlatformRatings,
+                );
+                if (_userDataProvider.transactionData!.transactionIds.length !=
+                    0) {
+                  _transactionsDataProvider.loadData(
+                    transactionIds:
+                        _userDataProvider.transactionData!.transactionIds,
+                    activeTransactions:
+                        _userDataProvider.transactionData!.activeTransactions,
+                  );
                 }
+                setBusy(false);
               }
             }
-          });
-        });
+          }
+        }
       } catch (e) {
         log.e("There was error here");
         _errorHandlingService.handleError(error: e);

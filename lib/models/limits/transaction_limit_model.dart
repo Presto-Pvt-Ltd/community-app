@@ -20,8 +20,10 @@ class TransactionLimits {
   final int keepTransactionActiveForMinutes;
   final int maxActiveTransactionsPerBorrowerForFreeVersion;
   final List<String>? mediatorTokens;
+  final double interest;
 
   TransactionLimits({
+    required this.interest,
     required this.mediatorTokens,
     required this.borrowLowerLimit,
     required this.borrowUpperLimit,

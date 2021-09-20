@@ -32,7 +32,7 @@ class LimitsDataHandler {
 
   Future<Map<String, dynamic>> getLimitsData({
     required LimitDocument typeOfLimit,
-    required bool fromLocalDatabase,
+    bool fromLocalDatabase = false,
   }) async {
     if (fromLocalDatabase) {
       final String docId = _getDocId(typeOfLimit);

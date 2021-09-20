@@ -11,6 +11,7 @@ BorrowerInformation _$BorrowerInformationFromJson(Map<String, dynamic> json) {
   print(json);
   print("\n\n\n");
   return BorrowerInformation(
+    fullPayment: (json['fullPayment'] ?? true) as bool,
     borrowerReferralCode: json['borrowerReferralCode'] as String,
     borrowerName: json['borrowerName'] as String,
     borrowerCreditScore: (json['borrowerCreditScore'] as num).toDouble(),
@@ -33,4 +34,5 @@ Map<String, dynamic> _$BorrowerInformationToJson(
       'contact': instance.contact,
       'paymentMethods':
           instance.paymentMethods?.map((e) => PaymentMethodsMap[e]).toList(),
+      'fullPayment': instance.fullPayment,
     };

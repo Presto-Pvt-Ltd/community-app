@@ -56,95 +56,36 @@ class TransactionsDataProvider {
         log.v("There are new transactions on cloud storage");
 
         /// First fetch dead transactions from local storage
-        _transactionsDataHandler.getTransactionListInHive().then((value) {
-          if (value.length != transactionIds.length) {
-            /// Fetch all transaction from firestore
-            /// Start downloading new transactions
-            List<Future<Map<String, dynamic>>> futures = [];
+        /// Fetch all transaction from firestore
+        /// Start downloading new transactions
+        List<Future<Map<String, dynamic>>> futures = [];
 
-            /// Fetch all transactions online
-            transactionIds.forEach((transactionId) {
-              futures.add(_transactionsDataHandler.getTransactionData(
-                transactionId: transactionId,
-                fromLocalStorage: false,
-              ));
-              print(futures.toString());
-            });
+        /// Fetch all transactions online
+        transactionIds.forEach((transactionId) {
+          futures.add(_transactionsDataHandler.getTransactionData(
+            transactionId: transactionId,
+            fromLocalStorage: false,
+          ));
+          print(futures.toString());
+        });
+        log.v("New TransactionIDs are : $transactionIds");
+
+        /// for each [singleTransaction] wait for all of it's futures
+        /// then add in new [CustomTransaction] to [userTransactions]
+        Future.wait(futures).then((transactionsFetched) {
+          transactionsFetched.forEach((transactionFetched) {
             log.v(
-              "New TransactionIDs are : $transactionIds",
+              "Waited for future to complete, got transaction : $transactionFetched",
             );
-
-            /// for each [singleTransaction] wait for all of it's futures
-            /// then add in new [CustomTransaction] to [userTransactions]
-            Future.wait(futures).then((transactionsFetched) {
-              transactionsFetched.forEach((transactionFetched) {
-                log.v(
-                  "Waited for future to complete, got transaction : $transactionFetched",
-                );
-                penaliseUser(
-                  customTransaction:
-                      CustomTransaction.fromJson(transactionFetched),
-                );
-                userTransactions!.add(
-                  CustomTransaction.fromJson(transactionFetched),
-                );
-              });
-              _transactionsDataHandler
-                  .updateTransactionListInHive(userTransactions!);
-            });
-          } else {
-            /// fetch active transaction only
-            /// Start downloading new transactions
-            List<Future<Map<String, dynamic>>> futures = [];
-
-            /// Fetch all transactions online
-            activeTransactions.forEach((transactionId) {
-              futures.add(_transactionsDataHandler.getTransactionData(
-                transactionId: transactionId,
-                fromLocalStorage: false,
-              ));
-
-              print(futures.toString());
-            });
-            log.v(
-              "New TransactionIDs are : $transactionIds",
+            penaliseUser(
+              customTransaction: CustomTransaction.fromJson(transactionFetched),
             );
-
-            /// for each [singleTransaction] wait for all of it's futures
-            /// then add in new [CustomTransaction] to [userTransactions]
-            Future.wait(futures).then((transactionsFetched) {
-              transactionsFetched.forEach((transactionFetched) {
-                log.v(
-                  "Waited for future to complete, got transaction : $transactionFetched",
-                );
-                penaliseUser(
-                  customTransaction:
-                      CustomTransaction.fromJson(transactionFetched),
-                );
-                CustomTransaction transaction =
-                    CustomTransaction.fromJson(transactionFetched);
-                int index = userTransactions!.indexWhere((element) =>
-                    element.genericInformation.transactionId ==
-                    transaction.genericInformation.transactionId);
-                if (transaction.transactionStatus.borrowerSentMoney) {
-                  locator<UserDataProvider>()
-                      .transactionData!
-                      .activeTransactions
-                      .remove(transaction.genericInformation.transactionId);
-                  locator<ProfileDataHandler>().updateProfileData(
-                    data: locator<UserDataProvider>().transactionData!.toJson(),
-                    typeOfDocument: ProfileDocument.userTransactionsData,
-                    userId:
-                        locator<UserDataProvider>().platformData!.referralCode,
-                    toLocalDatabase: true,
-                  );
-                }
-                userTransactions![index] = transaction;
-              });
-              _transactionsDataHandler
-                  .updateTransactionListInHive(userTransactions!);
-            });
-          }
+            userTransactions!.add(
+              CustomTransaction.fromJson(transactionFetched),
+            );
+          });
+          _transactionsDataHandler
+              .updateTransactionListInHive(userTransactions!);
         });
 
         /// Then over write active transactions
