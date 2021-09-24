@@ -242,7 +242,6 @@ class HomeView extends StatelessWidget {
                               const EdgeInsets.only(left: horizontal_padding),
                           child: IconButton(
                             onPressed: () {
-                              print("helloo mujhe dabaing");
                               scaffoldKey.currentState?.openDrawer();
                             },
                             icon: Icon(
