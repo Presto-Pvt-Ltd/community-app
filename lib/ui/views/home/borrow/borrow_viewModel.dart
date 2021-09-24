@@ -117,11 +117,11 @@ class BorrowViewModel extends BaseViewModel {
     }
 
     DateTime currentTime = DateTime.now();
-    log.v("Current time: $currentTime");
-    log.v(
-        "borrowingRequestInProcess: ${locator<UserDataProvider>().transactionData!.borrowingRequestInProcess}");
-    log.v(
-        "last borrowing request placed at: ${locator<UserDataProvider>().transactionData!.lastBorrowingRequestPlacedAt}");
+    // log.v("Current time: $currentTime");
+    // log.v(
+    //     "borrowingRequestInProcess: ${locator<UserDataProvider>().transactionData!.borrowingRequestInProcess}");
+    // log.v(
+    //     "last borrowing request placed at: ${locator<UserDataProvider>().transactionData!.lastBorrowingRequestPlacedAt}");
     if (locator<UserDataProvider>()
         .transactionData!
         .borrowingRequestInProcess) {
@@ -202,36 +202,37 @@ class BorrowViewModel extends BaseViewModel {
         confirmCallback: () {
           /// ask for upi ID
           //print("Confirm CallBack");
-          amount = amount +
-              (amount *
-                      locator<LimitsDataProvider>()
-                          .transactionLimits!
-                          .interest /
-                      100)
-                  .ceil();
+
           showModalBottomSheet(
             isDismissible: false,
             context: StackedService.navigatorKey!.currentContext!,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (context) => paymentSheet(
-              interest:
-                  locator<LimitsDataProvider>().transactionLimits!.interest,
-              height: height,
-              width: width,
-              amount: amount,
-              onCompleteCallBack: startTransaction,
-              onCancel: () {
+            builder: (context) => WillPopScope(
+              onWillPop: () {
                 inProcess = false;
                 notifyListeners();
+                return Future.value(true);
               },
+              child: paymentSheet(
+                interest:
+                    locator<LimitsDataProvider>().transactionLimits!.interest,
+                height: height,
+                width: width,
+                amount: amount,
+                onCompleteCallBack: startTransaction,
+                onCancel: () {
+                  inProcess = false;
+                  notifyListeners();
+                },
+              ),
             ),
           );
         },
       );
   }
 
-  void startTransaction(bool fullPayment) {
+  void startTransaction(bool fullPayment, double amount, int emiMonthSelected) {
     DateTime currentTime = DateTime.now();
 
     /// initiate the process
@@ -259,7 +260,9 @@ class BorrowViewModel extends BaseViewModel {
         genericInformation: GenericInformation(
           transactionId: transactionId,
           amount: amount.toInt(),
-          interestRate: 0,
+          interestRate: fullPayment
+              ? 0
+              : locator<LimitsDataProvider>().transactionLimits!.interest,
           initiationAt: currentTime,
         ),
         borrowerInformation: BorrowerInformation(
@@ -275,6 +278,7 @@ class BorrowViewModel extends BaseViewModel {
           borrowerName: locator<UserDataProvider>().personalData!.name,
           paymentMethods: [],
           fullPayment: fullPayment,
+          emiMonths: emiMonthSelected,
         ),
         transactionStatus: TransactionStatus(
           borrowerSentMoneyAt: null,

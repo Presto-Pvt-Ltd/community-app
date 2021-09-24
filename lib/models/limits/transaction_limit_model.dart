@@ -21,6 +21,7 @@ class TransactionLimits {
   final int maxActiveTransactionsPerBorrowerForFreeVersion;
   final List<String>? mediatorTokens;
   final double interest;
+  final int lowerEmiLimit;
 
   TransactionLimits({
     required this.interest,
@@ -33,6 +34,7 @@ class TransactionLimits {
     required this.levelCounter,
     required this.downCounter,
     required this.maxActiveTransactionsPerBorrowerForFreeVersion,
+    required this.lowerEmiLimit,
   });
   factory TransactionLimits.fromJson(Map<String, dynamic> json) =>
       _$TransactionLimitsFromJson(json);

@@ -11,6 +11,7 @@ TransactionLimits _$TransactionLimitsFromJson(Map<String, dynamic> json) {
     interest: double.parse(json['interest'].toString()),
     borrowLowerLimit: json['borrowLowerLimit'] as int,
     borrowUpperLimit: json['borrowUpperLimit'] as int,
+    lowerEmiLimit: json['lowerEmiLimit'] as int,
     keepTransactionActiveForMinutes:
         json['keepTransactionActiveForMinutes'] as int,
     transactionDefaultsAfterDays: json['transactionDefaultsAfterDays'] as int,
@@ -41,4 +42,5 @@ Map<String, dynamic> _$TransactionLimitsToJson(TransactionLimits instance) =>
           instance.maxActiveTransactionsPerBorrowerForFreeVersion,
       'mediatorTokens': instance.mediatorTokens,
       'interest': instance.interest,
+      'lowerEmiLimit': instance.lowerEmiLimit,
     };
