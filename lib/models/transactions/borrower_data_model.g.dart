@@ -22,7 +22,7 @@ BorrowerInformation _$BorrowerInformationFromJson(Map<String, dynamic> json) {
             : (json['paymentMethods'] as List<dynamic>)
                 .map((e) => paymentEnumDecode(e))
                 .toList(),
-    emiMonths: (json['emiMonths'] as num).toInt(),
+    emiMonths: ((json['emiMonths'] ?? 0) as num).toInt(),
   );
 }
 

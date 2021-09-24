@@ -14,8 +14,10 @@ class TransactionStatus {
   bool borrowerSentMoney;
   bool isBorrowerPenalised;
   bool isLenderPenalised;
+  int? emiPaid;
   DateTime? borrowerSentMoneyAt;
   DateTime? lenderSentMoneyAt;
+  List<String>? emiRazorpayIds;
   TransactionStatus({
     required this.approvedStatus,
     required this.lenderSentMoney,
@@ -24,6 +26,8 @@ class TransactionStatus {
     required this.isLenderPenalised,
     required this.borrowerSentMoneyAt,
     required this.lenderSentMoneyAt,
+    this.emiPaid,
+    this.emiRazorpayIds,
   });
   factory TransactionStatus.fromJson(Map<String, dynamic> json) =>
       _$TransactionStatusFromJson(json);

@@ -52,9 +52,11 @@ class AllTransactionsViewModel extends BaseViewModel {
         }
 
         /// Check if borrower have not sent money
+        /// Borrower has not opted for emi
         /// Borrower is not penalised
         /// Lender has sent money
         if (!transaction.transactionStatus.borrowerSentMoney &&
+            transaction.borrowerInformation.fullPayment &&
             transaction.transactionStatus.lenderSentMoney &&
             !transaction.transactionStatus.isBorrowerPenalised) {
           DateTime initiationTime = transaction.genericInformation.initiationAt;

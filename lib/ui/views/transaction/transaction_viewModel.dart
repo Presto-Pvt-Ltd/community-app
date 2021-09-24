@@ -30,11 +30,20 @@ class TransactionViewModel extends BaseViewModel {
   late String lenderOrBorrower;
   late String lenderOrBorrowerName;
   late Color textColor;
+  late int emiPaid;
+  late bool fullPayment;
+  late final DateTime current;
+  late double amount;
   void pop() {
     locator<NavigationService>().back();
   }
 
   void onModelReady(CustomTransaction transaction) {
+    this.fullPayment = transaction.borrowerInformation.fullPayment;
+    this.current = transaction.genericInformation.initiationAt;
+    this.emiPaid = transaction.transactionStatus.emiPaid ?? 0;
+    log.i(emiPaid);
+    this.amount = transaction.genericInformation.amount.toDouble();
     this.transaction = transaction;
     this.isBorrowed = transaction.borrowerInformation.borrowerReferralCode ==
         locator<UserDataProvider>().platformData!.referralCode;
@@ -119,6 +128,26 @@ class TransactionViewModel extends BaseViewModel {
   Future<void> initiateTransaction() async {
     print("Hello");
     setBusy(true);
+    int amount = 0;
+    if (!this.transaction.borrowerInformation.fullPayment) {
+      if (this.transaction.transactionStatus.emiPaid ==
+          this.transaction.borrowerInformation.emiMonths - 1) {
+        amount = (this.transaction.genericInformation.amount -
+                (this.transaction.genericInformation.amount -
+                    ((this.transaction.genericInformation.amount /
+                                this.transaction.borrowerInformation.emiMonths)
+                            .floor()
+                            .toDouble() *
+                        (this.transaction.borrowerInformation.emiMonths - 1))))
+            .toInt();
+      } else {
+        amount = (this.transaction.genericInformation.amount /
+                this.transaction.borrowerInformation.emiMonths)
+            .floor();
+      }
+    } else {
+      amount = this.transaction.genericInformation.amount;
+    }
     RazorpayService _razorpayService =
         RazorpayService(callback: (String paymentId) async {
       await payBackComplete(
@@ -127,7 +156,7 @@ class TransactionViewModel extends BaseViewModel {
       );
     });
     await _razorpayService.createOrderInServer(
-      amount: transaction.genericInformation.amount.toDouble(),
+      amount: amount.toDouble(),
       transactionId: transaction.genericInformation.transactionId,
     );
   }
@@ -151,14 +180,57 @@ class TransactionViewModel extends BaseViewModel {
       if (userTransactionsFromProvider[i].genericInformation.transactionId ==
           transaction.genericInformation.transactionId) {
         /// update the transaction here
-        userTransactionsFromProvider[i].transactionStatus.borrowerSentMoney =
-            true;
-        DateTime current = DateTime.now();
-        userTransactionsFromProvider[i].transactionStatus.borrowerSentMoneyAt =
-            current;
-        userTransactionsFromProvider[i]
-            .razorpayInformation
-            .borrowerRazorpayPaymentId = borrowerRazorpayPaymentId;
+
+        if (!this.fullPayment) {
+          if (userTransactionsFromProvider[i]
+                  .transactionStatus
+                  .emiRazorpayIds ==
+              null) {
+            userTransactionsFromProvider[i].transactionStatus.emiRazorpayIds = [
+              borrowerRazorpayPaymentId
+            ];
+            userTransactionsFromProvider[i].transactionStatus.emiPaid = 1;
+          } else if (userTransactionsFromProvider[i]
+                  .transactionStatus
+                  .emiPaid! ==
+              userTransactionsFromProvider[i].borrowerInformation.emiMonths -
+                  1) {
+            userTransactionsFromProvider[i]
+                .transactionStatus
+                .emiRazorpayIds!
+                .add(borrowerRazorpayPaymentId);
+            userTransactionsFromProvider[i].transactionStatus.emiPaid =
+                userTransactionsFromProvider[i].transactionStatus.emiPaid! + 1;
+            userTransactionsFromProvider[i]
+                .transactionStatus
+                .borrowerSentMoney = true;
+            DateTime current = DateTime.now();
+            userTransactionsFromProvider[i]
+                .transactionStatus
+                .borrowerSentMoneyAt = current;
+            userTransactionsFromProvider[i]
+                .razorpayInformation
+                .borrowerRazorpayPaymentId = borrowerRazorpayPaymentId;
+          } else {
+            userTransactionsFromProvider[i]
+                .transactionStatus
+                .emiRazorpayIds!
+                .add(borrowerRazorpayPaymentId);
+            userTransactionsFromProvider[i].transactionStatus.emiPaid =
+                userTransactionsFromProvider[i].transactionStatus.emiPaid! + 1;
+          }
+        } else {
+          userTransactionsFromProvider[i].transactionStatus.borrowerSentMoney =
+              true;
+          DateTime current = DateTime.now();
+          userTransactionsFromProvider[i]
+              .transactionStatus
+              .borrowerSentMoneyAt = current;
+
+          userTransactionsFromProvider[i]
+              .razorpayInformation
+              .borrowerRazorpayPaymentId = borrowerRazorpayPaymentId;
+        }
 
         /// update transaction in firestore
         locator<TransactionsDataHandler>().updateTransaction(
@@ -170,14 +242,6 @@ class TransactionViewModel extends BaseViewModel {
           },
           transactionId: transaction.genericInformation.transactionId,
           toLocalStorage: false,
-        );
-
-        /// update borrower's user info in firestore and hive
-        locator<ProfileDataHandler>().updateProfileData(
-          data: locator<UserDataProvider>().transactionData!.toJson(),
-          typeOfDocument: ProfileDocument.userTransactionsData,
-          userId: locator<UserDataProvider>().platformData!.referralCode,
-          toLocalDatabase: true,
         );
 
         locator<ProfileDataHandler>()
@@ -225,12 +289,7 @@ class TransactionViewModel extends BaseViewModel {
                 locator<UserDataProvider>().platformRatingsData!.personalScore =
                     5;
               }
-              locator<ProfileDataHandler>().updateProfileData(
-                data: locator<UserDataProvider>().platformRatingsData!.toJson(),
-                typeOfDocument: ProfileDocument.userPlatformRatings,
-                userId: locator<UserDataProvider>().platformData!.referralCode,
-                toLocalDatabase: true,
-              );
+
               locator<ProfileDataHandler>().updateProfileData(
                 data: locator<UserDataProvider>().platformRatingsData!.toJson(),
                 typeOfDocument: ProfileDocument.userPlatformRatings,

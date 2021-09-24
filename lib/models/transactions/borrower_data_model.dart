@@ -13,6 +13,7 @@ class BorrowerInformation {
   final List<PaymentMethods>? paymentMethods;
   final bool fullPayment;
   final int emiMonths;
+
   BorrowerInformation({
     required this.borrowerReferralCode,
     required this.borrowerName,
