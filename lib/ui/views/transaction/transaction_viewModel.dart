@@ -272,38 +272,51 @@ class TransactionViewModel extends BaseViewModel {
           if (locator<UserDataProvider>().platformRatingsData!.personalScore <
               5) {
             /// Reward borrower
-            locator<LimitsDataHandler>()
-                .getLimitsData(
-              typeOfLimit: LimitDocument.rewardsLimits,
-              fromLocalDatabase: false,
-            )
-                .then((value) {
-              locator<LimitsDataProvider>().rewardsLimit =
-                  RewardsLimit.fromJson(value);
-              locator<UserDataProvider>().platformRatingsData!.personalScore +=
-                  locator<LimitsDataProvider>().rewardsLimit!.rewardCreditScore;
-              if (locator<UserDataProvider>()
+            if (fullPayment ||
+                userTransactionsFromProvider[i].transactionStatus.emiPaid! ==
+                    userTransactionsFromProvider[i]
+                        .borrowerInformation
+                        .emiMonths) {
+              locator<LimitsDataHandler>()
+                  .getLimitsData(
+                typeOfLimit: LimitDocument.rewardsLimits,
+                fromLocalDatabase: false,
+              )
+                  .then((value) {
+                locator<LimitsDataProvider>().rewardsLimit =
+                    RewardsLimit.fromJson(value);
+                locator<UserDataProvider>()
+                        .platformRatingsData!
+                        .personalScore +=
+                    locator<LimitsDataProvider>()
+                        .rewardsLimit!
+                        .rewardCreditScore;
+                if (locator<UserDataProvider>()
+                        .platformRatingsData!
+                        .personalScore >
+                    5) {
+                  locator<UserDataProvider>()
                       .platformRatingsData!
-                      .personalScore >
-                  5) {
-                locator<UserDataProvider>().platformRatingsData!.personalScore =
-                    5;
-              }
+                      .personalScore = 5;
+                }
 
-              locator<ProfileDataHandler>().updateProfileData(
-                data: locator<UserDataProvider>().platformRatingsData!.toJson(),
-                typeOfDocument: ProfileDocument.userPlatformRatings,
-                userId: locator<UserDataProvider>().platformData!.referralCode,
-                toLocalDatabase: false,
-              );
-              setBusy(false);
-              locator<NavigationService>().back();
-              showCustomDialog(
-                title: "Success",
-                description: "Payback Successful!!",
-              );
-              log.w("Borrower paid back");
-            });
+                locator<ProfileDataHandler>().updateProfileData(
+                  data:
+                      locator<UserDataProvider>().platformRatingsData!.toJson(),
+                  typeOfDocument: ProfileDocument.userPlatformRatings,
+                  userId:
+                      locator<UserDataProvider>().platformData!.referralCode,
+                  toLocalDatabase: false,
+                );
+                setBusy(false);
+                locator<NavigationService>().back();
+                showCustomDialog(
+                  title: "Success",
+                  description: "Payback Successful!!",
+                );
+                log.w("Borrower paid back");
+              });
+            }
 
             /// 1) updateCommunityScores
             /// 2) updateCommunityScoresWithoutAsync

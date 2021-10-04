@@ -119,6 +119,24 @@ class TransactionView extends StatelessWidget {
                       TableRow(
                         children: [
                           Text(
+                            'Transaction Id',
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: 17.0,
+                            ),
+                          ),
+                          Text(
+                            model.transaction.genericInformation.transactionId,
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: 17.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Text(
                             'Payable Amount',
                             style: TextStyle(
                               color: primaryLightColor,
@@ -194,29 +212,24 @@ class TransactionView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      model.fullPayment
-                          ? TableRow(children: [
-                              Container(),
-                              Container(),
-                            ])
-                          : TableRow(
-                              children: [
-                                Text(
-                                  'Tenure',
-                                  style: TextStyle(
-                                    color: primaryLightColor,
-                                    fontSize: 17.0,
-                                  ),
-                                ),
-                                Text(
-                                  "${customTransaction.borrowerInformation.emiMonths} Months",
-                                  style: TextStyle(
-                                    color: primaryLightColor,
-                                    fontSize: 17.0,
-                                  ),
-                                ),
-                              ],
+                      TableRow(
+                        children: [
+                          Text(
+                            'Tenure',
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: 17.0,
                             ),
+                          ),
+                          Text(
+                            "${customTransaction.borrowerInformation.emiMonths} Months",
+                            style: TextStyle(
+                              color: primaryLightColor,
+                              fontSize: 17.0,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -936,7 +949,7 @@ class TransactionView extends StatelessWidget {
           );
         }
 
-        Widget lender() {
+        Widget fullPayment() {
           return SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -1131,7 +1144,12 @@ class TransactionView extends StatelessWidget {
               ? Center(
                   child: loader,
                 )
-              : (model.fullPayment ? lender() : emi()),
+              : Container(
+                  height: height,
+                  width: width,
+                  color: backgroundColorLight,
+                  child: (model.fullPayment ? fullPayment() : emi()),
+                ),
         );
       },
     );

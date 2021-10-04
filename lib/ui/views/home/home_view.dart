@@ -354,17 +354,7 @@ class HomeView extends StatelessWidget {
                                   model.goToMyReferees();
                                 },
                               ),
-                              // ListTile(
-                              //   dense: true,
-                              //   title: Text(
-                              //     "Dark Mode",
-                              //     style: TextStyle(
-                              //       fontSize: default_normal_font_size,
-                              //       color: busyButtonTextColorLight,
-                              //       fontWeight: FontWeight.w600,
-                              //     ),
-                              //   ),
-                              // ),
+
                               ListTile(
                                 dense: true,
                                 title: Text(
