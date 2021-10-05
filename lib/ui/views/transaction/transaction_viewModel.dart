@@ -132,14 +132,12 @@ class TransactionViewModel extends BaseViewModel {
     if (!this.transaction.borrowerInformation.fullPayment) {
       if (this.transaction.transactionStatus.emiPaid ==
           this.transaction.borrowerInformation.emiMonths - 1) {
-        amount = (this.transaction.genericInformation.amount -
-                (this.transaction.genericInformation.amount -
-                    ((this.transaction.genericInformation.amount /
-                                this.transaction.borrowerInformation.emiMonths)
-                            .floor()
-                            .toDouble() *
-                        (this.transaction.borrowerInformation.emiMonths - 1))))
-            .toInt();
+        double oneMonnth = (this.transaction.genericInformation.amount /
+                this.transaction.borrowerInformation.emiMonths)
+            .floorToDouble();
+        double remaining = this.transaction.genericInformation.amount -
+            oneMonnth * (this.transaction.borrowerInformation.emiMonths - 1);
+        amount = remaining.toInt();
       } else {
         amount = (this.transaction.genericInformation.amount /
                 this.transaction.borrowerInformation.emiMonths)
@@ -317,6 +315,7 @@ class TransactionViewModel extends BaseViewModel {
                 log.w("Borrower paid back");
               });
             }
+            setBusy(false);
 
             /// 1) updateCommunityScores
             /// 2) updateCommunityScoresWithoutAsync
